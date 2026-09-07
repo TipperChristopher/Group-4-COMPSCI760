@@ -30,3 +30,22 @@ Test the frozen policy against held-out F1 circuits (e.g., Monza, Silverstone) t
 Bash
 python evaluate.py
 
+If issues when updating the F1Tenth code: 
+Check your status:
+
+PowerShell
+git status
+(If you see red text, your files are modified but not committed).
+
+Stage everything:
+
+PowerShell
+git add .
+Lock in the commit:
+
+PowerShell
+git commit -m "Update pipeline with new F1TENTH evaluation metrics"
+Push to GitHub:
+
+PowerShell
+git push -u origin main
