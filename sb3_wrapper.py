@@ -75,3 +75,8 @@ env = F1TenthSB3Wrapper(base_env)
 
 model = PPO("MlpPolicy", env)
 model.learn(total_timesteps=10000)
+
+if __name__ == "__main__":
+    # Indent the testing logic below this line
+    base_env = gym.make('f110_gym:f110-v0', map="example_track_map", num_agents=1)
+    # ... any other test prints or assertions
