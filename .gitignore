@@ -26,4 +26,8 @@ Thumbs.db
 
 # Training checkpoints: large, numerous and regenerable. Final models and
 # their vecnormalize.pkl stay tracked so evaluation is reproducible.
+<<<<<<< HEAD
 models/**/*checkpoint*
+=======
+models/**/*checkpoint*
+>>>>>>> db76a8dc108947de9288f2f0ce98de79c5018691
