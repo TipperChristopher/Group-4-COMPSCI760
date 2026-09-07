@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import os
+from turtle import speed
 
 import gymnasium as gym
 import numpy as np
@@ -29,7 +30,7 @@ class F1TenthSB3Wrapper(gym.Wrapper):
         # SB3 expects flat continuous actions: [steering, speed]
         # Action limits: steering ~[-0.4189, 0.4189] rad, speed ~[-5.0, 20.0] m/s
         self.action_space = gym.spaces.Box(
-            low=np.array([-0.4189, -5.0], dtype=np.float32), 
+            low=np.array([-0.4189, 1.0], dtype=np.float32), # Minimum speed is now 1.0 m/s
             high=np.array([0.4189, 20.0], dtype=np.float32), 
             dtype=np.float32
         )
@@ -48,12 +49,11 @@ class F1TenthSB3Wrapper(gym.Wrapper):
         steering = action[0]
 
         # Reward forward velocity, penalize erratic steering
+        # Inside step() reward logic:
         custom_reward = float(reward) + (speed * 0.1) - (abs(steering) * 0.5)
-        
-        # Terminal crash penalty
-        if terminated:
-            custom_reward -= 5.0
-            
+
+        if speed < 1.0:
+            custom_reward -= 0.5 # Constant penalty for cowardly driving
         return self._process_obs(obs), custom_reward, terminated, truncated, info
 
     def _process_obs(self, obs):

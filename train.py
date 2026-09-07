@@ -19,7 +19,7 @@ from stable_baselines3.common.callbacks import CheckpointCallback
 
 _PROJECT_ROOT = os.path.dirname(os.path.abspath(__file__))
 
-DEFAULT_TOTAL_TIMESTEPS = 2_000_000
+DEFAULT_TOTAL_TIMESTEPS = 5_000_000
 # Fixed default so that every cell of the grid, and both algorithms, draw the
 # same tracks unless the track seed is overridden explicitly.
 DEFAULT_TRACK_SEED = 0
