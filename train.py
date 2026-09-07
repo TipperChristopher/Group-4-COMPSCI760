@@ -2,6 +2,7 @@ import sys
 import types
 import os
 import argparse
+import importlib.util
 
 # 1. The Bulletproof 'gym' Override (Must be at the very top)
 if "gym" not in sys.modules:
@@ -13,7 +14,19 @@ import f1tenth_gym
 from stable_baselines3 import PPO, SAC
 from stable_baselines3.common.vec_env import DummyVecEnv
 from stable_baselines3.common.callbacks import CheckpointCallback
-from f1tenth_rl_project.wrappers import F1TenthSB3Wrapper
+
+# Resolve the project-local wrapper independently of the current working
+# directory (for example, when this script is launched from another folder).
+_wrapper_file = os.path.join(
+    os.path.dirname(os.path.abspath(__file__)), "sb3_wrapper.py"
+)
+_wrapper_spec = importlib.util.spec_from_file_location("sb3_wrapper", _wrapper_file)
+if _wrapper_spec is None or _wrapper_spec.loader is None:
+    raise ImportError(f"Could not find the SB3 wrapper at {_wrapper_file}")
+_wrapper_module = importlib.util.module_from_spec(_wrapper_spec)
+sys.modules["sb3_wrapper"] = _wrapper_module
+_wrapper_spec.loader.exec_module(_wrapper_module)
+F1TenthSB3Wrapper = _wrapper_module.F1TenthSB3Wrapper
 
 def make_env(track_name, seed):
     """Utility function to spawn isolated environments for SubprocVecEnv."""
