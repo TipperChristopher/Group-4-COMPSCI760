@@ -132,8 +132,4 @@ def load_vecnormalize(vec_env: VecEnv, path: str) -> VecNormalize:
     normalised = VecNormalize.load(path, vec_env)
     normalised.training = False
     normalised.norm_reward = False
-<<<<<<< HEAD
     return normalised
-=======
-    return normalised
->>>>>>> db76a8dc108947de9288f2f0ce98de79c5018691
