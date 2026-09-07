@@ -1,10 +1,15 @@
 import os
 import shutil
+import glob
+import argparse
+
+parser = argparse.ArgumentParser(description="Fix downloaded track files")
+parser.add_argument("--maps-dir", default=os.path.join("f1tenth_gym", "maps"), help="Path to the downloaded maps directory")
 
 def fix_downloaded_tracks():
-    # Path to the downloaded maps inside the gym folder
-    maps_dir = os.path.join("f1tenth_gym", "maps")
-    
+    args = parser.parse_args()
+    maps_dir = args.maps_dir
+
     if not os.path.exists(maps_dir):
         print(f"Maps directory {maps_dir} not found. Run train.py first to trigger the download.")
         return

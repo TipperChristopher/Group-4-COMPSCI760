@@ -13,7 +13,7 @@ import f1tenth_gym
 from stable_baselines3 import PPO, SAC
 from stable_baselines3.common.vec_env import DummyVecEnv
 from stable_baselines3.common.callbacks import CheckpointCallback
-from wrappers import F1TenthSB3Wrapper
+from f1tenth_rl_project.wrappers import F1TenthSB3Wrapper
 
 def make_env(track_name, seed):
     """Utility function to spawn isolated environments for SubprocVecEnv."""

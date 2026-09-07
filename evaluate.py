@@ -1,7 +1,7 @@
 import gymnasium as gym
 import f1tenth_gym
 from stable_baselines3 import PPO
-from wrappers import F1TenthSB3Wrapper
+from f1tenth_rl_project.wrappers import F1TenthSB3Wrapper
 import matplotlib.pyplot as plt
 
 def main():
