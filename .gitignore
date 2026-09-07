@@ -1,0 +1,29 @@
+# Virtual environments
+.venv/
+venv/
+env/
+ENV/
+
+# Python bytecode
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Track generation scratch output
+# random_trackgen.py writes here; generate_track_pool.py packages it into
+# f1tenth_gym/maps/ and then deletes it. Ignored in case a run is interrupted.
+/maps/
+
+# Evaluation output written next to each model
+models/**/zero_shot_results.csv
+
+# OS and editor cruft
+.DS_Store
+Thumbs.db
+.idea/
+.claude/
+*.swp
+
+# Training checkpoints: large, numerous and regenerable. Final models and
+# their vecnormalize.pkl stay tracked so evaluation is reproducible.
+models/**/*checkpoint*
