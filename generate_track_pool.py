@@ -3,6 +3,15 @@ import shutil
 import sys
 import subprocess
 import re
+import stat
+
+def remove_readonly(func, path, excinfo):
+    """Clear the read-only attribute and retry removal on Windows."""
+    try:
+        os.chmod(path, stat.S_IWRITE)
+        func(path)
+    except Exception as e:
+        print(f"Warning: Could not remove {path}: {e}")
 
 def reset_and_generate(num_tracks=100):
     print("Cleaning up old synthetic tracks...")
@@ -10,7 +19,8 @@ def reset_and_generate(num_tracks=100):
     if os.path.exists(dest_dir):
         for folder in os.listdir(dest_dir):
             if folder.startswith("synthetic_track_"):
-                shutil.rmtree(os.path.join(dest_dir, folder))
+                folder_path = os.path.join(dest_dir, folder)
+                shutil.rmtree(folder_path, onerror=remove_readonly)
 
     print(f"Generating {num_tracks} new raw tracks...")
     subprocess.run([sys.executable, "random_trackgen.py", "--n-maps", str(num_tracks)])
@@ -36,7 +46,6 @@ def reset_and_generate(num_tracks=100):
         with open(src_yaml, 'r') as f:
             content = f.read()
             
-        # FORCE the YAML to point to the exact .pgm file
         content = re.sub(r"image:\s*.*", f"image: {dest_pgm_name}", content)
         
         with open(os.path.join(track_folder, dest_yaml_name), 'w') as f:
@@ -44,7 +53,6 @@ def reset_and_generate(num_tracks=100):
             
         shutil.copy(src_pgm, os.path.join(track_folder, dest_pgm_name))
         
-        # PATCH THE CENTERLINE CSV TO 4 COLUMNS
         src_csv = os.path.join(source_dir, f"map{i}_centerline.csv")
         dest_csv = os.path.join(track_folder, f"{track_name}_centerline.csv")
         if os.path.exists(src_csv):
@@ -56,13 +64,12 @@ def reset_and_generate(num_tracks=100):
                     if line.startswith('#'):
                         outfile.write("#x,y,w_left,w_right\n")
                     else:
-                        # Append 2.0 meters for left and right track widths
                         outfile.write(f"{line}, 2.0, 2.0\n")
 
     if os.path.exists(source_dir):
-        shutil.rmtree(source_dir)
+        shutil.rmtree(source_dir, onerror=remove_readonly)
             
-    print(f"Success! {num_tracks} tracks are perfectly packaged in {dest_dir}.")
+    print(f"Success! {num_tracks} tracks are packaged in {dest_dir}.")
 
 if __name__ == "__main__":
     reset_and_generate(100)
