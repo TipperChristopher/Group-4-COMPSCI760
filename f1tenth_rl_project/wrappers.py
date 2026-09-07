@@ -1,5 +1,6 @@
 import gymnasium as gym
 import numpy as np
+from stable_baselines3 import PPO
 
 class F1TenthSB3Wrapper(gym.Wrapper):
     """
@@ -66,3 +67,11 @@ class F1TenthSB3Wrapper(gym.Wrapper):
         # Concatenate LiDAR and vehicle state into one flat 113-dimensional array
         flat_obs = np.concatenate([downsampled_scan, ego_state])
         return flat_obs.astype(np.float32)
+
+
+# Create the environment after defining the wrapper.
+base_env = gym.make('f110_gym:f110-v0', map="example_track_map", num_agents=1)
+env = F1TenthSB3Wrapper(base_env)
+
+model = PPO("MlpPolicy", env)
+model.learn(total_timesteps=10000)
