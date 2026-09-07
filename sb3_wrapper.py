@@ -1,5 +1,16 @@
+from __future__ import annotations
+
+import os
+
 import gymnasium as gym
 import numpy as np
+from stable_baselines3.common.vec_env import VecEnv, VecNormalize
+
+# Filename used for the running observation statistics that accompany a saved
+# model. Evaluation must load these, because a policy trained on normalised
+# observations sees garbage if handed raw ones.
+VECNORMALIZE_FILENAME = "vecnormalize.pkl"
+
 
 class F1TenthSB3Wrapper(gym.Wrapper):
     """
@@ -63,3 +74,62 @@ class F1TenthSB3Wrapper(gym.Wrapper):
         # Concatenate LiDAR and vehicle state into a single 113-dim array
         flat_obs = np.concatenate([downsampled_scan, ego_state])
         return flat_obs.astype(np.float32)
+
+
+# --------------------------------------------------------------------------
+# Observation normalisation
+# --------------------------------------------------------------------------
+# The 113-d observation mixes LiDAR ranges (0-30 m), body velocities (-5 to
+# 20 m/s) and a heading in radians. Those scales differ by an order of
+# magnitude, which hurts PPO and SAC differently and would contaminate the
+# algorithm comparison. Normalising observations identically for both puts
+# them on equal footing.
+#
+# Rewards are deliberately left unnormalised: the reward is the dependent
+# variable of the study, and VecNormalize's running return scaling would make
+# the numbers incomparable across cells.
+
+
+def wrap_vecnormalize(vec_env: VecEnv, training: bool = True) -> VecNormalize:
+    """Apply observation-only normalisation. Used identically for PPO and SAC."""
+    return VecNormalize(
+        vec_env,
+        norm_obs=True,
+        norm_reward=False,
+        training=training,
+    )
+
+
+def vecnormalize_path(save_dir: str) -> str:
+    """Canonical location of the statistics file for a run directory."""
+    return os.path.join(save_dir, VECNORMALIZE_FILENAME)
+
+
+def save_vecnormalize(vec_env, save_dir: str) -> str | None:
+    """Save running observation statistics next to the model.
+
+    Returns the path written, or None if the env is not normalised.
+    """
+    if not isinstance(vec_env, VecNormalize):
+        return None
+    os.makedirs(save_dir, exist_ok=True)
+    path = vecnormalize_path(save_dir)
+    vec_env.save(path)
+    return path
+
+
+def load_vecnormalize(vec_env: VecEnv, path: str) -> VecNormalize:
+    """Restore saved statistics onto ``vec_env`` for evaluation.
+
+    Freezes the statistics and disables reward normalisation so that evaluation
+    measures the policy, not a moving normaliser.
+    """
+    if not os.path.exists(path):
+        raise FileNotFoundError(
+            f"No normalisation statistics at {path}. The policy was trained on "
+            "normalised observations and cannot be evaluated without them."
+        )
+    normalised = VecNormalize.load(path, vec_env)
+    normalised.training = False
+    normalised.norm_reward = False
+    return normalised
