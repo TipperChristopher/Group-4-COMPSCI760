@@ -30,6 +30,17 @@ Test the frozen policy against held-out F1 circuits (e.g., Monza, Silverstone) t
 Bash
 python evaluate.py
 
+If issues running the code:
+Install the Missing Dependency
+Install the exact version pinned in your experimental design:
+
+PowerShell
+py -m pip install gymnasium==0.29.1
+If other Stable-Baselines3 packages are not yet installed in that specific environment, install them alongside:
+
+PowerShell
+py -m pip install stable-baselines3==2.9.0 shimmy
+
 If issues when updating the F1Tenth code: 
 Check your status:
 
@@ -49,3 +60,4 @@ Push to GitHub:
 
 PowerShell
 git push -u origin main
+
