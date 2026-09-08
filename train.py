@@ -211,7 +211,7 @@ def main():
 
     # Instantiate the selected algorithm
     if args.algo == "PPO":
-        model = PPO("MlpPolicy", vec_env, verbose=1, seed=args.seed)
+        model = PPO("MlpPolicy", vec_env, verbose=1, seed=args.seed, device="cpu")
     else:
         model = SAC("MlpPolicy", vec_env, verbose=1, seed=args.seed)
 
