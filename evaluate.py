@@ -59,6 +59,40 @@ _track_pool_module = _load_local_module(
 )
 TrackPoolWrapper = _track_pool_module.TrackPoolWrapper
 
+_baselines_module = _load_local_module(
+    "baselines", os.path.join("src", "baselines.py")
+)
+make_baseline = _baselines_module.make_baseline
+BASELINES = _baselines_module.BASELINES
+
+
+def _warn_on_action_space_mismatch(model):
+    """Catch models trained before the action space was normalised.
+
+    SB3's `load` without an env does not check spaces, so a policy trained on
+    the old raw ranges (steering +-0.4189, speed up to 20) loads silently and
+    then emits numbers the current wrapper reads as [-1, 1]. Its speed output
+    clips to full throttle and its steering authority collapses, so it looks
+    like a catastrophically bad driver rather than an incompatible one.
+    """
+    expected_low, expected_high = -1.0, 1.0
+    try:
+        low = float(np.min(model.action_space.low))
+        high = float(np.max(model.action_space.high))
+    except Exception:
+        return
+    if abs(low - expected_low) > 1e-6 or abs(high - expected_high) > 1e-6:
+        print(
+            "\n" + "!" * 62 + "\n"
+            "WARNING: this model's action space is "
+            f"[{low}, {high}], not [-1, 1].\n"
+            "It was trained before the action space was normalised, so its\n"
+            "outputs are being reinterpreted by the current wrapper: speed\n"
+            "clips to full throttle and steering authority is reduced.\n"
+            "The results below are meaningless. Retrain with the current code.\n"
+            + "!" * 62 + "\n"
+        )
+
 
 def find_run_dir(args):
     """Locate the run directory holding final_model.zip."""
@@ -265,6 +299,12 @@ def main():
         description="Zero-shot evaluation on real F1 circuits."
     )
     parser.add_argument("--algo", type=str, choices=sorted(ALGOS))
+    parser.add_argument("--baseline", type=str, choices=sorted(BASELINES),
+                        help="Evaluate a non-learned reference policy instead of "
+                             "a trained model, through the identical harness: "
+                             "'random' for the floor, 'gap' for a classical "
+                             "follow-the-gap rule. No model or statistics are "
+                             "loaded.")
     parser.add_argument("--diversity", type=int)
     parser.add_argument("--seed", type=int, help="Run seed used during training.")
     parser.add_argument("--model-path", type=str,
@@ -292,32 +332,46 @@ def main():
     parser.add_argument("--no-plot", action="store_true")
     args = parser.parse_args()
 
-    run_dir = find_run_dir(args)
-    args.algo = infer_algo(run_dir, args.algo)
-
-    model_file = os.path.join(run_dir, "final_model.zip")
-    if args.model_path and os.path.isfile(os.path.abspath(args.model_path)):
-        model_file = os.path.abspath(args.model_path)
-    if not os.path.exists(model_file):
-        raise SystemExit(f"No model at {model_file}")
-
-    # Observation normalisation: the presence of this file records which regime
-    # the policy was trained in, so detection is safer than a flag.
-    stats_path = vecnormalize_path(run_dir)
-    if os.path.exists(stats_path):
-        print(f"Loading normalisation statistics from {stats_path}")
-    else:
+    if args.baseline:
+        # Reference policies run through the identical harness: same circuits,
+        # same episode caps, same metrics, same CSV. They skip VecNormalize
+        # because a gap-follower needs LiDAR in metres, not standardised units.
+        # Normalisation is part of a learned policy's own pipeline, not part of
+        # the evaluation protocol, so omitting it keeps the comparison fair.
+        model = make_baseline(args.baseline, seed=args.eval_seed)
         stats_path = None
-        print(
-            "\n"
-            "WARNING: no vecnormalize.pkl in this run directory.\n"
-            "Evaluating on raw observations. This is correct only for models\n"
-            "trained before observation normalisation was added. If this model\n"
-            "was trained with the current train.py, the results are invalid.\n"
-        )
+        args.algo = args.baseline
+        run_dir = os.path.join(_PROJECT_ROOT, "results", f"baseline_{args.baseline}")
+        os.makedirs(run_dir, exist_ok=True)
+        print(f"Baseline policy: {args.baseline} (no model, no normalisation)")
+    else:
+        run_dir = find_run_dir(args)
+        args.algo = infer_algo(run_dir, args.algo)
 
-    print(f"Loading {args.algo} from {model_file}")
-    model = ALGOS[args.algo].load(model_file)
+        model_file = os.path.join(run_dir, "final_model.zip")
+        if args.model_path and os.path.isfile(os.path.abspath(args.model_path)):
+            model_file = os.path.abspath(args.model_path)
+        if not os.path.exists(model_file):
+            raise SystemExit(f"No model at {model_file}")
+
+        # Observation normalisation: the presence of this file records which
+        # regime the policy was trained in, so detection is safer than a flag.
+        stats_path = vecnormalize_path(run_dir)
+        if os.path.exists(stats_path):
+            print(f"Loading normalisation statistics from {stats_path}")
+        else:
+            stats_path = None
+            print(
+                "\n"
+                "WARNING: no vecnormalize.pkl in this run directory.\n"
+                "Evaluating on raw observations. This is correct only for models\n"
+                "trained before observation normalisation was added. If this model\n"
+                "was trained with the current train.py, the results are invalid.\n"
+            )
+
+        print(f"Loading {args.algo} from {model_file}")
+        model = ALGOS[args.algo].load(model_file)
+        _warn_on_action_space_mismatch(model)
 
     results = {}
     for track in args.tracks:
