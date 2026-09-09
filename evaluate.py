@@ -60,25 +60,6 @@ _track_pool_module = _load_local_module(
 TrackPoolWrapper = _track_pool_module.TrackPoolWrapper
 
 
-class CollisionRecorder(gym.Wrapper):
-    """Copy the simulator's collision flag into info at episode end.
-
-    Read inside the env's own step, before any vectorised auto-reset clears it.
-    An episode can end either by crashing or by completing the lap count, and
-    distinguishing the two is the point of the evaluation.
-    """
-
-    def step(self, action):
-        obs, reward, terminated, truncated, info = self.env.step(action)
-        if terminated or truncated:
-            info = dict(info) if info else {}
-            try:
-                info["collision"] = bool(self.env.unwrapped.collisions[0])
-            except Exception:
-                info["collision"] = None
-        return obs, reward, terminated, truncated, info
-
-
 def find_run_dir(args):
     """Locate the run directory holding final_model.zip."""
     if args.model_path:
@@ -117,7 +98,7 @@ def infer_algo(run_dir, requested):
     )
 
 
-def build_env(track_name, render, track_seed):
+def build_env(track_name, render, track_seed, max_episode_steps):
     """Recreate the training environment stack for a single circuit."""
 
     def _init():
@@ -126,8 +107,9 @@ def build_env(track_name, render, track_seed):
             config={"num_agents": 1, "timestep": 0.01, "map": track_name},
             render_mode="human" if render else None,
         )
-        env = F1TenthSB3Wrapper(env)
-        env = CollisionRecorder(env)
+        # The wrapper supplies the step limit, the collision flag and the
+        # lap/progress counters used below.
+        env = F1TenthSB3Wrapper(env, max_episode_steps=max_episode_steps)
         # A one-track pool. Reused from training so the map and the spawn
         # sampler are guaranteed consistent on every reset.
         env = TrackPoolWrapper(env, tracks=[track_name], track_seed=track_seed)
@@ -138,18 +120,31 @@ def build_env(track_name, render, track_seed):
 
 
 def run_episode(venv, model, max_steps, deterministic, render):
-    """Roll out one episode and return its statistics."""
+    """Roll out one episode and return its statistics.
+
+    The primary quantity is laps completed, not return. Return ranks a crawler
+    above a fast driver who crashes, because the old reward paid for elapsed
+    time; laps measure what the study actually asks about.
+    """
     obs = venv.reset()
     total_reward = 0.0
     steps = 0
     outcome = "step_cap"
     collision = None
+    laps = 0.0
+    progress_m = 0.0
 
     while steps < max_steps:
         action, _ = model.predict(obs, deterministic=deterministic)
         obs, rewards, dones, infos = venv.step(action)
         total_reward += float(rewards[0])
         steps += 1
+
+        # Read every step, so the counters are correct whether the episode ends
+        # by crashing, by truncation, or by the loop hitting max_steps.
+        info = infos[0]
+        laps = float(info.get("laps", laps))
+        progress_m = float(info.get("progress_m", progress_m))
 
         if render:
             try:
@@ -158,12 +153,11 @@ def run_episode(venv, model, max_steps, deterministic, render):
                 pass
 
         if dones[0]:
-            info = infos[0]
             collision = info.get("collision")
             if collision:
                 outcome = "crash"
             elif info.get("TimeLimit.truncated"):
-                outcome = "truncated"
+                outcome = "timeout"
             else:
                 outcome = "finished"
             break
@@ -173,13 +167,18 @@ def run_episode(venv, model, max_steps, deterministic, render):
         "length": steps,
         "outcome": outcome,
         "collision": collision,
+        "laps": laps,
+        "progress_m": progress_m,
+        "completed_lap": laps >= 1.0,
     }
 
 
 def evaluate_track(track, model, args, stats_path):
     """Run every episode for one circuit."""
     print(f"\n--- {track} ---")
-    venv = DummyVecEnv([build_env(track, args.render, args.eval_seed)])
+    venv = DummyVecEnv([
+        build_env(track, args.render, args.eval_seed, args.max_steps)
+    ])
 
     if stats_path:
         venv = load_vecnormalize(venv, stats_path)
@@ -196,8 +195,10 @@ def evaluate_track(track, model, args, stats_path):
         result["seed"] = seed
         episodes.append(result)
         print(
-            f"  episode {i}: return={result['return']:>10,.2f}  "
-            f"steps={result['length']:>6,}  outcome={result['outcome']}"
+            f"  episode {i}: laps={result['laps']:>6.2f}  "
+            f"dist={result['progress_m']:>8.1f} m  "
+            f"steps={result['length']:>6,}  outcome={result['outcome']:<8} "
+            f"(return {result['return']:,.2f})"
         )
 
     venv.close()
@@ -210,12 +211,15 @@ def write_csv(path, algo, diversity, seed, results):
         writer = csv.writer(f)
         writer.writerow([
             "algo", "diversity", "run_seed", "track", "episode", "eval_seed",
-            "return", "length", "outcome", "collision",
+            "laps", "completed_lap", "progress_m", "return", "length",
+            "outcome", "collision",
         ])
         for track, episodes in results.items():
             for ep in episodes:
                 writer.writerow([
                     algo, diversity, seed, track, ep["episode"], ep["seed"],
+                    f"{ep['laps']:.4f}", int(ep["completed_lap"]),
+                    f"{ep['progress_m']:.3f}",
                     f"{ep['return']:.4f}", ep["length"], ep["outcome"],
                     "" if ep["collision"] is None else int(ep["collision"]),
                 ])
@@ -223,9 +227,10 @@ def write_csv(path, algo, diversity, seed, results):
 
 
 def make_plot(results, algo, diversity, out_path):
+    """Plot laps completed. Return is deliberately not the headline number."""
     tracks = list(results)
-    means = [float(np.mean([e["return"] for e in results[t]])) for t in tracks]
-    stds = [float(np.std([e["return"] for e in results[t]])) for t in tracks]
+    means = [float(np.mean([e["laps"] for e in results[t]])) for t in tracks]
+    stds = [float(np.std([e["laps"] for e in results[t]])) for t in tracks]
 
     # Every real circuit is unseen: training used synthetic tracks only.
     labels = [f"{t}\n(unseen)" for t in tracks]
@@ -233,17 +238,20 @@ def make_plot(results, algo, diversity, out_path):
     plt.figure(figsize=(9, 6))
     bars = plt.bar(labels, means, yerr=stds if any(stds) else None,
                    capsize=6, color="#4c72b0", edgecolor="black")
+    plt.axhline(1.0, color="#d62728", linestyle="--", linewidth=1.5,
+                label="one full lap")
+    plt.legend(loc="upper right")
 
     pool = f"{diversity} synthetic track{'s' if diversity != 1 else ''}"
     plt.title(f"{algo} Zero-Shot Transfer ({pool})",
               fontsize=15, fontweight="bold", pad=15)
-    plt.ylabel("Episodic Return", fontsize=12, fontweight="bold")
+    plt.ylabel("Laps Completed", fontsize=12, fontweight="bold")
     plt.grid(axis="y", linestyle="--", alpha=0.7)
 
-    span = max(means) - min(min(means), 0) or 1.0
+    span = max(max(means), 1.0) or 1.0
     for bar, mean in zip(bars, means):
         plt.text(bar.get_x() + bar.get_width() / 2, bar.get_height() + span * 0.02,
-                 f"{mean:,.1f}", ha="center", va="bottom",
+                 f"{mean:.2f}", ha="center", va="bottom",
                  fontsize=11, fontweight="bold")
 
     plt.tight_layout()
@@ -269,8 +277,13 @@ def main():
                              "come from multiple training seeds, not from repeated "
                              "evaluation. Raise this only with --stochastic.")
     parser.add_argument("--eval-seed", type=int, default=0)
-    parser.add_argument("--max-steps", type=int, default=10000,
-                        help="Per-episode cap. The env does not always terminate.")
+    parser.add_argument("--max-steps", type=int, default=15000,
+                        help="Per-episode cap, also passed to the wrapper as its "
+                             "truncation limit. Real circuits are long: "
+                             "Silverstone is 458 m, needing about 9,200 steps for "
+                             "one lap at 5 m/s, so a small cap would make the lap "
+                             "completion metric read zero for reasons unrelated "
+                             "to the policy.")
     parser.add_argument("--stochastic", action="store_true",
                         help="Sample from the policy instead of acting greedily.")
     parser.add_argument("--render", action="store_true")
@@ -314,12 +327,29 @@ def main():
     print(f"ZERO-SHOT RESULTS  ({args.algo}, {run_dir})")
     print("=" * 62)
     width = max([len(t) for t in results] + [len("circuit")])
-    print(f"  {'circuit':<{width}} {'mean return':>14} {'std':>10} {'crashes':>9}")
+    print("  PRIMARY METRIC: lap completion. Return is secondary and is shown")
+    print("  only for continuity; it rewards elapsed time as much as speed.")
+    print()
+    print(f"  {'circuit':<{width}} {'lap rate':>9} {'mean laps':>10} "
+          f"{'dist (m)':>10} {'crashes':>9} {'return':>12}")
+    all_laps, all_completed = [], []
     for track, episodes in results.items():
-        returns = [e["return"] for e in episodes]
+        laps = [e["laps"] for e in episodes]
+        completed = [e["completed_lap"] for e in episodes]
         crashes = sum(1 for e in episodes if e["outcome"] == "crash")
-        print(f"  {track:<{width}} {np.mean(returns):>14,.2f} {np.std(returns):>10,.2f} "
-              f"{crashes:>6}/{len(episodes)}")
+        all_laps += laps
+        all_completed += completed
+        print(f"  {track:<{width}} "
+              f"{f'{sum(completed)}/{len(completed)}':>9} "
+              f"{np.mean(laps):>10.2f} "
+              f"{np.mean([e['progress_m'] for e in episodes]):>10.1f} "
+              f"{crashes:>6}/{len(episodes)} "
+              f"{np.mean([e['return'] for e in episodes]):>12,.2f}")
+    print("-" * 62)
+    rate = 100.0 * sum(all_completed) / len(all_completed) if all_completed else 0.0
+    print(f"  OVERALL lap completion rate : {rate:.1f}% "
+          f"({sum(all_completed)}/{len(all_completed)} episodes)")
+    print(f"  OVERALL mean laps completed : {np.mean(all_laps):.3f}")
     print("=" * 62)
     print("All circuits are unseen. Training used synthetic tracks only.")
 
