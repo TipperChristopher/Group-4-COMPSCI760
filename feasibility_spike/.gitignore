@@ -1,0 +1,12 @@
+# Never commit heavy / generated artifacts from the spike
+venv/
+.venv/
+__pycache__/
+*.pyc
+*.zip
+*.pkl
+maps/
+f1tenth_gym/
+f1tenth_gym_v1/
+runs/
+*.mp4
