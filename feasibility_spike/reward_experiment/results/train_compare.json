@@ -1,0 +1,19 @@
+{
+  "steps": 100000,
+  "results": {
+    "OLD reward": {
+      "mean_speed": 2.7588838668661597,
+      "max_speed": 4.174975395202637,
+      "progress_m": 0.09999999638267454,
+      "laps": 0.0005289801016974209,
+      "outcome": "reset"
+    },
+    "NEW reward": {
+      "mean_speed": 9.13191023514922,
+      "max_speed": 14.901769638061523,
+      "progress_m": 0.09999999638267454,
+      "laps": 0.0005289801016974209,
+      "outcome": "reset"
+    }
+  }
+}
