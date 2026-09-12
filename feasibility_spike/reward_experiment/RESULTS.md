@@ -47,6 +47,40 @@ Train PPO under each reward, then measure the learned policy's behaviour.
   the "circling exploit" residual Desmond flagged). Watch for it when evaluating longer runs on wide
   real circuits.
 
+## Experiment 3 — completion rate & lap time (`train_eval_completion.py`, 1M steps each)
+
+Train PPO under each reward on synthetic_track_0 (1,000,000 steps), then evaluate on
+synthetic_track_0 (trained) + _1/_2 (unseen) with a 15000-step cap. Completion = did
+cumulative laps reach 1.0; lap_time = sim seconds to the first completed lap.
+
+| reward | track | laps | mean m/s | completed | lap time |
+|---|---|---|---|---|---|
+| NEW | synthetic_track_0 (trained) | 0.187 | 10.99 | no | n/a |
+| NEW | synthetic_track_1 (unseen)  | 0.035 | 10.12 | no | n/a |
+| NEW | synthetic_track_2 (unseen)  | 0.057 | 10.57 | no | n/a |
+| OLD | synthetic_track_0 (trained) | 0.187 |  9.23 | no | n/a |
+| OLD | synthetic_track_1 (unseen)  | 0.002 |  6.40 | no | n/a |
+| OLD | synthetic_track_2 (unseen)  | 0.001 |  6.49 | no | n/a |
+
+**COMPLETION RATE: 0% for BOTH (0/3). LAP TIME: n/a (nothing finished a lap).**
+
+Read-out:
+- Both policies die at the **same first hard corner** on the trained track (both reach
+  exactly 0.187 laps); NEW just reaches it faster (506 steps @ 11 m/s vs 745 @ 9 m/s).
+  The reward fix makes the car *drive*; it has not yet learned to *corner*.
+- NEW **generalises better on unseen tracks** (0.035-0.057 laps vs OLD's ~0.001) - the
+  old policy barely moves off its training track.
+
+**CAVEAT (important):** this harness omits observation normalisation (VecNormalize) that
+the team's real `train.py` uses. Desmond's real pipeline reached **0.37 laps at 200k** -
+better than this harness's 0.187 at 1M - so obs normalisation materially helps and these
+completion numbers **understate** the fixed reward's real capability. This harness fairly
+answers "does it drive fast?" (yes, 3.3x) but is under-powered for "does it complete laps?".
+For a true completion rate / lap time, run the team's actual `train.py` (with VecNormalize)
+at a real budget on Desmond's branch. (Also: eval labels crashes as "reset" because
+DummyVecEnv auto-resets and clears the collision flag before it is read; outcomes here are
+crashes.)
+
 ## Reproduce
 
 ```bash

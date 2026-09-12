@@ -1,0 +1,34 @@
+{
+  "reward": "new",
+  "steps": 1000000,
+  "completion_rate": 0.0,
+  "tracks": [
+    {
+      "track": "synthetic_track_0",
+      "completed": false,
+      "lap_time_s": null,
+      "laps": 0.1868458999177448,
+      "mean_speed": 10.987908819123454,
+      "steps": 506,
+      "outcome": "reset"
+    },
+    {
+      "track": "synthetic_track_1",
+      "completed": false,
+      "lap_time_s": null,
+      "laps": 0.034684322693820595,
+      "mean_speed": 10.117317089247399,
+      "steps": 390,
+      "outcome": "reset"
+    },
+    {
+      "track": "synthetic_track_2",
+      "completed": false,
+      "lap_time_s": null,
+      "laps": 0.05712772316045514,
+      "mean_speed": 10.573808903027983,
+      "steps": 425,
+      "outcome": "reset"
+    }
+  ]
+}
