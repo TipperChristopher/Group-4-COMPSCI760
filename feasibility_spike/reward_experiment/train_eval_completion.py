@@ -69,19 +69,22 @@ def eval_track(model, WrapperCls, new_style, track):
     speeds, lap_step, outcome = [], None, "step_cap"
     for step in range(1, EVAL_CAP + 1):
         action, _ = model.predict(obs, deterministic=True)
-        obs, _r, dones, _info = venv.step(action)
+        obs, _r, dones, infos = venv.step(action)
         speeds.append(abs(float(obs[0][SPEED_IDX])))
         tp.update(float(core.poses_x[0]), float(core.poses_y[0]))
         if lap_step is None and tp.laps >= 1.0:
             lap_step = step
         if dones[0]:
-            outcome = "crash" if bool(np.asarray(core.collisions).reshape(-1)[0]) else "reset"
+            # read the collision flag from the STEP info (before auto-reset clears it)
+            col = infos[0].get("collision") if isinstance(infos[0], dict) else None
+            outcome = "crash" if col else "timeout"
             break
     venv.close()
     completed = lap_step is not None
     return dict(track=track, completed=completed,
                 lap_time_s=(lap_step * TIMESTEP if completed else None),
                 laps=float(tp.laps), mean_speed=float(np.mean(speeds)),
+                max_speed=float(np.max(speeds)),
                 steps=len(speeds), outcome=outcome)
 
 
@@ -89,15 +92,21 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--reward", choices=["old", "new"], required=True)
     ap.add_argument("--steps", type=int, default=1_000_000)
+    ap.add_argument("--crash-penalty", type=float, default=None,
+                    help="Override the NEW reward's CRASH_PENALTY (reward-design sweep). "
+                         "Reward-only knob; steps and PPO hyperparams stay fixed.")
     args = ap.parse_args()
 
     if args.reward == "new":
         W = load("new_reward_wrapper", "new_reward_wrapper.py"); new_style = True
+        if args.crash_penalty is not None:
+            W.CRASH_PENALTY = args.crash_penalty   # module global read inside step()
     else:
         W = load("old_reward_wrapper", "old_reward_wrapper.py"); new_style = False
     WrapperCls = W.F1TenthSB3Wrapper
 
-    print(f"=== PPO under {args.reward.upper()} reward, {args.steps:,} steps on {TRAIN_TRACK} ===")
+    cp = getattr(W, "CRASH_PENALTY", None)
+    print(f"=== PPO under {args.reward.upper()} reward (crash_penalty={cp}), {args.steps:,} steps on {TRAIN_TRACK} ===")
     venv = DummyVecEnv([make_env(WrapperCls, new_style, TRAIN_TRACK)])
     model = PPO("MlpPolicy", venv, verbose=0, device="cpu", seed=0)
     model.learn(total_timesteps=args.steps)
@@ -107,20 +116,22 @@ def main():
     completion_rate = float(np.mean([r["completed"] for r in rows]))
     times = [r["lap_time_s"] for r in rows if r["completed"]]
 
-    print(f"\n{'track':>20} {'completed':>10} {'lap_time_s':>11} {'laps':>7} {'mean m/s':>9} {'outcome':>8}")
+    print(f"\n{'track':>20} {'completed':>10} {'lap_time_s':>11} {'laps':>7} {'mean m/s':>9} {'max m/s':>8} {'outcome':>8}")
     for r in rows:
         lt = f"{r['lap_time_s']:.2f}" if r["completed"] else "-"
         print(f"{r['track']:>20} {str(r['completed']):>10} {lt:>11} "
-              f"{r['laps']:>7.3f} {r['mean_speed']:>9.2f} {r['outcome']:>8}")
+              f"{r['laps']:>7.3f} {r['mean_speed']:>9.2f} {r['max_speed']:>8.2f} {r['outcome']:>8}")
     print(f"\nCOMPLETION RATE ({args.reward}) : {completion_rate*100:.0f}%  ({sum(r['completed'] for r in rows)}/3 tracks)")
     if times:
         print(f"MEAN LAP TIME             : {np.mean(times):.2f} s")
     else:
         print("MEAN LAP TIME             : n/a (no lap completed)")
 
-    out = HERE / "results" / f"completion_{args.reward}_{args.steps}.json"
+    tag = args.reward + (f"_cp{int(cp)}" if (args.reward == "new" and cp is not None) else "")
+    out = HERE / "results" / f"completion_{tag}_{args.steps}.json"
     out.parent.mkdir(exist_ok=True)
     out.write_text(json.dumps({"reward": args.reward, "steps": args.steps,
+                               "crash_penalty": cp,
                                "completion_rate": completion_rate, "tracks": rows}, indent=2))
     print(f"saved {out}")
 
