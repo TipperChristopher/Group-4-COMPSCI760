@@ -81,6 +81,53 @@ at a real budget on Desmond's branch. (Also: eval labels crashes as "reset" beca
 DummyVecEnv auto-resets and clears the collision flag before it is read; outcomes here are
 crashes.)
 
+## Experiment 4 — crash-penalty sweep (does a bigger penalty teach cornering?)
+
+**Motivation.** With the default penalty (5), reaching the first corner banks ~33 progress
+(0.187 laps x ~179 m) while crashing costs only 5, so "drive fast, crash" nets +28 -
+*crashing pays*. Hypothesis (Desmond Li): a bigger crash penalty forces the agent to slow
+down and corner. **Test:** vary ONLY the crash penalty (a reward-design knob), everything
+else fixed - 1,000,000 steps, PPO defaults, NEW reward, train on synthetic_track_0, eval on
+0/1/2. **n = 1 seed per cell** (point estimates, not a trend claim).
+
+| crash penalty | track_0 laps (mean m/s) | track_1 | track_2 | dominant behaviour | completion |
+|---|---|---|---|---|---|
+| **5** (default) | 0.187 (10.99) crash | 0.035 (10.1) | 0.057 (10.6) | drive fast -> crash at 1st corner | 0% |
+| **40** | 0.001 (0.12) froze | 0.197 (0.42) crept | **0.844 (3.49) crash** | erratic, near-threshold | 0% |
+| **120** | 0.001 (0.04) | 0.001 (0.04) | -0.001 (0.04) | **freeze at start** | 0% |
+| **400** | 0.001 (0.01) | 0.001 (0.01) | -0.001 (0.01) | **freeze at start** | 0% |
+
+**Read-out - tuning the penalty only SHIFTS the failure mode; it never completes a lap:**
+- **Below** the progress-to-corner scale (5 << ~33): crashing is net-positive, so it
+  crash-farms the straight and dies at the first corner.
+- **Around** it (40 ~ 33): borderline/erratic - froze on one track, crept on another, but
+  reached **0.844 laps** on a third (the best progress of ANY run here). Right at the tipping point.
+- **Above** it (120, 400 >> 33): standing still (reward 0) beats driving (net-negative), so the
+  policy **collapses to not moving** (mean 0.01-0.04 m/s).
+- **Completion rate stays 0% at every penalty.**
+
+**Mechanism.** NEW reward = progress - penalty(on crash). If the agent can bank P metres
+before crashing, "drive & crash" = P - penalty vs "stand still" = 0. Penalty 5: P(~33) > 5 ->
+drive. Penalty >= ~40: P < penalty on most tracks -> freezing is safer. The per-track spread in
+reachable-P is exactly why penalty 40 is erratic (froze where P was small, nearly lapped where
+P was large). **A flat penalty can't be right for every track/training-stage - that fragility
+is the finding.**
+
+**Conclusion (answers the hypothesis).** A bigger crash penalty does NOT teach cornering. It
+trades one failure (crash-farming) for another (paralysis), with a narrow, fragile sweet spot
+near the progress-per-corner scale where it occasionally near-laps but still completes 0/3.
+The penalty fixes the *incentive*; it cannot supply the *skill*.
+
+**Caveats:** n=1 seed per cell (the sweet spot and the 0.844 are single-seed, not firm -
+need >=3 seeds to claim). Harness omits VecNormalize, so absolute completion is understated.
+`laps` can read slightly negative near the start (TrackProgress sign artifact; harmless).
+
+**Recommendation:** keep the crash penalty **moderate** - clearly above the crash-farming
+regime but well below paralysis (order of one straight's progress, ~20-40 here) - and **freeze
+one value for both PPO and SAC**. Do NOT rely on the penalty for lap completion; the real levers
+are more training + exploration, observation normalisation (VecNormalize), curriculum, and the
+diversity sweep itself.
+
 ## Reproduce
 
 ```bash

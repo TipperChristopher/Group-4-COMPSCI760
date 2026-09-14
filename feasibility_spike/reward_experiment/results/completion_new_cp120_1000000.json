@@ -1,0 +1,38 @@
+{
+  "reward": "new",
+  "steps": 1000000,
+  "crash_penalty": 120.0,
+  "completion_rate": 0.0,
+  "tracks": [
+    {
+      "track": "synthetic_track_0",
+      "completed": false,
+      "lap_time_s": null,
+      "laps": 0.000528979840717321,
+      "mean_speed": 0.035868740278129814,
+      "max_speed": 1.5304135084152222,
+      "steps": 15000,
+      "outcome": "timeout"
+    },
+    {
+      "track": "synthetic_track_1",
+      "completed": false,
+      "lap_time_s": null,
+      "laps": 0.0013145552271727411,
+      "mean_speed": 0.04192702402174286,
+      "max_speed": 0.9128225445747375,
+      "steps": 15000,
+      "outcome": "timeout"
+    },
+    {
+      "track": "synthetic_track_2",
+      "completed": false,
+      "lap_time_s": null,
+      "laps": -0.001129169253849522,
+      "mean_speed": 0.03976053501948181,
+      "max_speed": 0.8131675720214844,
+      "steps": 15000,
+      "outcome": "timeout"
+    }
+  ]
+}
