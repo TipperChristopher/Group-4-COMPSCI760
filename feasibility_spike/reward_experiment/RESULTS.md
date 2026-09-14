@@ -128,6 +128,47 @@ one value for both PPO and SAC**. Do NOT rely on the penalty for lap completion;
 are more training + exploration, observation normalisation (VecNormalize), curriculum, and the
 diversity sweep itself.
 
+## Experiment 5 — learning curve + crash diagnostics (`learning_curve.py`, penalty 40, 1M steps)
+
+Train 1M steps on synthetic_track_0 in 10 segments, deterministic eval between segments
+(learning curve), then a final rollout logging per-step speed, progress and centreline
+curvature (crash diagnostics).
+
+**Learning curve — laps reached at each checkpoint:**
+
+| steps | 100k | 200k | 300k | 400k | 500k | 600k | 700k | 800k | 900k | 1M |
+|---|---|---|---|---|---|---|---|---|---|---|
+| laps | 0.100 | 0.108 | 0.108 | **0.353** | 0.273 | 0.274 | 0.333 | 0.278 | 0.350 | 0.352 |
+| speed @ crash | 13.7 | 12.5 | 10.0 | 9.1 | 14.1 | 17.3 | 11.9 | 15.1 | 11.2 | 9.7 |
+| crashed at every checkpoint | yes | yes | yes | yes | yes | yes | yes | yes | yes | yes |
+
+- **Learning does happen, then flatlines:** 0.10 → 0.35 laps (18.9 → 66.7 m) by 400k — it
+  learns to clear the first corners — then **hard plateau 0.27–0.35 for the remaining 600k
+  steps**, never completing a lap. This is exactly the "online RL plateaus in F1TENTH"
+  behaviour the literature warns about, reproduced on demand.
+
+**Why it crashes (final policy: 66.7 m, 0.353 laps, crashed):**
+- Impact at ~**9.65 m/s** on a **gentle** section (k = 0.040 vs track mean 0.102, p90 0.441).
+- ~3 m earlier it took a sharp corner (k ≈ 0.53) at 8.71 m/s — and earlier the **sharpest**
+  corner on the track (k = 0.544) at 8.01 m/s. So it *does* brake for corners, but runs wide
+  on an exit and clips the wall on the following gentle bit.
+- **Its speed modulation is tiny:** mean speed in the sharpest 10% of corners **8.78 m/s** vs
+  on straights (bottom 50%) **9.14 m/s** — ratio **0.96**. It lifts off ~4% for corners; it has
+  *not* learned a real braking profile. It drives a near-constant ~9–10 m/s and corners
+  marginally, at the grip limit.
+
+**Answer to "why did that one crash?":** not a single impossible corner. It drives roughly
+constant speed, brakes only ~4% for corners, and dies on the corner where that tiny reduction
+isn't enough — running wide and hitting the wall just after the exit. The bottleneck is
+**braking modulation / control precision**, not corner geometry.
+
+Caveats: n = 1 seed. The earlier 0.844-lap result came from a *different* training trajectory
+(a single `learn()` call; here evals between segments consume RNG, so nominally identical runs
+diverge — plus the policy is high-variance). Harness has no VecNormalize (the team's `train.py`
+does). Curvature-at-crash is measured at the car's nearest centreline projection and is
+approximate when the car is off-line. Anticipation correlations are not reported as evidence
+(they are confounded by the track's closed-loop periodicity).
+
 ## Reproduce
 
 ```bash
