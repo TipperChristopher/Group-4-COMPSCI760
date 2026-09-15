@@ -226,6 +226,45 @@ before ranking any lever — current numbers are point estimates; (3) only then 
 mild entropy (0.01) or curriculum genuinely helps. Prerequisite for the curriculum run:
 `make_synth_tracks.py --n 8` (provides the gentle `synthetic_track_7`).
 
+## Experiment 7 — is the low completion a STEP-BUDGET artifact? (baseline at 3M vs 1M)
+
+Same harness and config as the Exp-5 baseline (penalty 40, no entropy/bonus/curriculum),
+but **3,000,000 steps**, 12 checkpoints every 250k. Direct test of "would more training
+complete a lap / raise the ceiling?"
+
+| metric | value |
+|---|---|
+| laps range over 12 checkpoints | 0.121 – 0.584 (mean 0.310, std 0.162) |
+| best checkpoint | **0.584 laps @ 500,000 steps** (i.e. EARLY) |
+| first-half mean (≤ 1.5M) | 0.354 |
+| second-half mean (> 1.5M) | 0.267 |
+| linear slope | **−0.076 laps per 1M steps** (flat / slightly negative) |
+| final policy | 0.350 laps, crashed at a gentle section (same as 1M) |
+
+**Verdict: No — more steps is not the lever.** Tripling the budget did not raise the
+ceiling. Learning **saturates by ~500k**; the remaining ~2.5M steps just oscillate
+(0.12–0.58) with no upward trend — the second half is if anything *worse* than the first.
+The single best policy of the whole 3M run appeared at 500k, well within the 1M budget.
+So the ~0.3–0.5-lap ceiling is a **stability / capability ceiling, not an under-training
+artifact**. (n = 1, but the total absence of an upward trend over 3M, consistent with the
+1M run going flat after 400k, makes "train longer" an implausible fix.)
+
+**Design implications:**
+- The **fixed step budget is defensible, even generous** — learning saturates early, so 1M
+  is plenty and the budget could even *shrink* to buy more grid cells × seeds. "Just train
+  longer" is ruled out.
+- **Metric choice matters more than budget.** "Lap-completion rate" is a floor-effect metric
+  (0% for every run) that cannot discriminate PPO/SAC or diversity levels; a **graded
+  progress metric (fractional laps reached)** already discriminates and should be the primary
+  measure.
+- **Report the BEST checkpoint, not the final policy.** With unstable training the final
+  policy is a noisy, pessimistic estimator (final 0.350 vs best 0.584). Standard practice:
+  evaluate periodically on a **validation** track, keep the best checkpoint, then measure it
+  on the held-out **test** tracks — applied identically to PPO and SAC. (Needs val ≠ test to
+  avoid selection bias; ties directly into the train/val/test design.)
+- The genuine lever is **training stability**, not steps → test **VecNormalize** next (the one
+  real gap between this harness and the team's `train.py`).
+
 ## Reproduce
 
 ```bash
