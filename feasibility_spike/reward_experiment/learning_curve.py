@@ -1,15 +1,26 @@
-"""Learning curve + crash diagnostics for the NEW (progress) reward.
+"""Learning curve + crash diagnostics for the NEW (progress) reward, with three
+optional *diagnostic* levers (each a one-variable change from the baseline):
+
+  --ent-coef F          PPO entropy bonus (exploration).      [algo hyperparam -> diagnostic only]
+  --completion-bonus F  one-time reward when a full lap done. [reward/task def -> could be kept if frozen]
+  --warmup-track NAME    train the first --warmup-frac of the  [training protocol -> diagnostic only,
+  --warmup-frac F        budget on an easier track, then TARGET. confounds the diversity axis]
 
 Answers two questions the single-shot eval could not:
   (1) Does cornering emerge gradually or suddenly?  -> laps vs training steps.
   (2) Why does it crash where it does?              -> speed vs track position,
       and the centreline curvature at the crash point vs the corners it cleared.
 
-Trains in segments (so we can evaluate between them without saving/loading
-checkpoints), all on synthetic_track_0. Reward knob only: --penalty. Steps and
-PPO hyperparameters stay fixed.
+Trains in segments (so we can evaluate between them). Evaluation during a phase
+uses the SAME track it is training on (the f1tenth scan-simulator is a shared
+class attribute, so eval must not swap the map out from under training); the
+final detailed rollout is always on the TARGET track for apples-to-apples
+crash diagnostics. Reward magnitude knob: --penalty. Steps stay fixed.
 
     python learning_curve.py --penalty 40 --steps 1000000 --segments 10
+    python learning_curve.py --ent-coef 0.01
+    python learning_curve.py --completion-bonus 100
+    python learning_curve.py --warmup-track synthetic_track_7 --warmup-frac 0.5
 """
 import argparse, importlib.util, json, pathlib, sys, types, warnings
 warnings.filterwarnings("ignore")
@@ -28,7 +39,7 @@ TIMESTEP = 0.01
 TRAIN_CAP = 3000       # training-episode truncation (matches the wrapper default)
 EVAL_CAP = 15000       # long enough for a full synthetic lap
 SPEED_IDX = 108
-TRACK = "synthetic_track_0"
+TARGET = "synthetic_track_0"
 
 
 def load(name, fn):
@@ -37,16 +48,35 @@ def load(name, fn):
     spec.loader.exec_module(m); return m
 
 
-def make_env(WrapperCls, track, cap):
+W = load("new_reward_wrapper", "new_reward_wrapper.py")
+
+
+class CompletionBonusWrapper(W.F1TenthSB3Wrapper):
+    """Add a one-time reward the first time a full lap is completed."""
+    def __init__(self, env, max_episode_steps=W.DEFAULT_MAX_EPISODE_STEPS, completion_bonus=0.0):
+        super().__init__(env, max_episode_steps=max_episode_steps)
+        self._bonus = float(completion_bonus); self._awarded = False
+
+    def reset(self, **kwargs):
+        self._awarded = False
+        return super().reset(**kwargs)
+
+    def step(self, action):
+        obs, reward, terminated, truncated, info = super().step(action)
+        if not self._awarded and info.get("laps", 0.0) >= 1.0:
+            reward += self._bonus; self._awarded = True; info["completion_bonus"] = True
+        return obs, reward, terminated, truncated, info
+
+
+def make_env(wrap_fn, track, cap):
     def _init():
         env = gym.make("f1tenth_gym:f1tenth-v0",
                        config={"num_agents": 1, "timestep": TIMESTEP, "map": track})
-        return Monitor(WrapperCls(env, max_episode_steps=cap))
+        return Monitor(wrap_fn(env, cap))
     return _init
 
 
 def curvature_along(tp):
-    """Curvature |k| at each centreline sample, aligned with tp.s (1/m)."""
     p, s = tp.points, tp.s
     dx, dy = np.gradient(p[:, 0], s), np.gradient(p[:, 1], s)
     ddx, ddy = np.gradient(dx, s), np.gradient(dy, s)
@@ -55,9 +85,9 @@ def curvature_along(tp):
     return np.abs(dx * ddy - dy * ddx) / denom
 
 
-def evaluate(model, WrapperCls, track, want_trace=False):
+def evaluate(model, wrap_fn, track, want_trace=False):
     from new_reward_wrapper import TrackProgress
-    venv = DummyVecEnv([make_env(WrapperCls, track, EVAL_CAP)])
+    venv = DummyVecEnv([make_env(wrap_fn, track, EVAL_CAP)])
     core = venv.envs[0].unwrapped
     tp = TrackProgress(); tp.bind(core.track)
     kappa = curvature_along(tp)
@@ -74,7 +104,6 @@ def evaluate(model, WrapperCls, track, want_trace=False):
             break
         tp.update(float(core.poses_x[0]), float(core.poses_y[0]))
         spd = abs(float(obs[0][SPEED_IDX]))
-        # curvature at the current centreline position
         idx = int(np.argmin(np.abs(tp.s - tp._prev_s)))
         trace.append((float(tp._prev_s), float(tp.cumulative_s), spd, float(kappa[idx])))
         last = trace[-1]
@@ -96,36 +125,63 @@ def main():
     ap.add_argument("--penalty", type=float, default=40.0)
     ap.add_argument("--steps", type=int, default=1_000_000)
     ap.add_argument("--segments", type=int, default=10)
+    ap.add_argument("--ent-coef", type=float, default=0.0)
+    ap.add_argument("--completion-bonus", type=float, default=0.0)
+    ap.add_argument("--warmup-track", type=str, default="")
+    ap.add_argument("--warmup-frac", type=float, default=0.5)
     args = ap.parse_args()
 
-    W = load("new_reward_wrapper", "new_reward_wrapper.py")
     W.CRASH_PENALTY = args.penalty
-    WrapperCls = W.F1TenthSB3Wrapper
+    if args.completion_bonus > 0:
+        cb = args.completion_bonus
+        wrap_fn = lambda env, cap: CompletionBonusWrapper(env, max_episode_steps=cap, completion_bonus=cb)
+    else:
+        wrap_fn = lambda env, cap: W.F1TenthSB3Wrapper(env, max_episode_steps=cap)
+
+    tag = ""
+    if args.ent_coef > 0: tag += f"_ent{args.ent_coef}"
+    if args.completion_bonus > 0: tag += f"_bonus{int(args.completion_bonus)}"
+    if args.warmup_track: tag += f"_warmup-{args.warmup_track}"
+
     print(f"=== learning curve: NEW reward, crash_penalty={args.penalty}, "
-          f"{args.steps:,} steps in {args.segments} segments, {TRACK} ===")
+          f"{args.steps:,} steps in {args.segments} segments ===")
+    print(f"    ent_coef={args.ent_coef}  completion_bonus={args.completion_bonus}  "
+          f"warmup={args.warmup_track or 'none'}({args.warmup_frac})  target={TARGET}")
 
-    train_venv = DummyVecEnv([make_env(WrapperCls, TRACK, TRAIN_CAP)])
-    model = PPO("MlpPolicy", train_venv, verbose=0, device="cpu", seed=0)
-
+    # ---- build training phases (curriculum = warmup phase + target phase) ----
     seg = max(1, args.steps // args.segments)
-    curve = []
-    for i in range(args.segments):
-        model.learn(total_timesteps=seg, reset_num_timesteps=(i == 0))
-        done_steps = (i + 1) * seg
-        ev = evaluate(model, WrapperCls, TRACK)
-        curve.append(dict(steps=done_steps, laps=ev["laps"],
-                          max_progress_m=ev["max_progress_m"],
-                          crashed=ev["crashed"],
-                          speed_before_crash=ev["speed_before_crash"]))
-        print(f"  {done_steps:>9,} steps -> laps={ev['laps']:.3f}  "
-              f"progress={ev['max_progress_m']:6.1f} m  "
-              f"speed@crash={ev['speed_before_crash']:5.2f}  crashed={ev['crashed']}")
+    if args.warmup_track:
+        n_warm = max(1, round(args.segments * args.warmup_frac))
+        phases = [(args.warmup_track, n_warm), (TARGET, args.segments - n_warm)]
+    else:
+        phases = [(TARGET, args.segments)]
+
+    model, train_venv, curve, done = None, None, [], 0
+    for track, nseg in phases:
+        new_venv = DummyVecEnv([make_env(wrap_fn, track, TRAIN_CAP)])
+        if model is None:
+            model = PPO("MlpPolicy", new_venv, verbose=0, device="cpu",
+                        seed=0, ent_coef=args.ent_coef)
+        else:
+            if train_venv is not None:
+                train_venv.close()
+            model.set_env(new_venv)
+        train_venv = new_venv
+        for _ in range(nseg):
+            model.learn(total_timesteps=seg, reset_num_timesteps=(done == 0))
+            done += 1
+            ev = evaluate(model, wrap_fn, track)  # eval on the CURRENT training track (safe)
+            curve.append(dict(steps=done * seg, eval_track=track, laps=ev["laps"],
+                              max_progress_m=ev["max_progress_m"], crashed=ev["crashed"],
+                              speed_before_crash=ev["speed_before_crash"]))
+            print(f"  {done*seg:>9,} steps [{track:>18}] -> laps={ev['laps']:.3f}  "
+                  f"progress={ev['max_progress_m']:6.1f} m  "
+                  f"speed@crash={ev['speed_before_crash']:5.2f}  crashed={ev['crashed']}")
     train_venv.close()
 
-    # detailed final rollout on the trained track (with per-step trace)
-    final = evaluate(model, WrapperCls, TRACK, want_trace=True)
+    final = evaluate(model, wrap_fn, TARGET, want_trace=True)
     tr = np.array(final["trace"]) if final["trace"] else np.zeros((0, 4))
-    print("\n--- final policy on %s ---" % TRACK)
+    print(f"\n--- final policy on {TARGET} ---")
     print(f"  reached {final['laps']:.3f} laps ({final['max_progress_m']:.1f} m), crashed={final['crashed']}")
     print(f"  speed just before crash : {final['speed_before_crash']:.2f} m/s")
     print(f"  curvature at crash      : {final['curvature_at_crash']:.4f} 1/m")
@@ -135,13 +191,14 @@ def main():
     else:
         print("  => crash corner is NOT unusually sharp (likely too fast, not too tight).")
 
-    results = dict(penalty=args.penalty, steps=args.steps, curve=curve, final=final)
+    results = dict(penalty=args.penalty, steps=args.steps, ent_coef=args.ent_coef,
+                   completion_bonus=args.completion_bonus, warmup_track=args.warmup_track,
+                   warmup_frac=args.warmup_frac, curve=curve, final=final)
     (HERE / "results").mkdir(exist_ok=True)
-    out = HERE / "results" / f"learning_curve_cp{int(args.penalty)}_{args.steps}.json"
+    out = HERE / "results" / f"learning_curve_cp{int(args.penalty)}{tag}_{args.steps}.json"
     out.write_text(json.dumps(results, indent=2))
     print(f"\nsaved {out}")
 
-    # plots (best-effort)
     try:
         import matplotlib
         matplotlib.use("Agg")
@@ -149,16 +206,16 @@ def main():
         cs = [c["steps"] for c in curve]; cl = [c["laps"] for c in curve]
         plt.figure(figsize=(7, 4)); plt.plot(cs, cl, "o-")
         plt.xlabel("training steps"); plt.ylabel("laps reached (eval)")
-        plt.title(f"Learning curve (crash_penalty={args.penalty})"); plt.grid(alpha=.4)
-        plt.tight_layout(); plt.savefig(HERE / "results" / f"learning_curve_cp{int(args.penalty)}.png", dpi=140); plt.close()
+        plt.title(f"Learning curve (cp={args.penalty}{tag})"); plt.grid(alpha=.4)
+        plt.tight_layout(); plt.savefig(HERE / "results" / f"learning_curve_cp{int(args.penalty)}{tag}.png", dpi=140); plt.close()
         if tr.shape[0] > 0:
             plt.figure(figsize=(8, 4))
             plt.plot(tr[:, 1], tr[:, 2], label="speed (m/s)")
             plt.plot(tr[:, 1], tr[:, 3] * 20, alpha=.6, label="curvature x20 (1/m)")
             plt.axvline(tr[-1, 1], color="r", ls="--", label="crash")
             plt.xlabel("progress along centreline (m)"); plt.ylabel("speed / scaled curvature")
-            plt.title("Final policy: speed vs track position"); plt.legend(); plt.grid(alpha=.4)
-            plt.tight_layout(); plt.savefig(HERE / "results" / f"speed_profile_cp{int(args.penalty)}.png", dpi=140); plt.close()
+            plt.title(f"Final policy: speed vs track position ({tag or 'baseline'})"); plt.legend(); plt.grid(alpha=.4)
+            plt.tight_layout(); plt.savefig(HERE / "results" / f"speed_profile_cp{int(args.penalty)}{tag}.png", dpi=140); plt.close()
         print("saved plots to results/")
     except Exception as e:
         print(f"(plotting skipped: {e})")
