@@ -207,7 +207,7 @@ def main():
         plt.figure(figsize=(7, 4)); plt.plot(cs, cl, "o-")
         plt.xlabel("training steps"); plt.ylabel("laps reached (eval)")
         plt.title(f"Learning curve (cp={args.penalty}{tag})"); plt.grid(alpha=.4)
-        plt.tight_layout(); plt.savefig(HERE / "results" / f"learning_curve_cp{int(args.penalty)}{tag}.png", dpi=140); plt.close()
+        plt.tight_layout(); plt.savefig(HERE / "results" / f"learning_curve_cp{int(args.penalty)}{tag}_{args.steps}.png", dpi=140); plt.close()
         if tr.shape[0] > 0:
             plt.figure(figsize=(8, 4))
             plt.plot(tr[:, 1], tr[:, 2], label="speed (m/s)")
@@ -215,7 +215,7 @@ def main():
             plt.axvline(tr[-1, 1], color="r", ls="--", label="crash")
             plt.xlabel("progress along centreline (m)"); plt.ylabel("speed / scaled curvature")
             plt.title(f"Final policy: speed vs track position ({tag or 'baseline'})"); plt.legend(); plt.grid(alpha=.4)
-            plt.tight_layout(); plt.savefig(HERE / "results" / f"speed_profile_cp{int(args.penalty)}{tag}.png", dpi=140); plt.close()
+            plt.tight_layout(); plt.savefig(HERE / "results" / f"speed_profile_cp{int(args.penalty)}{tag}_{args.steps}.png", dpi=140); plt.close()
         print("saved plots to results/")
     except Exception as e:
         print(f"(plotting skipped: {e})")
