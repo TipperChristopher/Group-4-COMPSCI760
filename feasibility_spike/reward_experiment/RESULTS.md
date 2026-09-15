@@ -169,6 +169,63 @@ does). Curvature-at-crash is measured at the car's nearest centreline projection
 approximate when the car is off-line. Anticipation correlations are not reported as evidence
 (they are confounded by the track's closed-loop periodicity).
 
+## Experiment 6 — can any lever break the ~0.35-lap plateau? (4 diagnostics, penalty 40, 1M, n=1)
+
+Each run changes exactly ONE thing from the Experiment-5 baseline. All are
+*diagnostics* to understand the plateau, not protocol changes (entropy is an algo
+hyperparameter; curriculum confounds the diversity axis — neither belongs in the
+headline grid; a completion bonus is a reward/task term and could be kept if frozen).
+
+| run | mean | std | min | best | final | #froze | #crash |
+|---|---|---|---|---|---|---|---|
+| baseline (ent0) | 0.253 | 0.101 | 0.100 | 0.353 | 0.353 | 0 | 10 |
+| completion bonus 100 | 0.253 | 0.101 | 0.100 | 0.353 | 0.353 | 0 | 10 |
+| ent_coef 0.01 | 0.189 | **0.173** | 0.058 | **0.609** | 0.595 | 4 | 4 |
+| ent_coef 0.05 | 0.112 | 0.119 | 0.000 | 0.362 | **0.000** | 4 | 5 |
+| curriculum (track7→0) | 0.166 | 0.130 | 0.057 | 0.453 | 0.092 | 5 | 5 |
+
+("laps" = deterministic eval each 100k; #froze = checkpoints that did NOT crash and
+made < 0.15 lap, i.e. crawled/stood still; #crash = checkpoints ending in a collision.)
+
+**Findings (each caveated by n = 1):**
+
+- **Completion bonus — provably inert.** Bit-identical to baseline (same curve, same
+  final 0.353). The award token never appears in the JSON; max laps reached was 0.353,
+  and the +100 only fires at ≥ 1.0 laps. A sparse full-lap bonus **cannot bootstrap
+  completion** — the reward it should add literally never triggers. (This one is certain,
+  not a variance claim.)
+- **ent 0.05 (high) — collapse.** Peaked 0.362 @ 600k, then **froze to 0.0 laps
+  (standstill) for the last four checkpoints**. At 0.05 the entropy bonus dominates the
+  tiny per-step progress reward (~0.1–0.3), so PPO optimises action randomness over
+  return and the deterministic-eval mean action drifts to zero speed.
+- **ent 0.01 (low) — furthest reach, least stable.** Best **0.609 laps** and a final
+  policy of **0.595 laps that crashed at the track's SHARPEST corner (k = 0.544) at
+  8.81 m/s** — i.e. it got ~2/3 round to the hard corner and died there, too fast. But
+  std 0.173 and 4/10 frozen checkpoints: mild exploration pushes the frontier at the
+  cost of stability.
+- **Curriculum (gentle track7 → target) — inconclusive/negative here.** Learned the easy
+  track fast (0.346 @ 100k) then degraded; on the target it spiked to 0.453 @ 700k but
+  ended in a crawl (0.092), with the most frozen checkpoints (5/10). No sustained transfer
+  in this seed.
+
+**Meta-finding — the real story is instability, not a smooth plateau.** Baseline is the
+only *stable* run (0 frozen, always ~0.35). *Every* intervention widened the outcome
+variance (both a better tail — 0.45/0.61 — and a worse tail — frozen). So at n = 1 we
+cannot rank the levers; the checkpoint-to-checkpoint bounce (deterministic eval, so this
+is real *training* instability, not eval noise) dominates any effect.
+
+**Hard caveats:** n = 1 seed per lever; one deterministic eval per checkpoint. The harness
+has **no VecNormalize**, yet the vendored wrapper's own comments say the unnormalised
+113-d observation (LiDAR 0–30 m vs body velocities vs a heading in radians) "hurts PPO and
+SAC" — so instability here is expected and probably overstated relative to the team's real
+`train.py`. The `=> crash corner ...` verdict line is degenerate when `crashed=False`.
+
+**Priority next steps (in order):** (1) add **VecNormalize** — likely the biggest stability
+win and the one real difference from the team pipeline; (2) run **≥ 3 seeds** (ideally 10)
+before ranking any lever — current numbers are point estimates; (3) only then judge whether
+mild entropy (0.01) or curriculum genuinely helps. Prerequisite for the curriculum run:
+`make_synth_tracks.py --n 8` (provides the gentle `synthetic_track_7`).
+
 ## Reproduce
 
 ```bash

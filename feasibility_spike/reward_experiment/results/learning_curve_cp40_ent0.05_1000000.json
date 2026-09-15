@@ -1,0 +1,99 @@
+{
+  "penalty": 40.0,
+  "steps": 1000000,
+  "ent_coef": 0.05,
+  "completion_bonus": 0.0,
+  "warmup_track": "",
+  "warmup_frac": 0.5,
+  "curve": [
+    {
+      "steps": 100000,
+      "eval_track": "synthetic_track_0",
+      "laps": 0.18036229960075809,
+      "max_progress_m": 34.09623395997507,
+      "crashed": false,
+      "speed_before_crash": 0.0
+    },
+    {
+      "steps": 200000,
+      "eval_track": "synthetic_track_0",
+      "laps": 0.2665133156501887,
+      "max_progress_m": 50.32206692820261,
+      "crashed": true,
+      "speed_before_crash": 15.437955856323242
+    },
+    {
+      "steps": 300000,
+      "eval_track": "synthetic_track_0",
+      "laps": 0.1039532126255579,
+      "max_progress_m": 19.56938656100236,
+      "crashed": true,
+      "speed_before_crash": 12.721339225769043
+    },
+    {
+      "steps": 400000,
+      "eval_track": "synthetic_track_0",
+      "laps": 0.10523897497706389,
+      "max_progress_m": 19.758014283030768,
+      "crashed": true,
+      "speed_before_crash": 13.650345802307129
+    },
+    {
+      "steps": 500000,
+      "eval_track": "synthetic_track_0",
+      "laps": 0.10408195530128728,
+      "max_progress_m": 19.547038777457047,
+      "crashed": true,
+      "speed_before_crash": 12.956336975097656
+    },
+    {
+      "steps": 600000,
+      "eval_track": "synthetic_track_0",
+      "laps": 0.36199492332407807,
+      "max_progress_m": 68.34916033746886,
+      "crashed": true,
+      "speed_before_crash": 8.947792053222656
+    },
+    {
+      "steps": 700000,
+      "eval_track": "synthetic_track_0",
+      "laps": 0.0015657964923153338,
+      "max_progress_m": 0.29600289890885567,
+      "crashed": false,
+      "speed_before_crash": 0.0
+    },
+    {
+      "steps": 800000,
+      "eval_track": "synthetic_track_0",
+      "laps": 0.0,
+      "max_progress_m": 0.0,
+      "crashed": false,
+      "speed_before_crash": 0.0
+    },
+    {
+      "steps": 900000,
+      "eval_track": "synthetic_track_0",
+      "laps": 0.0,
+      "max_progress_m": 0.0,
+      "crashed": false,
+      "speed_before_crash": 0.0
+    },
+    {
+      "steps": 1000000,
+      "eval_track": "synthetic_track_0",
+      "laps": 0.0,
+      "max_progress_m": 0.0,
+      "crashed": false,
+      "speed_before_crash": 0.0
+    }
+  ],
+  "final": {
+    "laps": 0.0,
+    "max_progress_m": 0.0,
+    "crashed": false,
+    "speed_before_crash": 0.0,
+    "curvature_at_crash": 4.093395573343855e-15,
+    "track_curvature_mean": 0.10194887591221073,
+    "track_curvature_p90": 0.4407758766402447
+  }
+}
