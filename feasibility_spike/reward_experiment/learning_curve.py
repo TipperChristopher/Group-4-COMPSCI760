@@ -30,7 +30,7 @@ if "gym" not in sys.modules:
 import numpy as np
 import gymnasium as gym
 import f1tenth_gym  # noqa: F401
-from stable_baselines3 import PPO
+from stable_baselines3 import PPO, SAC
 from stable_baselines3.common.monitor import Monitor
 from stable_baselines3.common.vec_env import DummyVecEnv
 
@@ -123,6 +123,7 @@ def evaluate(model, wrap_fn, track, want_trace=False):
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--penalty", type=float, default=40.0)
+    ap.add_argument("--algo", choices=["ppo", "sac"], default="ppo")
     ap.add_argument("--steps", type=int, default=1_000_000)
     ap.add_argument("--segments", type=int, default=10)
     ap.add_argument("--ent-coef", type=float, default=0.0)
@@ -138,12 +139,13 @@ def main():
     else:
         wrap_fn = lambda env, cap: W.F1TenthSB3Wrapper(env, max_episode_steps=cap)
 
+    algo_tag = "" if args.algo == "ppo" else f"_{args.algo}"
     tag = ""
     if args.ent_coef > 0: tag += f"_ent{args.ent_coef}"
     if args.completion_bonus > 0: tag += f"_bonus{int(args.completion_bonus)}"
     if args.warmup_track: tag += f"_warmup-{args.warmup_track}"
 
-    print(f"=== learning curve: NEW reward, crash_penalty={args.penalty}, "
+    print(f"=== learning curve [{args.algo.upper()}]: NEW reward, crash_penalty={args.penalty}, "
           f"{args.steps:,} steps in {args.segments} segments ===")
     print(f"    ent_coef={args.ent_coef}  completion_bonus={args.completion_bonus}  "
           f"warmup={args.warmup_track or 'none'}({args.warmup_frac})  target={TARGET}")
@@ -160,8 +162,11 @@ def main():
     for track, nseg in phases:
         new_venv = DummyVecEnv([make_env(wrap_fn, track, TRAIN_CAP)])
         if model is None:
-            model = PPO("MlpPolicy", new_venv, verbose=0, device="cpu",
-                        seed=0, ent_coef=args.ent_coef)
+            if args.algo == "sac":
+                model = SAC("MlpPolicy", new_venv, verbose=0, device="cpu", seed=0)
+            else:
+                model = PPO("MlpPolicy", new_venv, verbose=0, device="cpu",
+                            seed=0, ent_coef=args.ent_coef)
         else:
             if train_venv is not None:
                 train_venv.close()
@@ -191,11 +196,11 @@ def main():
     else:
         print("  => crash corner is NOT unusually sharp (likely too fast, not too tight).")
 
-    results = dict(penalty=args.penalty, steps=args.steps, ent_coef=args.ent_coef,
+    results = dict(penalty=args.penalty, algo=args.algo, steps=args.steps, ent_coef=args.ent_coef,
                    completion_bonus=args.completion_bonus, warmup_track=args.warmup_track,
                    warmup_frac=args.warmup_frac, curve=curve, final=final)
     (HERE / "results").mkdir(exist_ok=True)
-    out = HERE / "results" / f"learning_curve_cp{int(args.penalty)}{tag}_{args.steps}.json"
+    out = HERE / "results" / f"learning_curve_cp{int(args.penalty)}{algo_tag}{tag}_{args.steps}.json"
     out.write_text(json.dumps(results, indent=2))
     print(f"\nsaved {out}")
 
@@ -207,7 +212,7 @@ def main():
         plt.figure(figsize=(7, 4)); plt.plot(cs, cl, "o-")
         plt.xlabel("training steps"); plt.ylabel("laps reached (eval)")
         plt.title(f"Learning curve (cp={args.penalty}{tag})"); plt.grid(alpha=.4)
-        plt.tight_layout(); plt.savefig(HERE / "results" / f"learning_curve_cp{int(args.penalty)}{tag}_{args.steps}.png", dpi=140); plt.close()
+        plt.tight_layout(); plt.savefig(HERE / "results" / f"learning_curve_cp{int(args.penalty)}{algo_tag}{tag}_{args.steps}.png", dpi=140); plt.close()
         if tr.shape[0] > 0:
             plt.figure(figsize=(8, 4))
             plt.plot(tr[:, 1], tr[:, 2], label="speed (m/s)")
@@ -215,7 +220,7 @@ def main():
             plt.axvline(tr[-1, 1], color="r", ls="--", label="crash")
             plt.xlabel("progress along centreline (m)"); plt.ylabel("speed / scaled curvature")
             plt.title(f"Final policy: speed vs track position ({tag or 'baseline'})"); plt.legend(); plt.grid(alpha=.4)
-            plt.tight_layout(); plt.savefig(HERE / "results" / f"speed_profile_cp{int(args.penalty)}{tag}_{args.steps}.png", dpi=140); plt.close()
+            plt.tight_layout(); plt.savefig(HERE / "results" / f"speed_profile_cp{int(args.penalty)}{algo_tag}{tag}_{args.steps}.png", dpi=140); plt.close()
         print("saved plots to results/")
     except Exception as e:
         print(f"(plotting skipped: {e})")
