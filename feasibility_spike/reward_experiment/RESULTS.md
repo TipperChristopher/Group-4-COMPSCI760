@@ -265,6 +265,41 @@ artifact**. (n = 1, but the total absence of an upward trend over 3M, consistent
 - The genuine lever is **training stability**, not steps → test **VecNormalize** next (the one
   real gap between this harness and the team's `train.py`).
 
+## Experiment 8 — PPO vs SAC head-to-head (identical harness, cp40, 1M, n=1)
+
+The first *real* comparison — same reward, penalty, budget, harness, seed, eval. SAC is
+SB3 default (off-policy, automatic entropy temperature), no tuning. SAC wall-clock was
+~3.6× PPO (22 min / 100k steps, ~3 h 39 min total) because it does a gradient step every
+env step.
+
+| algo | mean | std | best | final | collapsed (<0.15) | reached (>0.4) |
+|---|---|---|---|---|---|---|
+| PPO | 0.253 | 0.101 | 0.353 | 0.353 | 3/10 | **0/10** |
+| SAC | 0.318 | **0.279** | **0.874** | 0.108 | **6/10** | **4/10** |
+
+**Findings (n = 1 seed each — std here is within-run *training* instability, not a CI):**
+
+1. **SAC is far more capable.** Best **0.874 laps (165 m, ~87% of a lap) @ 500k** vs PPO's
+   best 0.353. SAC exceeded 0.4 laps at **4/10** checkpoints; PPO **never once** did. Off-policy
+   replay is markedly more sample-efficient at learning to corner — as hypothesised.
+2. **SAC is far *less* stable.** std **2.76×** PPO's; it alternates almost every checkpoint
+   between a near-complete lap (0.4–0.87) and a first-corner collapse (~0.11), collapsing
+   **6/10** vs PPO's 3/10. (This *corrects* the earlier "SAC is usually smoother" hypothesis
+   — wrong for this task: SAC is higher-ceiling but more volatile.)
+3. **The evaluation protocol FLIPS the winner — the key methodological result.**
+   - Report the **final** policy → PPO 0.353 **beats** SAC 0.108.
+   - Report the **best** checkpoint → SAC 0.874 **crushes** PPO 0.353.
+   Same runs, opposite conclusion. So an eval protocol (best checkpoint on a *validation*
+   track, applied identically to both) must be **fixed and frozen before** comparing, or the
+   PPO-vs-SAC verdict is an artifact of an arbitrary choice. (See `ppo_vs_sac_cp40_1000000.png`.)
+4. Neither completes a full lap at 1M, but SAC gets within **13%** of one.
+
+**Implications:** (a) adopt best-checkpoint-on-validation as the frozen eval protocol
+(Experiments 7 and 8 both demand it); (b) the instability — both algos, worse for SAC —
+motivates the **VecNormalize** test next (hypothesis: normalization lets SAC *hold* the 0.87
+instead of collapsing); (c) firm PPO-vs-SAC claims need ≥ 3 seeds. Caveat: no VecNormalize
+in this harness; the team's `train.py` has it, so both algos are handicapped equally here.
+
 ## Reproduce
 
 ```bash
