@@ -14,8 +14,29 @@ __pycache__/
 # f1tenth_gym/maps/ and then deletes it. Ignored in case a run is interrupted.
 /maps/
 
-# Evaluation output written next to each model
-models/**/zero_shot_results.csv
+# Training output. Deliberately ignored in full, not just the checkpoints.
+#
+# A single 2M-step cell writes ~20 checkpoints plus their normalisation
+# statistics, so the 8-cell grid produces several hundred binaries, and more
+# once you add training seeds. They are also regenerable: pinning --seed and
+# --track-seed exists precisely so a run can be reproduced from code rather
+# than retrieved from git.
+#
+# Tracked model binaries have already caused trouble here. They appeared as
+# opaque diffs in unrelated commits, and a merge came close to silently
+# reverting them to older weights. If a final model needs archiving for the
+# write-up, attach it to a release rather than committing it.
+models/
+
+# Evaluation figures are regenerated on every evaluate.py run.
+generalization_results.png
+
+# NOT ignored: results/
+# Baseline reference numbers (random and gap-follower) are committed on
+# purpose. They are fixed points the write-up cites, they are small CSVs, and
+# they should be reviewable and diffable. They are only valid for the protocol
+# that produced them, so regenerate them if the episode cap or the spawn line
+# changes.
 
 # OS and editor cruft
 .DS_Store
@@ -23,11 +44,3 @@ Thumbs.db
 .idea/
 .claude/
 *.swp
-
-# Training checkpoints: large, numerous and regenerable. Final models and
-# their vecnormalize.pkl stay tracked so evaluation is reproducible.
-<<<<<<< HEAD
-models/**/*checkpoint*
-=======
-models/**/*checkpoint*
->>>>>>> db76a8dc108947de9288f2f0ce98de79c5018691

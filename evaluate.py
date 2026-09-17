@@ -59,24 +59,39 @@ _track_pool_module = _load_local_module(
 )
 TrackPoolWrapper = _track_pool_module.TrackPoolWrapper
 
+_baselines_module = _load_local_module(
+    "baselines", os.path.join("src", "baselines.py")
+)
+make_baseline = _baselines_module.make_baseline
+BASELINES = _baselines_module.BASELINES
 
-class CollisionRecorder(gym.Wrapper):
-    """Copy the simulator's collision flag into info at episode end.
 
-    Read inside the env's own step, before any vectorised auto-reset clears it.
-    An episode can end either by crashing or by completing the lap count, and
-    distinguishing the two is the point of the evaluation.
+def _warn_on_action_space_mismatch(model):
+    """Catch models trained before the action space was normalised.
+
+    SB3's `load` without an env does not check spaces, so a policy trained on
+    the old raw ranges (steering +-0.4189, speed up to 20) loads silently and
+    then emits numbers the current wrapper reads as [-1, 1]. Its speed output
+    clips to full throttle and its steering authority collapses, so it looks
+    like a catastrophically bad driver rather than an incompatible one.
     """
-
-    def step(self, action):
-        obs, reward, terminated, truncated, info = self.env.step(action)
-        if terminated or truncated:
-            info = dict(info) if info else {}
-            try:
-                info["collision"] = bool(self.env.unwrapped.collisions[0])
-            except Exception:
-                info["collision"] = None
-        return obs, reward, terminated, truncated, info
+    expected_low, expected_high = -1.0, 1.0
+    try:
+        low = float(np.min(model.action_space.low))
+        high = float(np.max(model.action_space.high))
+    except Exception:
+        return
+    if abs(low - expected_low) > 1e-6 or abs(high - expected_high) > 1e-6:
+        print(
+            "\n" + "!" * 62 + "\n"
+            "WARNING: this model's action space is "
+            f"[{low}, {high}], not [-1, 1].\n"
+            "It was trained before the action space was normalised, so its\n"
+            "outputs are being reinterpreted by the current wrapper: speed\n"
+            "clips to full throttle and steering authority is reduced.\n"
+            "The results below are meaningless. Retrain with the current code.\n"
+            + "!" * 62 + "\n"
+        )
 
 
 def find_run_dir(args):
@@ -117,7 +132,7 @@ def infer_algo(run_dir, requested):
     )
 
 
-def build_env(track_name, render, track_seed):
+def build_env(track_name, render, track_seed, max_episode_steps):
     """Recreate the training environment stack for a single circuit."""
 
     def _init():
@@ -126,8 +141,9 @@ def build_env(track_name, render, track_seed):
             config={"num_agents": 1, "timestep": 0.01, "map": track_name},
             render_mode="human" if render else None,
         )
-        env = F1TenthSB3Wrapper(env)
-        env = CollisionRecorder(env)
+        # The wrapper supplies the step limit, the collision flag and the
+        # lap/progress counters used below.
+        env = F1TenthSB3Wrapper(env, max_episode_steps=max_episode_steps)
         # A one-track pool. Reused from training so the map and the spawn
         # sampler are guaranteed consistent on every reset.
         env = TrackPoolWrapper(env, tracks=[track_name], track_seed=track_seed)
@@ -138,18 +154,31 @@ def build_env(track_name, render, track_seed):
 
 
 def run_episode(venv, model, max_steps, deterministic, render):
-    """Roll out one episode and return its statistics."""
+    """Roll out one episode and return its statistics.
+
+    The primary quantity is laps completed, not return. Return ranks a crawler
+    above a fast driver who crashes, because the old reward paid for elapsed
+    time; laps measure what the study actually asks about.
+    """
     obs = venv.reset()
     total_reward = 0.0
     steps = 0
     outcome = "step_cap"
     collision = None
+    laps = 0.0
+    progress_m = 0.0
 
     while steps < max_steps:
         action, _ = model.predict(obs, deterministic=deterministic)
         obs, rewards, dones, infos = venv.step(action)
         total_reward += float(rewards[0])
         steps += 1
+
+        # Read every step, so the counters are correct whether the episode ends
+        # by crashing, by truncation, or by the loop hitting max_steps.
+        info = infos[0]
+        laps = float(info.get("laps", laps))
+        progress_m = float(info.get("progress_m", progress_m))
 
         if render:
             try:
@@ -158,12 +187,11 @@ def run_episode(venv, model, max_steps, deterministic, render):
                 pass
 
         if dones[0]:
-            info = infos[0]
             collision = info.get("collision")
             if collision:
                 outcome = "crash"
             elif info.get("TimeLimit.truncated"):
-                outcome = "truncated"
+                outcome = "timeout"
             else:
                 outcome = "finished"
             break
@@ -173,13 +201,18 @@ def run_episode(venv, model, max_steps, deterministic, render):
         "length": steps,
         "outcome": outcome,
         "collision": collision,
+        "laps": laps,
+        "progress_m": progress_m,
+        "completed_lap": laps >= 1.0,
     }
 
 
 def evaluate_track(track, model, args, stats_path):
     """Run every episode for one circuit."""
     print(f"\n--- {track} ---")
-    venv = DummyVecEnv([build_env(track, args.render, args.eval_seed)])
+    venv = DummyVecEnv([
+        build_env(track, args.render, args.eval_seed, args.max_steps)
+    ])
 
     if stats_path:
         venv = load_vecnormalize(venv, stats_path)
@@ -196,8 +229,10 @@ def evaluate_track(track, model, args, stats_path):
         result["seed"] = seed
         episodes.append(result)
         print(
-            f"  episode {i}: return={result['return']:>10,.2f}  "
-            f"steps={result['length']:>6,}  outcome={result['outcome']}"
+            f"  episode {i}: laps={result['laps']:>6.2f}  "
+            f"dist={result['progress_m']:>8.1f} m  "
+            f"steps={result['length']:>6,}  outcome={result['outcome']:<8} "
+            f"(return {result['return']:,.2f})"
         )
 
     venv.close()
@@ -210,12 +245,15 @@ def write_csv(path, algo, diversity, seed, results):
         writer = csv.writer(f)
         writer.writerow([
             "algo", "diversity", "run_seed", "track", "episode", "eval_seed",
-            "return", "length", "outcome", "collision",
+            "laps", "completed_lap", "progress_m", "return", "length",
+            "outcome", "collision",
         ])
         for track, episodes in results.items():
             for ep in episodes:
                 writer.writerow([
                     algo, diversity, seed, track, ep["episode"], ep["seed"],
+                    f"{ep['laps']:.4f}", int(ep["completed_lap"]),
+                    f"{ep['progress_m']:.3f}",
                     f"{ep['return']:.4f}", ep["length"], ep["outcome"],
                     "" if ep["collision"] is None else int(ep["collision"]),
                 ])
@@ -223,9 +261,10 @@ def write_csv(path, algo, diversity, seed, results):
 
 
 def make_plot(results, algo, diversity, out_path):
+    """Plot laps completed. Return is deliberately not the headline number."""
     tracks = list(results)
-    means = [float(np.mean([e["return"] for e in results[t]])) for t in tracks]
-    stds = [float(np.std([e["return"] for e in results[t]])) for t in tracks]
+    means = [float(np.mean([e["laps"] for e in results[t]])) for t in tracks]
+    stds = [float(np.std([e["laps"] for e in results[t]])) for t in tracks]
 
     # Every real circuit is unseen: training used synthetic tracks only.
     labels = [f"{t}\n(unseen)" for t in tracks]
@@ -233,17 +272,20 @@ def make_plot(results, algo, diversity, out_path):
     plt.figure(figsize=(9, 6))
     bars = plt.bar(labels, means, yerr=stds if any(stds) else None,
                    capsize=6, color="#4c72b0", edgecolor="black")
+    plt.axhline(1.0, color="#d62728", linestyle="--", linewidth=1.5,
+                label="one full lap")
+    plt.legend(loc="upper right")
 
     pool = f"{diversity} synthetic track{'s' if diversity != 1 else ''}"
     plt.title(f"{algo} Zero-Shot Transfer ({pool})",
               fontsize=15, fontweight="bold", pad=15)
-    plt.ylabel("Episodic Return", fontsize=12, fontweight="bold")
+    plt.ylabel("Laps Completed", fontsize=12, fontweight="bold")
     plt.grid(axis="y", linestyle="--", alpha=0.7)
 
-    span = max(means) - min(min(means), 0) or 1.0
+    span = max(max(means), 1.0) or 1.0
     for bar, mean in zip(bars, means):
         plt.text(bar.get_x() + bar.get_width() / 2, bar.get_height() + span * 0.02,
-                 f"{mean:,.1f}", ha="center", va="bottom",
+                 f"{mean:.2f}", ha="center", va="bottom",
                  fontsize=11, fontweight="bold")
 
     plt.tight_layout()
@@ -257,6 +299,12 @@ def main():
         description="Zero-shot evaluation on real F1 circuits."
     )
     parser.add_argument("--algo", type=str, choices=sorted(ALGOS))
+    parser.add_argument("--baseline", type=str, choices=sorted(BASELINES),
+                        help="Evaluate a non-learned reference policy instead of "
+                             "a trained model, through the identical harness: "
+                             "'random' for the floor, 'gap' for a classical "
+                             "follow-the-gap rule. No model or statistics are "
+                             "loaded.")
     parser.add_argument("--diversity", type=int)
     parser.add_argument("--seed", type=int, help="Run seed used during training.")
     parser.add_argument("--model-path", type=str,
@@ -269,8 +317,13 @@ def main():
                              "come from multiple training seeds, not from repeated "
                              "evaluation. Raise this only with --stochastic.")
     parser.add_argument("--eval-seed", type=int, default=0)
-    parser.add_argument("--max-steps", type=int, default=10000,
-                        help="Per-episode cap. The env does not always terminate.")
+    parser.add_argument("--max-steps", type=int, default=15000,
+                        help="Per-episode cap, also passed to the wrapper as its "
+                             "truncation limit. Real circuits are long: "
+                             "Silverstone is 458 m, needing about 9,200 steps for "
+                             "one lap at 5 m/s, so a small cap would make the lap "
+                             "completion metric read zero for reasons unrelated "
+                             "to the policy.")
     parser.add_argument("--stochastic", action="store_true",
                         help="Sample from the policy instead of acting greedily.")
     parser.add_argument("--render", action="store_true")
@@ -279,32 +332,46 @@ def main():
     parser.add_argument("--no-plot", action="store_true")
     args = parser.parse_args()
 
-    run_dir = find_run_dir(args)
-    args.algo = infer_algo(run_dir, args.algo)
-
-    model_file = os.path.join(run_dir, "final_model.zip")
-    if args.model_path and os.path.isfile(os.path.abspath(args.model_path)):
-        model_file = os.path.abspath(args.model_path)
-    if not os.path.exists(model_file):
-        raise SystemExit(f"No model at {model_file}")
-
-    # Observation normalisation: the presence of this file records which regime
-    # the policy was trained in, so detection is safer than a flag.
-    stats_path = vecnormalize_path(run_dir)
-    if os.path.exists(stats_path):
-        print(f"Loading normalisation statistics from {stats_path}")
-    else:
+    if args.baseline:
+        # Reference policies run through the identical harness: same circuits,
+        # same episode caps, same metrics, same CSV. They skip VecNormalize
+        # because a gap-follower needs LiDAR in metres, not standardised units.
+        # Normalisation is part of a learned policy's own pipeline, not part of
+        # the evaluation protocol, so omitting it keeps the comparison fair.
+        model = make_baseline(args.baseline, seed=args.eval_seed)
         stats_path = None
-        print(
-            "\n"
-            "WARNING: no vecnormalize.pkl in this run directory.\n"
-            "Evaluating on raw observations. This is correct only for models\n"
-            "trained before observation normalisation was added. If this model\n"
-            "was trained with the current train.py, the results are invalid.\n"
-        )
+        args.algo = args.baseline
+        run_dir = os.path.join(_PROJECT_ROOT, "results", f"baseline_{args.baseline}")
+        os.makedirs(run_dir, exist_ok=True)
+        print(f"Baseline policy: {args.baseline} (no model, no normalisation)")
+    else:
+        run_dir = find_run_dir(args)
+        args.algo = infer_algo(run_dir, args.algo)
 
-    print(f"Loading {args.algo} from {model_file}")
-    model = ALGOS[args.algo].load(model_file)
+        model_file = os.path.join(run_dir, "final_model.zip")
+        if args.model_path and os.path.isfile(os.path.abspath(args.model_path)):
+            model_file = os.path.abspath(args.model_path)
+        if not os.path.exists(model_file):
+            raise SystemExit(f"No model at {model_file}")
+
+        # Observation normalisation: the presence of this file records which
+        # regime the policy was trained in, so detection is safer than a flag.
+        stats_path = vecnormalize_path(run_dir)
+        if os.path.exists(stats_path):
+            print(f"Loading normalisation statistics from {stats_path}")
+        else:
+            stats_path = None
+            print(
+                "\n"
+                "WARNING: no vecnormalize.pkl in this run directory.\n"
+                "Evaluating on raw observations. This is correct only for models\n"
+                "trained before observation normalisation was added. If this model\n"
+                "was trained with the current train.py, the results are invalid.\n"
+            )
+
+        print(f"Loading {args.algo} from {model_file}")
+        model = ALGOS[args.algo].load(model_file)
+        _warn_on_action_space_mismatch(model)
 
     results = {}
     for track in args.tracks:
@@ -314,12 +381,29 @@ def main():
     print(f"ZERO-SHOT RESULTS  ({args.algo}, {run_dir})")
     print("=" * 62)
     width = max([len(t) for t in results] + [len("circuit")])
-    print(f"  {'circuit':<{width}} {'mean return':>14} {'std':>10} {'crashes':>9}")
+    print("  PRIMARY METRIC: lap completion. Return is secondary and is shown")
+    print("  only for continuity; it rewards elapsed time as much as speed.")
+    print()
+    print(f"  {'circuit':<{width}} {'lap rate':>9} {'mean laps':>10} "
+          f"{'dist (m)':>10} {'crashes':>9} {'return':>12}")
+    all_laps, all_completed = [], []
     for track, episodes in results.items():
-        returns = [e["return"] for e in episodes]
+        laps = [e["laps"] for e in episodes]
+        completed = [e["completed_lap"] for e in episodes]
         crashes = sum(1 for e in episodes if e["outcome"] == "crash")
-        print(f"  {track:<{width}} {np.mean(returns):>14,.2f} {np.std(returns):>10,.2f} "
-              f"{crashes:>6}/{len(episodes)}")
+        all_laps += laps
+        all_completed += completed
+        print(f"  {track:<{width}} "
+              f"{f'{sum(completed)}/{len(completed)}':>9} "
+              f"{np.mean(laps):>10.2f} "
+              f"{np.mean([e['progress_m'] for e in episodes]):>10.1f} "
+              f"{crashes:>6}/{len(episodes)} "
+              f"{np.mean([e['return'] for e in episodes]):>12,.2f}")
+    print("-" * 62)
+    rate = 100.0 * sum(all_completed) / len(all_completed) if all_completed else 0.0
+    print(f"  OVERALL lap completion rate : {rate:.1f}% "
+          f"({sum(all_completed)}/{len(all_completed)} episodes)")
+    print(f"  OVERALL mean laps completed : {np.mean(all_laps):.3f}")
     print("=" * 62)
     print("All circuits are unseen. Training used synthetic tracks only.")
 
