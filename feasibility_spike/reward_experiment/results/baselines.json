@@ -1,0 +1,54 @@
+{
+  "gap": [
+    {
+      "track": "synthetic_track_0",
+      "laps": 0.09911640353076388,
+      "lap_time_s": null,
+      "crashed": true,
+      "eval_steps": 383,
+      "max_progress_m": 18.300024332684472
+    },
+    {
+      "track": "synthetic_track_1",
+      "laps": 1.0524516662413124,
+      "lap_time_s": 28.49537034522944,
+      "crashed": true,
+      "eval_steps": 2999,
+      "max_progress_m": 160.08537745392158
+    },
+    {
+      "track": "synthetic_track_2",
+      "laps": 0.7494187335293915,
+      "lap_time_s": null,
+      "crashed": true,
+      "eval_steps": 2472,
+      "max_progress_m": 132.3254920342601
+    }
+  ],
+  "random": [
+    {
+      "track": "synthetic_track_0",
+      "laps": 0.0459805199398266,
+      "lap_time_s": null,
+      "crashed": true,
+      "eval_steps": 175,
+      "max_progress_m": 8.617002245899505
+    },
+    {
+      "track": "synthetic_track_1",
+      "laps": 0.03730365419406418,
+      "lap_time_s": null,
+      "crashed": true,
+      "eval_steps": 134,
+      "max_progress_m": 5.610658168936905
+    },
+    {
+      "track": "synthetic_track_2",
+      "laps": 0.023233478849163648,
+      "lap_time_s": null,
+      "crashed": true,
+      "eval_steps": 118,
+      "max_progress_m": 4.054268445155245
+    }
+  ]
+}
