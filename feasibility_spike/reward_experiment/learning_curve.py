@@ -167,6 +167,17 @@ def main():
         phases = [(TARGET, args.segments)]
 
     model, train_venv, curve, done = None, None, [], 0
+    (HERE / "results").mkdir(exist_ok=True)
+    out = HERE / "results" / f"learning_curve_cp{int(args.penalty)}{algo_tag}{norm_tag}{tag}_{args.steps}.json"
+
+    def save(final_obj):
+        # written after every segment so an interruption keeps the partial curve
+        out.write_text(json.dumps(dict(
+            penalty=args.penalty, algo=args.algo, vecnormalize=args.vecnormalize,
+            steps=args.steps, ent_coef=args.ent_coef, completion_bonus=args.completion_bonus,
+            warmup_track=args.warmup_track, warmup_frac=args.warmup_frac,
+            curve=curve, final=final_obj), indent=2))
+
     for track, nseg in phases:
         new_venv = DummyVecEnv([make_env(wrap_fn, track, TRAIN_CAP)])
         if args.vecnormalize:
@@ -192,7 +203,8 @@ def main():
                               speed_before_crash=ev["speed_before_crash"]))
             print(f"  {done*seg:>9,} steps [{track:>18}] -> laps={ev['laps']:.3f}  "
                   f"progress={ev['max_progress_m']:6.1f} m  "
-                  f"speed@crash={ev['speed_before_crash']:5.2f}  crashed={ev['crashed']}")
+                  f"speed@crash={ev['speed_before_crash']:5.2f}  crashed={ev['crashed']}", flush=True)
+            save(None)   # incremental checkpoint of the curve so far
     final_rms = train_venv.obs_rms if args.vecnormalize else None
     train_venv.close()
 
@@ -208,12 +220,7 @@ def main():
     else:
         print("  => crash corner is NOT unusually sharp (likely too fast, not too tight).")
 
-    results = dict(penalty=args.penalty, algo=args.algo, vecnormalize=args.vecnormalize, steps=args.steps, ent_coef=args.ent_coef,
-                   completion_bonus=args.completion_bonus, warmup_track=args.warmup_track,
-                   warmup_frac=args.warmup_frac, curve=curve, final=final)
-    (HERE / "results").mkdir(exist_ok=True)
-    out = HERE / "results" / f"learning_curve_cp{int(args.penalty)}{algo_tag}{norm_tag}{tag}_{args.steps}.json"
-    out.write_text(json.dumps(results, indent=2))
+    save(final)
     print(f"\nsaved {out}")
 
     try:
