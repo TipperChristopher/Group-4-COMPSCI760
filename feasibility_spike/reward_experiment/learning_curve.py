@@ -33,6 +33,7 @@ import f1tenth_gym  # noqa: F401
 from stable_baselines3 import PPO, SAC
 from stable_baselines3.common.monitor import Monitor
 from stable_baselines3.common.vec_env import DummyVecEnv, VecNormalize
+from stable_baselines3.common.utils import safe_mean
 
 HERE = pathlib.Path(__file__).parent
 TIMESTEP = 0.01
@@ -98,10 +99,11 @@ def evaluate(model, wrap_fn, track, want_trace=False, obs_rms=None):
     kappa = curvature_along(tp)
     obs = venv.reset(); tp.reset(float(core.poses_x[0]), float(core.poses_y[0]))
     trace, last = [], None
-    crashed, crash_laps = False, 0.0
+    crashed, crash_laps, steps_taken = False, 0.0, 0
     for _ in range(EVAL_CAP):
         action, _ = model.predict(obs, deterministic=True)
         obs, _r, dones, infos = venv.step(action)
+        steps_taken += 1
         if dones[0]:
             info = infos[0] if isinstance(infos[0], dict) else {}
             crashed = bool(info.get("collision"))
@@ -114,9 +116,13 @@ def evaluate(model, wrap_fn, track, want_trace=False, obs_rms=None):
         trace.append((float(tp._prev_s), float(tp.cumulative_s), spd, float(kappa[idx])))
         last = trace[-1]
     venv.close()
-    out = dict(laps=float(max(crash_laps, tp.laps)),
+    laps_val = float(max(crash_laps, tp.laps))
+    out = dict(laps=laps_val,
                max_progress_m=float(tp.cumulative_s),
                crashed=crashed,
+               eval_steps=steps_taken,
+               # time to complete one lap, only meaningful when it actually finished a lap
+               lap_time_s=(steps_taken * TIMESTEP / laps_val if laps_val >= 1.0 else None),
                speed_before_crash=(last[2] if last else 0.0),
                curvature_at_crash=(last[3] if last else 0.0),
                track_curvature_mean=float(np.mean(kappa)),
@@ -198,12 +204,18 @@ def main():
             done += 1
             rms = train_venv.obs_rms if args.vecnormalize else None
             ev = evaluate(model, wrap_fn, track, obs_rms=rms)  # eval on the CURRENT training track (safe)
+            # SB3 training-side metrics over the last ~100 episodes (Monitor-populated)
+            ep_rew = safe_mean([e["r"] for e in model.ep_info_buffer]) if len(model.ep_info_buffer) else float("nan")
+            ep_len = safe_mean([e["l"] for e in model.ep_info_buffer]) if len(model.ep_info_buffer) else float("nan")
             curve.append(dict(steps=done * seg, eval_track=track, laps=ev["laps"],
                               max_progress_m=ev["max_progress_m"], crashed=ev["crashed"],
-                              speed_before_crash=ev["speed_before_crash"]))
-            print(f"  {done*seg:>9,} steps [{track:>18}] -> laps={ev['laps']:.3f}  "
-                  f"progress={ev['max_progress_m']:6.1f} m  "
-                  f"speed@crash={ev['speed_before_crash']:5.2f}  crashed={ev['crashed']}", flush=True)
+                              speed_before_crash=ev["speed_before_crash"],
+                              eval_steps=ev["eval_steps"], lap_time_s=ev["lap_time_s"],
+                              ep_rew_mean=float(ep_rew), ep_len_mean=float(ep_len)))
+            lt = f"{ev['lap_time_s']:.1f}s" if ev["lap_time_s"] is not None else "  -  "
+            print(f"  {done*seg:>9,} steps [{track:>15}] -> laps={ev['laps']:.3f}  "
+                  f"ep_rew={ep_rew:7.2f}  ep_len={ep_len:6.0f}  laptime={lt}  "
+                  f"crashed={ev['crashed']}", flush=True)
             save(None)   # incremental checkpoint of the curve so far
     final_rms = train_venv.obs_rms if args.vecnormalize else None
     train_venv.close()
