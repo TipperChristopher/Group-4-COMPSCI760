@@ -132,13 +132,30 @@ def infer_algo(run_dir, requested):
     )
 
 
-def build_env(track_name, render, track_seed, max_episode_steps, target_laps):
-    """Recreate the training environment stack for a single circuit."""
+def build_env(track_name, render, track_seed, max_episode_steps, target_laps,
+              reset_type):
+    """Recreate the training environment stack for a single circuit.
+
+    The one deliberate difference from training is the spawn line. f1tenth
+    defaults to ``rl_grid_static``, which starts the car on ``track.raceline``.
+    Synthetic tracks ship no raceline file, so ``Track.from_track_name`` falls
+    back to the centreline and training starts mid-track. Real circuits DO ship
+    one, so evaluation was starting 0.68-0.81 m off-centre with as little as
+    0.26 m of wall clearance at Silverstone: agents were being tested from a
+    position they never trained in. ``cl_grid_static`` puts both on the
+    centreline. With num_agents=1 it changes nothing else, because the lateral
+    offset in ``sample_around_waypoint`` is applied only when n_agents > 1.
+    """
 
     def _init():
         env = gym.make(
             "f1tenth_gym:f1tenth-v0",
-            config={"num_agents": 1, "timestep": 0.01, "map": track_name},
+            config={
+                "num_agents": 1,
+                "timestep": 0.01,
+                "map": track_name,
+                "reset_config": {"type": reset_type},
+            },
             render_mode="human" if render else None,
         )
         # The wrapper supplies the step limit, the collision flag, the
@@ -221,7 +238,7 @@ def evaluate_track(track, model, args, stats_path):
     print(f"\n--- {track} ---")
     venv = DummyVecEnv([
         build_env(track, args.render, args.eval_seed, args.max_steps,
-                  args.target_laps)
+                  args.target_laps, args.reset_type)
     ])
 
     if stats_path:
@@ -336,6 +353,13 @@ def main():
                              "one lap at 5 m/s, so a small cap would make the lap "
                              "completion metric read zero for reasons unrelated "
                              "to the policy.")
+    parser.add_argument("--reset-type", type=str, default="cl_grid_static",
+                        help="Spawn line. Default cl_grid_static starts on the "
+                             "centreline, matching where agents train. "
+                             "rl_grid_static is f1tenth's default and starts on "
+                             "the racing line, which on real circuits is up to "
+                             "0.81 m off-centre with 0.26 m of wall clearance. "
+                             "Evaluation only; training is unaffected.")
     parser.add_argument("--target-laps", type=int, default=1,
                         help="Laps that count as a completed run. Default 1: "
                              "the study measures single-lap completion. Pass 2 "
