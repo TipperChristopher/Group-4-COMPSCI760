@@ -69,6 +69,33 @@ STEERING_LIMIT = 0.4189  # rad, matches params["s_min"] / ["s_max"]
 SPEED_MIN = 0.0          # m/s. Reverse is not useful for racing and would earn
 SPEED_MAX = 20.0         # negative progress anyway; braking to 0 stays allowed.
 
+# --------------------------------------------------------------------------
+# LAP TERMINATION
+# --------------------------------------------------------------------------
+# f110_env ends an episode at TWO completed laps: `_check_done` fires when
+# `np.all(toggle_list >= 4)`, and `lap_counts = toggle_list // 2`. The study
+# measures single-lap completion, so the wrapper can stop the episode earlier.
+# This is done here rather than by patching the submodule, which already has
+# reproducibility problems (no .gitmodules, and the pinned commit does not
+# exist upstream); a local library patch would make that worse.
+#
+# Completion is decided by TWO independent signals, deliberately:
+#
+#   1. The environment's own lap counter (`lap_counts`, driven by crossings of
+#      a finish gate at the spawn pose).
+#   2. Our arc-length progress along the centreline.
+#
+# Using the env counter alone would be fooled by a car that jitters in and out
+# of the finish gate near the start without driving anywhere. Using arc length
+# alone walks into the off-by-epsilon trap: the gate triggers up to sqrt(0.1)
+# ~ 0.32 m BEFORE the car regains its spawn arc position, so at the moment the
+# env declares a lap our arc-length measure reads about 0.999, never 1.000.
+# A test of `laps >= 1.0` would therefore never fire and lap completion would
+# silently read 0% everywhere. Requiring the env counter AND at least
+# (target - LAP_PROGRESS_MARGIN) laps of real progress avoids both failures
+# without tuning an epsilon on the decision path.
+LAP_PROGRESS_MARGIN = 0.1
+
 # 30 s of simulated time. Long enough for roughly one lap of a synthetic track
 # at 6 m/s, short enough that a stuck episode does not eat the step budget.
 DEFAULT_MAX_EPISODE_STEPS = 3000
@@ -175,7 +202,8 @@ class F1TenthSB3Wrapper(gym.Wrapper):
     rescales actions from [-1, 1], and applies the frozen progress reward.
     """
 
-    def __init__(self, env, max_episode_steps: int = DEFAULT_MAX_EPISODE_STEPS):
+    def __init__(self, env, max_episode_steps: int = DEFAULT_MAX_EPISODE_STEPS,
+                 target_laps: int | None = None):
         super().__init__(env)
 
         # 108 beams + 5 ego state values = 113-dimensional vector
@@ -190,6 +218,10 @@ class F1TenthSB3Wrapper(gym.Wrapper):
         )
 
         self.max_episode_steps = int(max_episode_steps)
+        # None keeps the environment's own behaviour (a two-lap race). Set to 1
+        # to end the episode on the first completed lap. Training leaves this
+        # at None so the learning problem is unchanged; evaluation sets it.
+        self.target_laps = None if target_laps is None else int(target_laps)
         self._elapsed = 0
         self.progress = TrackProgress()
 
@@ -206,6 +238,13 @@ class F1TenthSB3Wrapper(gym.Wrapper):
         core = self.env.unwrapped
         return float(core.poses_x[0]), float(core.poses_y[0])
 
+    def _env_lap_count(self):
+        """Laps the simulator itself has counted, via its finish-gate toggles."""
+        try:
+            return int(self.env.unwrapped.lap_counts[0])
+        except Exception:
+            return 0
+
     # ------------------------------------------------------------------- API
 
     def reset(self, **kwargs):
@@ -218,6 +257,8 @@ class F1TenthSB3Wrapper(gym.Wrapper):
         info = dict(info) if info else {}
         info["progress_m"] = 0.0
         info["laps"] = 0.0
+        info["lap_completed"] = False
+        info["env_laps"] = 0
         return self._process_obs(obs), info
 
     def step(self, action):
@@ -240,6 +281,18 @@ class F1TenthSB3Wrapper(gym.Wrapper):
         if collided:
             reward -= CRASH_PENALTY
 
+        # Lap termination. Both signals must agree; see LAP_PROGRESS_MARGIN.
+        env_laps = self._env_lap_count()
+        lap_completed = False
+        if self.target_laps is not None and not collided:
+            if (env_laps >= self.target_laps
+                    and self.progress.laps >= self.target_laps - LAP_PROGRESS_MARGIN):
+                lap_completed = True
+                terminated = True
+        elif terminated and not collided:
+            # Environment's own two-lap finish, when target_laps is unset.
+            lap_completed = True
+
         # Step limit. Kept distinct from `terminated` so SB3 bootstraps the
         # value at a timeout instead of treating it as a real terminal state.
         # f110_env never truncates on its own (`truncated = False` is hardcoded
@@ -254,6 +307,10 @@ class F1TenthSB3Wrapper(gym.Wrapper):
         info["progress_m"] = self.progress.cumulative_s
         info["laps"] = self.progress.laps
         info["collision"] = collided
+        # Authoritative completion flag. Downstream code must read this rather
+        # than thresholding `laps`, which reads ~0.999 at a one-lap finish.
+        info["lap_completed"] = lap_completed
+        info["env_laps"] = env_laps
 
         return self._process_obs(obs), float(reward), terminated, truncated, info
 

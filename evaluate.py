@@ -132,7 +132,7 @@ def infer_algo(run_dir, requested):
     )
 
 
-def build_env(track_name, render, track_seed, max_episode_steps):
+def build_env(track_name, render, track_seed, max_episode_steps, target_laps):
     """Recreate the training environment stack for a single circuit."""
 
     def _init():
@@ -141,9 +141,10 @@ def build_env(track_name, render, track_seed, max_episode_steps):
             config={"num_agents": 1, "timestep": 0.01, "map": track_name},
             render_mode="human" if render else None,
         )
-        # The wrapper supplies the step limit, the collision flag and the
-        # lap/progress counters used below.
-        env = F1TenthSB3Wrapper(env, max_episode_steps=max_episode_steps)
+        # The wrapper supplies the step limit, the collision flag, the
+        # lap/progress counters used below, and the lap-termination rule.
+        env = F1TenthSB3Wrapper(env, max_episode_steps=max_episode_steps,
+                                target_laps=target_laps)
         # A one-track pool. Reused from training so the map and the spawn
         # sampler are guaranteed consistent on every reset.
         env = TrackPoolWrapper(env, tracks=[track_name], track_seed=track_seed)
@@ -167,6 +168,8 @@ def run_episode(venv, model, max_steps, deterministic, render):
     collision = None
     laps = 0.0
     progress_m = 0.0
+    lap_completed = False
+    env_laps = 0
 
     while steps < max_steps:
         action, _ = model.predict(obs, deterministic=deterministic)
@@ -179,6 +182,11 @@ def run_episode(venv, model, max_steps, deterministic, render):
         info = infos[0]
         laps = float(info.get("laps", laps))
         progress_m = float(info.get("progress_m", progress_m))
+        # Authoritative: set by the wrapper when the env's lap counter and our
+        # arc-length progress agree. Never threshold `laps` here; at a one-lap
+        # finish it reads ~0.999 because the finish gate fires ~0.32 m early.
+        lap_completed = bool(info.get("lap_completed", lap_completed))
+        env_laps = int(info.get("env_laps", env_laps))
 
         if render:
             try:
@@ -203,7 +211,8 @@ def run_episode(venv, model, max_steps, deterministic, render):
         "collision": collision,
         "laps": laps,
         "progress_m": progress_m,
-        "completed_lap": laps >= 1.0,
+        "env_laps": env_laps,
+        "completed_lap": lap_completed,
     }
 
 
@@ -211,7 +220,8 @@ def evaluate_track(track, model, args, stats_path):
     """Run every episode for one circuit."""
     print(f"\n--- {track} ---")
     venv = DummyVecEnv([
-        build_env(track, args.render, args.eval_seed, args.max_steps)
+        build_env(track, args.render, args.eval_seed, args.max_steps,
+                  args.target_laps)
     ])
 
     if stats_path:
@@ -229,7 +239,8 @@ def evaluate_track(track, model, args, stats_path):
         result["seed"] = seed
         episodes.append(result)
         print(
-            f"  episode {i}: laps={result['laps']:>6.2f}  "
+            f"  episode {i}: laps={result['laps']:>6.2f}"
+            f"{'*' if result['completed_lap'] else ' '}  "
             f"dist={result['progress_m']:>8.1f} m  "
             f"steps={result['length']:>6,}  outcome={result['outcome']:<8} "
             f"(return {result['return']:,.2f})"
@@ -239,20 +250,21 @@ def evaluate_track(track, model, args, stats_path):
     return episodes
 
 
-def write_csv(path, algo, diversity, seed, results):
+def write_csv(path, algo, diversity, seed, results, target_laps):
     os.makedirs(os.path.dirname(path) or ".", exist_ok=True)
     with open(path, "w", newline="") as f:
         writer = csv.writer(f)
         writer.writerow([
             "algo", "diversity", "run_seed", "track", "episode", "eval_seed",
-            "laps", "completed_lap", "progress_m", "return", "length",
-            "outcome", "collision",
+            "laps", "completed_lap", "env_laps", "target_laps", "progress_m",
+            "return", "length", "outcome", "collision",
         ])
         for track, episodes in results.items():
             for ep in episodes:
                 writer.writerow([
                     algo, diversity, seed, track, ep["episode"], ep["seed"],
                     f"{ep['laps']:.4f}", int(ep["completed_lap"]),
+                    ep["env_laps"], target_laps,
                     f"{ep['progress_m']:.3f}",
                     f"{ep['return']:.4f}", ep["length"], ep["outcome"],
                     "" if ep["collision"] is None else int(ep["collision"]),
@@ -324,6 +336,12 @@ def main():
                              "one lap at 5 m/s, so a small cap would make the lap "
                              "completion metric read zero for reasons unrelated "
                              "to the policy.")
+    parser.add_argument("--target-laps", type=int, default=1,
+                        help="Laps that count as a completed run. Default 1: "
+                             "the study measures single-lap completion. Pass 2 "
+                             "for the environment's own two-lap race, which is "
+                             "what f110_env does natively. Applies to "
+                             "evaluation only; training is unaffected.")
     parser.add_argument("--stochastic", action="store_true",
                         help="Sample from the policy instead of acting greedily.")
     parser.add_argument("--render", action="store_true")
@@ -421,7 +439,7 @@ def main():
 
     diversity = args.diversity if args.diversity is not None else "?"
     out = args.out or os.path.join(run_dir, "zero_shot_results.csv")
-    print(f"\nPer-episode results written to {write_csv(out, args.algo, diversity, args.seed, results)}")
+    print(f"\nPer-episode results written to {write_csv(out, args.algo, diversity, args.seed, results, args.target_laps)}")
 
     if not args.no_plot:
         make_plot(results, args.algo, diversity, args.plot_path)
