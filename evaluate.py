@@ -14,6 +14,7 @@ import types
 import os
 import csv
 import glob
+import json
 import math
 import argparse
 import importlib.util
@@ -385,7 +386,26 @@ def main():
         args.algo = args.baseline
         run_dir = os.path.join(_PROJECT_ROOT, "results", f"baseline_{args.baseline}")
         os.makedirs(run_dir, exist_ok=True)
+        # Record the policy's parameters beside its results, so which settings
+        # produced a number is provable from the outputs rather than asserted.
+        cfg = dict(model.config())
+        cfg.update({
+            "max_steps": args.max_steps,
+            "target_laps": args.target_laps,
+            "reset_type": args.reset_type,
+            "episodes": args.episodes,
+            "eval_seed": args.eval_seed,
+            "tracks": list(args.tracks),
+        })
+        cfg_path = os.path.join(run_dir, "baseline_config.json")
+        with open(cfg_path, "w") as fh:
+            json.dump(cfg, fh, indent=2, sort_keys=True)
         print(f"Baseline policy: {args.baseline} (no model, no normalisation)")
+        if "safe_threshold_beams" in cfg:
+            print(f"  safe_threshold = {cfg['safe_threshold_beams']} beams "
+                  f"({cfg['safe_threshold_deg']} deg), upstream value "
+                  f"{cfg['safe_threshold_upstream_value']}: retuned, see src/baselines.py")
+        print(f"  config written to {cfg_path}")
     else:
         run_dir = find_run_dir(args)
         args.algo = infer_algo(run_dir, args.algo)

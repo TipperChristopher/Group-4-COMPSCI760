@@ -38,7 +38,7 @@ mean filter, clip), an index-width bubble zeroed around the nearest return,
 ``find_max_gap`` over contiguous non-zero runs, ``find_best_point`` by sliding
 window average, ``get_angle`` with the one-half gain, then three speed bands.
 
-Three deviations, each marked at its site:
+Four deviations, each marked at its site:
 
 1.  It reads the 108-beam observation our policies receive rather than the raw
     1080-beam scan, so the baseline is held to exactly the input the agents
@@ -48,8 +48,12 @@ Three deviations, each marked at its site:
     threshold. The original returns ``None`` there and raises on unpack.
 3.  Output is converted to the normalised action pair this project's wrapper
     expects. The original returns physical ``[steering, speed]``.
+4.  ``safe_threshold`` is retuned from the published value. This one is a
+    deliberate deviation rather than a faithful port, justified by a parameter
+    sweep; see the ``GapFollower`` docstring.
 
-Tuning constants are upstream's FollowTheGap.yaml verbatim, not chosen here.
+Tuning constants are upstream's FollowTheGap.yaml verbatim except
+``safe_threshold``; see deviation 4.
 
 The original computes ``radians_per_elem`` as ``2*pi / len(ranges)`` even though
 an F1TENTH LiDAR spans 4.7 rad, not 2*pi. That overstates each beam's angle by
@@ -89,6 +93,10 @@ class BasePolicy:
     def _act(self, obs):
         raise NotImplementedError
 
+    def config(self) -> dict:
+        """Parameters actually used, so a run's outputs record their own setup."""
+        return {"baseline": self.name}
+
 
 class RandomPolicy(BasePolicy):
     """Uniform over the normalised action space. The floor for the protocol.
@@ -100,20 +108,40 @@ class RandomPolicy(BasePolicy):
     name = "random"
 
     def __init__(self, seed: int = 0):
+        self.seed = int(seed)
         self.rng = np.random.default_rng(seed)
 
     def _act(self, obs):
         return self.rng.uniform(-1.0, 1.0, size=2)
 
+    def config(self) -> dict:
+        return {"baseline": self.name, "seed": self.seed}
+
 
 class GapFollower(BasePolicy):
     """Follow The Gap, ported from f1tenth_benchmarks. See module docstring.
 
-    Defaults are the upstream FollowTheGap.yaml verbatim. Index constants are
-    carried as fractions of scan length so the same settings apply whether the
-    port is fed 108 beams or the raw 1080; the numerators are the upstream
-    1080-beam values (crop 135 from the source, bubble 160, best-point window
-    80, safety threshold 5).
+    Defaults are the upstream FollowTheGap.yaml verbatim with one exception,
+    ``safe_threshold``. Index constants are carried as fractions of scan length
+    so the same angular settings apply whether the port is fed 108 beams or the
+    raw 1080; the numerators are the upstream 1080-beam values (crop 135 from
+    the source, bubble 160, best-point window 80).
+
+    ``safe_threshold`` is a deliberate tuning deviation from the published
+    value of 5, justified by a parameter sweep rather than by any conversion.
+    Upstream's value is a noise filter sized for their 0.25 degree beams. Our
+    observation is 108 beams over the same field of view, so one beam spans
+    2.5 degrees, which is a 44 cm opening at typical sight distance and wider
+    than the 31 cm car. Carried across, the published value resolves to 1 beam
+    and the planner steers into gaps it cannot fit through: swept on the real
+    simulator at the centreline spawn, that crashes on 4 of the 5 circuits
+    tested. Lap completion appears at 8 and is flat from 8 to 60, the top of
+    the range swept. 20 sits mid-plateau, 2.5x above the transition and 3x
+    below the top, taken for margin against the spawn and speed changes that
+    have already moved under this baseline once.
+
+    As a fraction the threshold is resolution independent in ANGLE: 20/108 and
+    200/1080 both require a gap spanning about 50 degrees.
 
     Note that fast_speed and straights_speed are both 5.0 upstream, so the
     three-band schedule collapses to two speeds in practice: 3.0 m/s when the
@@ -129,7 +157,7 @@ class GapFollower(BasePolicy):
         crop_fraction: float = 135 / 1080,
         bubble_fraction: float = 160 / 1080,
         best_point_fraction: float = 80 / 1080,
-        safe_threshold_fraction: float = 5 / 1080,
+        safe_threshold_fraction: float = 20 / 108,
         preprocess_conv_size: int = 3,
         max_lidar_dist: float = 10.0,
         straights_steering_angle: float = 0.174,
@@ -255,6 +283,30 @@ class GapFollower(BasePolicy):
             float(np.clip(steering_angle / self.wrapper_steering_limit, -1.0, 1.0)),
             float(np.clip(2.0 * (speed - self.speed_min) / span - 1.0, -1.0, 1.0)),
         ])
+
+    def config(self) -> dict:
+        deg = float(np.degrees(FOV / (RAW_BEAMS - 1)) * (RAW_BEAMS / self.n_beams))
+        return {
+            "baseline": self.name,
+            "source": "f1tenth_benchmarks FollowTheGap (Sezer & Gokasan 2012)",
+            "n_beams": self.n_beams,
+            "deg_per_beam": round(deg, 4),
+            "safe_threshold_beams": self.safe_threshold,
+            "safe_threshold_deg": round(self.safe_threshold * deg, 2),
+            "safe_threshold_upstream_value": 5,
+            "safe_threshold_is_upstream_value": False,
+            "crop_beams": self.crop,
+            "bubble_radius_beams": self.bubble_radius,
+            "best_point_conv_beams": self.best_point_conv_size,
+            "preprocess_conv_size": self.preprocess_conv_size,
+            "max_lidar_dist": self.max_lidar_dist,
+            "straights_steering_angle": self.straights_steering_angle,
+            "fast_steering_angle": self.fast_steering_angle,
+            "corners_speed": self.corners_speed,
+            "straights_speed": self.straights_speed,
+            "fast_speed": self.fast_speed,
+            "max_steer": self.max_steer,
+        }
 
 
 BASELINES = {"random": RandomPolicy, "gap": GapFollower}
