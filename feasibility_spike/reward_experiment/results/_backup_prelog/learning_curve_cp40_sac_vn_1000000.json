@@ -14,11 +14,7 @@
       "laps": 0.2706517030892594,
       "max_progress_m": 51.10247103627016,
       "crashed": true,
-      "speed_before_crash": 6.1908135414123535,
-      "eval_steps": 906,
-      "lap_time_s": null,
-      "ep_rew_mean": -1.3833896400000003,
-      "ep_len_mean": 777.31
+      "speed_before_crash": 6.1908135414123535
     },
     {
       "steps": 200000,
@@ -26,11 +22,7 @@
       "laps": 0.500443541308122,
       "max_progress_m": 94.60535880264668,
       "crashed": true,
-      "speed_before_crash": 7.583860397338867,
-      "eval_steps": 2355,
-      "lap_time_s": null,
-      "ep_rew_mean": 35.10641779,
-      "ep_len_mean": 1364.76
+      "speed_before_crash": 7.583860397338867
     },
     {
       "steps": 300000,
@@ -38,11 +30,7 @@
       "laps": 0.34311331071461887,
       "max_progress_m": 64.83226040107708,
       "crashed": true,
-      "speed_before_crash": 5.256896018981934,
-      "eval_steps": 795,
-      "lap_time_s": null,
-      "ep_rew_mean": 70.45849425,
-      "ep_len_mean": 1933.92
+      "speed_before_crash": 5.256896018981934
     },
     {
       "steps": 400000,
@@ -50,11 +38,7 @@
       "laps": 1.9987688112889088,
       "max_progress_m": 377.7620218151916,
       "crashed": false,
-      "speed_before_crash": 9.203680038452148,
-      "eval_steps": 8046,
-      "lap_time_s": 40.25478061573077,
-      "ep_rew_mean": 104.42153149999999,
-      "ep_len_mean": 2373.08
+      "speed_before_crash": 9.203680038452148
     },
     {
       "steps": 500000,
@@ -62,11 +46,7 @@
       "laps": 0.9563710175543828,
       "max_progress_m": 180.79526619063247,
       "crashed": true,
-      "speed_before_crash": 10.743956565856934,
-      "eval_steps": 2849,
-      "lap_time_s": null,
-      "ep_rew_mean": 122.17178799999999,
-      "ep_len_mean": 2565.21
+      "speed_before_crash": 10.743956565856934
     },
     {
       "steps": 600000,
@@ -74,11 +54,7 @@
       "laps": 1.9985762451071574,
       "max_progress_m": 377.7373354626758,
       "crashed": false,
-      "speed_before_crash": 8.00452995300293,
-      "eval_steps": 6708,
-      "lap_time_s": 33.56389337871039,
-      "ep_rew_mean": 139.83810083999998,
-      "ep_len_mean": 2675.73
+      "speed_before_crash": 8.00452995300293
     },
     {
       "steps": 700000,
@@ -86,11 +62,7 @@
       "laps": 1.9985598752568399,
       "max_progress_m": 377.7472433273551,
       "crashed": false,
-      "speed_before_crash": 7.028758525848389,
-      "eval_steps": 6696,
-      "lap_time_s": 33.50412505974824,
-      "ep_rew_mean": 159.02319129,
-      "ep_len_mean": 2769.12
+      "speed_before_crash": 7.028758525848389
     },
     {
       "steps": 800000,
@@ -98,11 +70,7 @@
       "laps": 1.998625295536294,
       "max_progress_m": 377.7592145382888,
       "crashed": false,
-      "speed_before_crash": 6.742489814758301,
-      "eval_steps": 5630,
-      "lap_time_s": 28.16936227402893,
-      "ep_rew_mean": 184.07603544000008,
-      "ep_len_mean": 2840.91
+      "speed_before_crash": 6.742489814758301
     },
     {
       "steps": 900000,
@@ -110,11 +78,7 @@
       "laps": 1.9985638901375844,
       "max_progress_m": 377.73502220841567,
       "crashed": false,
-      "speed_before_crash": 8.056818962097168,
-      "eval_steps": 6696,
-      "lap_time_s": 33.504057753885654,
-      "ep_rew_mean": 190.70193315,
-      "ep_len_mean": 2829.67
+      "speed_before_crash": 8.056818962097168
     },
     {
       "steps": 1000000,
@@ -122,19 +86,13 @@
       "laps": 1.99876783136662,
       "max_progress_m": 377.7647807013391,
       "crashed": false,
-      "speed_before_crash": 8.882314682006836,
-      "eval_steps": 4936,
-      "lap_time_s": 24.69521433424863,
-      "ep_rew_mean": 196.57682164999994,
-      "ep_len_mean": 2807.12
+      "speed_before_crash": 8.882314682006836
     }
   ],
   "final": {
     "laps": 1.99876783136662,
     "max_progress_m": 377.7647807013391,
     "crashed": false,
-    "eval_steps": 4936,
-    "lap_time_s": 24.69521433424863,
     "speed_before_crash": 8.882314682006836,
     "curvature_at_crash": 8.738199819602186e-10,
     "track_curvature_mean": 0.10194887591221073,

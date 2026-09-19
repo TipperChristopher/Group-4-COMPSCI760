@@ -1,0 +1,124 @@
+{
+  "track": "Silverstone",
+  "seeds": [
+    0,
+    1,
+    2,
+    3,
+    4
+  ],
+  "results": {
+    "gap": [
+      {
+        "seed": 0,
+        "reset": "rl_grid_static",
+        "off_centreline": 0.79,
+        "off_raceline": 0.0,
+        "laps": 0.176,
+        "crashed": true,
+        "steps": 1603,
+        "outcome": "crash",
+        "lap_time_s": null
+      },
+      {
+        "seed": 1,
+        "reset": "rl_grid_static",
+        "off_centreline": 0.783,
+        "off_raceline": 0.0,
+        "laps": 0.177,
+        "crashed": true,
+        "steps": 1606,
+        "outcome": "crash",
+        "lap_time_s": null
+      },
+      {
+        "seed": 2,
+        "reset": "rl_grid_static",
+        "off_centreline": 0.757,
+        "off_raceline": 0.0,
+        "laps": 0.177,
+        "crashed": true,
+        "steps": 1617,
+        "outcome": "crash",
+        "lap_time_s": null
+      },
+      {
+        "seed": 3,
+        "reset": "rl_grid_static",
+        "off_centreline": 0.776,
+        "off_raceline": 0.0,
+        "laps": 0.177,
+        "crashed": true,
+        "steps": 1610,
+        "outcome": "crash",
+        "lap_time_s": null
+      },
+      {
+        "seed": 4,
+        "reset": "rl_grid_static",
+        "off_centreline": 0.776,
+        "off_raceline": 0.0,
+        "laps": 0.177,
+        "crashed": true,
+        "steps": 1610,
+        "outcome": "crash",
+        "lap_time_s": null
+      },
+      {
+        "seed": 0,
+        "reset": "cl_grid_static",
+        "off_centreline": 0.0,
+        "off_raceline": 0.784,
+        "laps": 0.176,
+        "crashed": true,
+        "steps": 1603,
+        "outcome": "crash",
+        "lap_time_s": null
+      },
+      {
+        "seed": 1,
+        "reset": "cl_grid_static",
+        "off_centreline": 0.0,
+        "off_raceline": 0.784,
+        "laps": 0.176,
+        "crashed": true,
+        "steps": 1603,
+        "outcome": "crash",
+        "lap_time_s": null
+      },
+      {
+        "seed": 2,
+        "reset": "cl_grid_static",
+        "off_centreline": 0.0,
+        "off_raceline": 0.796,
+        "laps": 0.176,
+        "crashed": true,
+        "steps": 1598,
+        "outcome": "crash",
+        "lap_time_s": null
+      },
+      {
+        "seed": 3,
+        "reset": "cl_grid_static",
+        "off_centreline": 0.0,
+        "off_raceline": 0.796,
+        "laps": 0.176,
+        "crashed": true,
+        "steps": 1598,
+        "outcome": "crash",
+        "lap_time_s": null
+      },
+      {
+        "seed": 4,
+        "reset": "cl_grid_static",
+        "off_centreline": 0.0,
+        "off_raceline": 0.791,
+        "laps": 0.176,
+        "crashed": true,
+        "steps": 1601,
+        "outcome": "crash",
+        "lap_time_s": null
+      }
+    ]
+  }
+}

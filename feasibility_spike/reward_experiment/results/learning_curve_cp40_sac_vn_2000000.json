@@ -1,0 +1,25 @@
+{
+  "penalty": 40.0,
+  "algo": "sac",
+  "vecnormalize": true,
+  "steps": 2000000,
+  "ent_coef": 0.0,
+  "completion_bonus": 0.0,
+  "warmup_track": "",
+  "warmup_frac": 0.5,
+  "curve": [
+    {
+      "steps": 100000,
+      "eval_track": "synthetic_track_0",
+      "laps": 0.2706517030892594,
+      "max_progress_m": 51.10247103627016,
+      "crashed": true,
+      "speed_before_crash": 6.1908135414123535,
+      "eval_steps": 906,
+      "lap_time_s": null,
+      "ep_rew_mean": -1.3833896400000003,
+      "ep_len_mean": 777.31
+    }
+  ],
+  "final": null
+}

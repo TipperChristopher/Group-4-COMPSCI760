@@ -10,3 +10,6 @@ f1tenth_gym/
 f1tenth_gym_v1/
 runs/
 *.mp4
+# running training logs + resumable model checkpoints (churn every segment)
+logs/
+saved_models/

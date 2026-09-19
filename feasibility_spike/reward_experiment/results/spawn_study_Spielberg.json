@@ -1,0 +1,124 @@
+{
+  "track": "Spielberg",
+  "seeds": [
+    0,
+    1,
+    2,
+    3,
+    4
+  ],
+  "results": {
+    "gap": [
+      {
+        "seed": 0,
+        "reset": "rl_grid_static",
+        "off_centreline": 0.809,
+        "off_raceline": 0.0,
+        "laps": 1.0,
+        "crashed": null,
+        "steps": 6738,
+        "outcome": "finished",
+        "lap_time_s": 67.38
+      },
+      {
+        "seed": 1,
+        "reset": "rl_grid_static",
+        "off_centreline": 0.809,
+        "off_raceline": 0.0,
+        "laps": 1.0,
+        "crashed": null,
+        "steps": 6742,
+        "outcome": "finished",
+        "lap_time_s": 67.42
+      },
+      {
+        "seed": 2,
+        "reset": "rl_grid_static",
+        "off_centreline": 0.809,
+        "off_raceline": 0.0,
+        "laps": 1.0,
+        "crashed": null,
+        "steps": 6740,
+        "outcome": "finished",
+        "lap_time_s": 67.4
+      },
+      {
+        "seed": 3,
+        "reset": "rl_grid_static",
+        "off_centreline": 0.809,
+        "off_raceline": 0.0,
+        "laps": 1.0,
+        "crashed": null,
+        "steps": 6741,
+        "outcome": "finished",
+        "lap_time_s": 67.41
+      },
+      {
+        "seed": 4,
+        "reset": "rl_grid_static",
+        "off_centreline": 0.809,
+        "off_raceline": 0.0,
+        "laps": 1.0,
+        "crashed": null,
+        "steps": 6741,
+        "outcome": "finished",
+        "lap_time_s": 67.41
+      },
+      {
+        "seed": 0,
+        "reset": "cl_grid_static",
+        "off_centreline": 0.0,
+        "off_raceline": 0.809,
+        "laps": 1.0,
+        "crashed": null,
+        "steps": 6738,
+        "outcome": "finished",
+        "lap_time_s": 67.38
+      },
+      {
+        "seed": 1,
+        "reset": "cl_grid_static",
+        "off_centreline": 0.0,
+        "off_raceline": 0.809,
+        "laps": 1.0,
+        "crashed": null,
+        "steps": 6738,
+        "outcome": "finished",
+        "lap_time_s": 67.38
+      },
+      {
+        "seed": 2,
+        "reset": "cl_grid_static",
+        "off_centreline": 0.0,
+        "off_raceline": 0.811,
+        "laps": 1.0,
+        "crashed": null,
+        "steps": 6739,
+        "outcome": "finished",
+        "lap_time_s": 67.38
+      },
+      {
+        "seed": 3,
+        "reset": "cl_grid_static",
+        "off_centreline": 0.0,
+        "off_raceline": 0.811,
+        "laps": 1.0,
+        "crashed": null,
+        "steps": 6739,
+        "outcome": "finished",
+        "lap_time_s": 67.38
+      },
+      {
+        "seed": 4,
+        "reset": "cl_grid_static",
+        "off_centreline": 0.0,
+        "off_raceline": 0.809,
+        "laps": 1.0,
+        "crashed": null,
+        "steps": 6739,
+        "outcome": "finished",
+        "lap_time_s": 67.38
+      }
+    ]
+  }
+}

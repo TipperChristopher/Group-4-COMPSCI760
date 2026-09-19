@@ -131,7 +131,7 @@ class GapFollower(BasePolicy):
         crop_fraction: float = 135 / 1080,
         bubble_fraction: float = 160 / 1080,
         best_point_fraction: float = 80 / 1080,
-        safe_threshold_fraction: float = 5 / 1080,
+        safe_threshold_fraction: float = 20 / 1080,
         preprocess_conv_size: int = 3,
         max_lidar_dist: float = 10.0,
         straights_steering_angle: float = 0.174,

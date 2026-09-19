@@ -1,0 +1,97 @@
+{
+  "penalty": 40.0,
+  "algo": "sac",
+  "vecnormalize": true,
+  "steps": 1000000,
+  "ent_coef": 0.0,
+  "completion_bonus": 0.0,
+  "warmup_track": "",
+  "warmup_frac": 0.5,
+  "curve": [
+    {
+      "steps": 100000,
+      "eval_track": "synthetic_track_0",
+      "laps": 0.2706517030892594,
+      "max_progress_m": 51.10247103627016,
+      "crashed": true,
+      "speed_before_crash": 6.1908135414123535,
+      "eval_steps": 906,
+      "lap_time_s": null,
+      "ep_rew_mean": -1.3833896400000003,
+      "ep_len_mean": 777.31
+    },
+    {
+      "steps": 200000,
+      "eval_track": "synthetic_track_0",
+      "laps": 0.500443541308122,
+      "max_progress_m": 94.60535880264668,
+      "crashed": true,
+      "speed_before_crash": 7.583860397338867,
+      "eval_steps": 2355,
+      "lap_time_s": null,
+      "ep_rew_mean": 35.10641779,
+      "ep_len_mean": 1364.76
+    },
+    {
+      "steps": 300000,
+      "eval_track": "synthetic_track_0",
+      "laps": 0.34311331071461887,
+      "max_progress_m": 64.83226040107708,
+      "crashed": true,
+      "speed_before_crash": 5.256896018981934,
+      "eval_steps": 795,
+      "lap_time_s": null,
+      "ep_rew_mean": 70.45849425,
+      "ep_len_mean": 1933.92
+    },
+    {
+      "steps": 400000,
+      "eval_track": "synthetic_track_0",
+      "laps": 1.9987688112889088,
+      "max_progress_m": 377.7620218151916,
+      "crashed": false,
+      "speed_before_crash": 9.203680038452148,
+      "eval_steps": 8046,
+      "lap_time_s": 40.25478061573077,
+      "ep_rew_mean": 104.42153149999999,
+      "ep_len_mean": 2373.08
+    },
+    {
+      "steps": 500000,
+      "eval_track": "synthetic_track_0",
+      "laps": 0.9563710175543828,
+      "max_progress_m": 180.79526619063247,
+      "crashed": true,
+      "speed_before_crash": 10.743956565856934,
+      "eval_steps": 2849,
+      "lap_time_s": null,
+      "ep_rew_mean": 122.17178799999999,
+      "ep_len_mean": 2565.21
+    },
+    {
+      "steps": 600000,
+      "eval_track": "synthetic_track_0",
+      "laps": 1.9985762451071574,
+      "max_progress_m": 377.7373354626758,
+      "crashed": false,
+      "speed_before_crash": 8.00452995300293,
+      "eval_steps": 6708,
+      "lap_time_s": 33.56389337871039,
+      "ep_rew_mean": 139.83810083999998,
+      "ep_len_mean": 2675.73
+    },
+    {
+      "steps": 700000,
+      "eval_track": "synthetic_track_0",
+      "laps": 1.9985598752568399,
+      "max_progress_m": 377.7472433273551,
+      "crashed": false,
+      "speed_before_crash": 7.028758525848389,
+      "eval_steps": 6696,
+      "lap_time_s": 33.50412505974824,
+      "ep_rew_mean": 159.02319129,
+      "ep_len_mean": 2769.12
+    }
+  ],
+  "final": null
+}

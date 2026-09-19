@@ -1,0 +1,255 @@
+{
+  "model": "None",
+  "algo": "gap",
+  "tracks": [
+    "synthetic_track_0",
+    "synthetic_track_1",
+    "synthetic_track_2",
+    "Spielberg",
+    "Silverstone"
+  ],
+  "seeds": [
+    0,
+    1,
+    2,
+    3,
+    4
+  ],
+  "results": {
+    "synthetic_track_0": [
+      {
+        "seed": 0,
+        "laps": 1.0,
+        "crashed": null,
+        "outcome": "finished",
+        "steps": 3558,
+        "ret": 189.07,
+        "lap_time_s": 35.58
+      },
+      {
+        "seed": 1,
+        "laps": 1.0,
+        "crashed": null,
+        "outcome": "finished",
+        "steps": 3558,
+        "ret": 189.07,
+        "lap_time_s": 35.58
+      },
+      {
+        "seed": 2,
+        "laps": 1.0,
+        "crashed": null,
+        "outcome": "finished",
+        "steps": 3556,
+        "ret": 189.08,
+        "lap_time_s": 35.55
+      },
+      {
+        "seed": 3,
+        "laps": 1.0,
+        "crashed": null,
+        "outcome": "finished",
+        "steps": 3556,
+        "ret": 189.08,
+        "lap_time_s": 35.55
+      },
+      {
+        "seed": 4,
+        "laps": 1.0,
+        "crashed": null,
+        "outcome": "finished",
+        "steps": 3556,
+        "ret": 189.04,
+        "lap_time_s": 35.56
+      }
+    ],
+    "synthetic_track_1": [
+      {
+        "seed": 0,
+        "laps": 0.051,
+        "crashed": true,
+        "outcome": "crash",
+        "steps": 179,
+        "ret": 3.24,
+        "lap_time_s": null
+      },
+      {
+        "seed": 1,
+        "laps": 0.051,
+        "crashed": true,
+        "outcome": "crash",
+        "steps": 179,
+        "ret": 3.24,
+        "lap_time_s": null
+      },
+      {
+        "seed": 2,
+        "laps": 0.948,
+        "crashed": true,
+        "outcome": "crash",
+        "steps": 2690,
+        "ret": 139.22,
+        "lap_time_s": null
+      },
+      {
+        "seed": 3,
+        "laps": 0.948,
+        "crashed": true,
+        "outcome": "crash",
+        "steps": 2690,
+        "ret": 139.22,
+        "lap_time_s": null
+      },
+      {
+        "seed": 4,
+        "laps": 1.0,
+        "crashed": null,
+        "outcome": "finished",
+        "steps": 2844,
+        "ret": 152.19,
+        "lap_time_s": 28.43
+      }
+    ],
+    "synthetic_track_2": [
+      {
+        "seed": 0,
+        "laps": 0.046,
+        "crashed": true,
+        "outcome": "crash",
+        "steps": 181,
+        "ret": 3.26,
+        "lap_time_s": null
+      },
+      {
+        "seed": 1,
+        "laps": 0.046,
+        "crashed": true,
+        "outcome": "crash",
+        "steps": 181,
+        "ret": 3.26,
+        "lap_time_s": null
+      },
+      {
+        "seed": 2,
+        "laps": 0.042,
+        "crashed": true,
+        "outcome": "crash",
+        "steps": 175,
+        "ret": 2.95,
+        "lap_time_s": null
+      },
+      {
+        "seed": 3,
+        "laps": 0.042,
+        "crashed": true,
+        "outcome": "crash",
+        "steps": 175,
+        "ret": 2.95,
+        "lap_time_s": null
+      },
+      {
+        "seed": 4,
+        "laps": 0.337,
+        "crashed": true,
+        "outcome": "crash",
+        "steps": 1143,
+        "ret": 54.75,
+        "lap_time_s": null
+      }
+    ],
+    "Spielberg": [
+      {
+        "seed": 0,
+        "laps": 1.0,
+        "crashed": null,
+        "outcome": "finished",
+        "steps": 6738,
+        "ret": 343.32,
+        "lap_time_s": 67.38
+      },
+      {
+        "seed": 1,
+        "laps": 1.0,
+        "crashed": null,
+        "outcome": "finished",
+        "steps": 6738,
+        "ret": 343.32,
+        "lap_time_s": 67.38
+      },
+      {
+        "seed": 2,
+        "laps": 1.0,
+        "crashed": null,
+        "outcome": "finished",
+        "steps": 6739,
+        "ret": 343.36,
+        "lap_time_s": 67.38
+      },
+      {
+        "seed": 3,
+        "laps": 1.0,
+        "crashed": null,
+        "outcome": "finished",
+        "steps": 6739,
+        "ret": 343.36,
+        "lap_time_s": 67.38
+      },
+      {
+        "seed": 4,
+        "laps": 1.0,
+        "crashed": null,
+        "outcome": "finished",
+        "steps": 6739,
+        "ret": 343.35,
+        "lap_time_s": 67.38
+      }
+    ],
+    "Silverstone": [
+      {
+        "seed": 0,
+        "laps": 0.176,
+        "crashed": true,
+        "outcome": "crash",
+        "steps": 1603,
+        "ret": 75.92,
+        "lap_time_s": null
+      },
+      {
+        "seed": 1,
+        "laps": 0.176,
+        "crashed": true,
+        "outcome": "crash",
+        "steps": 1603,
+        "ret": 75.92,
+        "lap_time_s": null
+      },
+      {
+        "seed": 2,
+        "laps": 0.176,
+        "crashed": true,
+        "outcome": "crash",
+        "steps": 1598,
+        "ret": 75.66,
+        "lap_time_s": null
+      },
+      {
+        "seed": 3,
+        "laps": 0.176,
+        "crashed": true,
+        "outcome": "crash",
+        "steps": 1598,
+        "ret": 75.66,
+        "lap_time_s": null
+      },
+      {
+        "seed": 4,
+        "laps": 0.176,
+        "crashed": true,
+        "outcome": "crash",
+        "steps": 1601,
+        "ret": 75.76,
+        "lap_time_s": null
+      }
+    ]
+  }
+}

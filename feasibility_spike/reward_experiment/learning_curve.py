@@ -143,10 +143,18 @@ def main():
     ap.add_argument("--warmup-track", type=str, default="")
     ap.add_argument("--warmup-frac", type=float, default=0.5)
     ap.add_argument("--vecnormalize", action="store_true")
+    ap.add_argument("--shaping", type=float, default=0.0,
+                    help="dense wall-proximity x speed penalty weight (positive-shaping experiment)")
+    ap.add_argument("--save-model", type=str, default="",
+                    help="dir to save final_model.zip (+ vecnormalize.pkl) so the policy can be re-evaluated")
     args = ap.parse_args()
 
     W.CRASH_PENALTY = args.penalty
-    if args.completion_bonus > 0:
+    if args.shaping > 0:
+        from shaped_reward_wrapper import ShapedWrapper
+        sw = args.shaping
+        wrap_fn = lambda env, cap: ShapedWrapper(env, max_episode_steps=cap, shaping_w=sw)
+    elif args.completion_bonus > 0:
         cb = args.completion_bonus
         wrap_fn = lambda env, cap: CompletionBonusWrapper(env, max_episode_steps=cap, completion_bonus=cb)
     else:
@@ -157,6 +165,7 @@ def main():
     tag = ""
     if args.ent_coef > 0: tag += f"_ent{args.ent_coef}"
     if args.completion_bonus > 0: tag += f"_bonus{int(args.completion_bonus)}"
+    if args.shaping > 0: tag += f"_shape{args.shaping}"
     if args.warmup_track: tag += f"_warmup-{args.warmup_track}"
 
     print(f"=== learning curve [{args.algo.upper()}]: NEW reward, crash_penalty={args.penalty}, "
@@ -176,6 +185,42 @@ def main():
     (HERE / "results").mkdir(exist_ok=True)
     out = HERE / "results" / f"learning_curve_cp{int(args.penalty)}{algo_tag}{norm_tag}{tag}_{args.steps}.json"
 
+    # ---- resumable checkpointing: model + vecnormalize + state saved after
+    # every segment, so a PC shutdown only loses the current segment -------
+    resume_dir = pathlib.Path(args.save_model) if args.save_model else None
+    resume_state = None
+    if resume_dir and (resume_dir / "state.json").exists() and (resume_dir / "model.zip").exists():
+        st = json.loads((resume_dir / "state.json").read_text())
+        ok = all(st.get(k) == getattr(args, k) for k in
+                 ("penalty", "algo", "vecnormalize", "steps", "ent_coef",
+                  "completion_bonus", "warmup_track", "warmup_frac", "shaping"))
+        if not ok:
+            raise SystemExit(f"resume config mismatch with {resume_dir}/state.json "
+                             f"— delete that dir to start fresh")
+        if st.get("warmup_track"):
+            raise SystemExit("resume does not support --warmup-track; delete the checkpoint dir")
+        resume_state = st
+        print(f"RESUMING from {resume_dir}: {st['done']}/{args.segments} segments already done", flush=True)
+
+    def checkpoint():
+        if not resume_dir:
+            return
+        resume_dir.mkdir(parents=True, exist_ok=True)
+        model.save(str(resume_dir / "model.zip"))
+        if args.vecnormalize:
+            train_venv.save(str(resume_dir / "vecnormalize.pkl"))
+        (resume_dir / "state.json").write_text(json.dumps(dict(
+            penalty=args.penalty, algo=args.algo, vecnormalize=args.vecnormalize,
+            steps=args.steps, ent_coef=args.ent_coef, completion_bonus=args.completion_bonus,
+            warmup_track=args.warmup_track, warmup_frac=args.warmup_frac, shaping=args.shaping,
+            done=done, curve=curve)))
+
+    if resume_state:
+        done = int(resume_state["done"])
+        curve = list(resume_state["curve"])
+        model = (SAC if args.algo == "sac" else PPO).load(str(resume_dir / "model.zip"))
+        print(f"  loaded model + curve ({len(curve)} checkpoints)", flush=True)
+
     def save(final_obj):
         # written after every segment so an interruption keeps the partial curve
         out.write_text(json.dumps(dict(
@@ -187,7 +232,13 @@ def main():
     for track, nseg in phases:
         new_venv = DummyVecEnv([make_env(wrap_fn, track, TRAIN_CAP)])
         if args.vecnormalize:
-            new_venv = W.wrap_vecnormalize(new_venv, training=True)
+            if resume_state is not None:
+                new_venv = VecNormalize.load(str(resume_dir / "vecnormalize.pkl"), new_venv)
+                new_venv.training = True          # keep updating stats while training
+                new_venv.norm_obs = True
+                new_venv.norm_reward = False
+            else:
+                new_venv = W.wrap_vecnormalize(new_venv, training=True)
         if model is None:
             if args.algo == "sac":
                 model = SAC("MlpPolicy", new_venv, verbose=0, device="cpu", seed=0)
@@ -199,7 +250,7 @@ def main():
                 train_venv.close()
             model.set_env(new_venv)
         train_venv = new_venv
-        for _ in range(nseg):
+        for _ in range(max(0, nseg - done)):
             model.learn(total_timesteps=seg, reset_num_timesteps=(done == 0))
             done += 1
             rms = train_venv.obs_rms if args.vecnormalize else None
@@ -217,7 +268,14 @@ def main():
                   f"ep_rew={ep_rew:7.2f}  ep_len={ep_len:6.0f}  laptime={lt}  "
                   f"crashed={ev['crashed']}", flush=True)
             save(None)   # incremental checkpoint of the curve so far
+            checkpoint() # resumable: model + vecnormalize + state (survives shutdown)
     final_rms = train_venv.obs_rms if args.vecnormalize else None
+    if args.save_model:
+        sd = pathlib.Path(args.save_model); sd.mkdir(parents=True, exist_ok=True)
+        model.save(str(sd / "final_model.zip"))
+        if args.vecnormalize:
+            train_venv.save(str(sd / "vecnormalize.pkl"))
+        print(f"saved model to {sd}", flush=True)
     train_venv.close()
 
     final = evaluate(model, wrap_fn, TARGET, want_trace=True, obs_rms=final_rms)

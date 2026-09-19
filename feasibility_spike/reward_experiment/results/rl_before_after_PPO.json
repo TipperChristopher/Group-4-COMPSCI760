@@ -1,0 +1,230 @@
+{
+  "model": "E:\\OneDrive - The University of Auckland\\Desktop\\COMPSCI 760\\team_repo\\models\\PPO_5tracks_s42",
+  "algo": "PPO",
+  "results": {
+    "Spielberg": [
+      {
+        "seed": 0,
+        "reset": "rl_grid_static",
+        "off_centreline": 0.809,
+        "laps": 0.105,
+        "crashed": true,
+        "outcome": "crash",
+        "steps": 1100,
+        "ret": 340.2,
+        "lap_time_s": null
+      },
+      {
+        "seed": 1,
+        "reset": "rl_grid_static",
+        "off_centreline": 0.809,
+        "laps": 0.106,
+        "crashed": true,
+        "outcome": "crash",
+        "steps": 1110,
+        "ret": 341.44,
+        "lap_time_s": null
+      },
+      {
+        "seed": 2,
+        "reset": "rl_grid_static",
+        "off_centreline": 0.809,
+        "laps": 0.107,
+        "crashed": true,
+        "outcome": "crash",
+        "steps": 1117,
+        "ret": 347.27,
+        "lap_time_s": null
+      },
+      {
+        "seed": 3,
+        "reset": "rl_grid_static",
+        "off_centreline": 0.809,
+        "laps": 0.106,
+        "crashed": true,
+        "outcome": "crash",
+        "steps": 1110,
+        "ret": 343.03,
+        "lap_time_s": null
+      },
+      {
+        "seed": 4,
+        "reset": "rl_grid_static",
+        "off_centreline": 0.809,
+        "laps": 0.106,
+        "crashed": true,
+        "outcome": "crash",
+        "steps": 1110,
+        "ret": 343.03,
+        "lap_time_s": null
+      },
+      {
+        "seed": 0,
+        "reset": "cl_grid_static",
+        "off_centreline": 0.0,
+        "laps": 0.107,
+        "crashed": true,
+        "outcome": "crash",
+        "steps": 1020,
+        "ret": 357.8,
+        "lap_time_s": null
+      },
+      {
+        "seed": 1,
+        "reset": "cl_grid_static",
+        "off_centreline": 0.0,
+        "laps": 0.107,
+        "crashed": true,
+        "outcome": "crash",
+        "steps": 1020,
+        "ret": 357.8,
+        "lap_time_s": null
+      },
+      {
+        "seed": 2,
+        "reset": "cl_grid_static",
+        "off_centreline": 0.0,
+        "laps": 0.106,
+        "crashed": true,
+        "outcome": "crash",
+        "steps": 1020,
+        "ret": 354.91,
+        "lap_time_s": null
+      },
+      {
+        "seed": 3,
+        "reset": "cl_grid_static",
+        "off_centreline": 0.0,
+        "laps": 0.106,
+        "crashed": true,
+        "outcome": "crash",
+        "steps": 1020,
+        "ret": 354.91,
+        "lap_time_s": null
+      },
+      {
+        "seed": 4,
+        "reset": "cl_grid_static",
+        "off_centreline": 0.0,
+        "laps": 0.106,
+        "crashed": true,
+        "outcome": "crash",
+        "steps": 1016,
+        "ret": 356.22,
+        "lap_time_s": null
+      }
+    ],
+    "Silverstone": [
+      {
+        "seed": 0,
+        "reset": "rl_grid_static",
+        "off_centreline": 0.79,
+        "laps": 0.154,
+        "crashed": true,
+        "outcome": "crash",
+        "steps": 2157,
+        "ret": 676.02,
+        "lap_time_s": null
+      },
+      {
+        "seed": 1,
+        "reset": "rl_grid_static",
+        "off_centreline": 0.783,
+        "laps": 0.155,
+        "crashed": true,
+        "outcome": "crash",
+        "steps": 2158,
+        "ret": 678.2,
+        "lap_time_s": null
+      },
+      {
+        "seed": 2,
+        "reset": "rl_grid_static",
+        "off_centreline": 0.757,
+        "laps": 0.156,
+        "crashed": true,
+        "outcome": "crash",
+        "steps": 2123,
+        "ret": 688.24,
+        "lap_time_s": null
+      },
+      {
+        "seed": 3,
+        "reset": "rl_grid_static",
+        "off_centreline": 0.776,
+        "laps": 0.155,
+        "crashed": true,
+        "outcome": "crash",
+        "steps": 2136,
+        "ret": 680.33,
+        "lap_time_s": null
+      },
+      {
+        "seed": 4,
+        "reset": "rl_grid_static",
+        "off_centreline": 0.776,
+        "laps": 0.155,
+        "crashed": true,
+        "outcome": "crash",
+        "steps": 2136,
+        "ret": 680.33,
+        "lap_time_s": null
+      },
+      {
+        "seed": 0,
+        "reset": "cl_grid_static",
+        "off_centreline": 0.0,
+        "laps": 0.154,
+        "crashed": true,
+        "outcome": "crash",
+        "steps": 2025,
+        "ret": 688.98,
+        "lap_time_s": null
+      },
+      {
+        "seed": 1,
+        "reset": "cl_grid_static",
+        "off_centreline": 0.0,
+        "laps": 0.154,
+        "crashed": true,
+        "outcome": "crash",
+        "steps": 2025,
+        "ret": 688.98,
+        "lap_time_s": null
+      },
+      {
+        "seed": 2,
+        "reset": "cl_grid_static",
+        "off_centreline": 0.0,
+        "laps": 0.154,
+        "crashed": true,
+        "outcome": "crash",
+        "steps": 2019,
+        "ret": 686.34,
+        "lap_time_s": null
+      },
+      {
+        "seed": 3,
+        "reset": "cl_grid_static",
+        "off_centreline": 0.0,
+        "laps": 0.154,
+        "crashed": true,
+        "outcome": "crash",
+        "steps": 2019,
+        "ret": 686.34,
+        "lap_time_s": null
+      },
+      {
+        "seed": 4,
+        "reset": "cl_grid_static",
+        "off_centreline": 0.0,
+        "laps": 0.154,
+        "crashed": true,
+        "outcome": "crash",
+        "steps": 2017,
+        "ret": 689.21,
+        "lap_time_s": null
+      }
+    ]
+  }
+}
