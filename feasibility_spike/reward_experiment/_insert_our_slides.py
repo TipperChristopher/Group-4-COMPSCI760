@@ -9,7 +9,7 @@ from pptx.dml.color import RGBColor
 ROOT = os.path.abspath(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..", ".."))
 AST = os.path.join(os.path.dirname(os.path.abspath(__file__)), "slides_assets")
 SRC = os.path.join(ROOT, "_v2_build_src.pptx")
-OUT = os.path.join(ROOT, "Group4_ProjectUpdate_v5.pptx")
+OUT = os.path.join(ROOT, "Group4_ProjectUpdate_v6.pptx")
 
 WHITE=RGBColor(0xF8,0xFA,0xFC); GREEN=RGBColor(0x10,0xB9,0x81); BLUE=RGBColor(0x3B,0x82,0xF6)
 BODY=RGBColor(0xCB,0xD5,0xE1); MUTED=RGBColor(0x94,0xA3,0xB8)
@@ -81,13 +81,13 @@ bullets(s, [
 ])
 notes(s, "OURS. ANALYSIS. Say: this result CONFIRMS the survey's prediction rather than surprising us. Q&A-proof: 'why didn't you give PPO more envs?' -> fixed budget: more envs = fewer updates, no extra data. RUBRIC: results + Q&A depth.")
 
-# N5: Generalization gap vs baseline (with chart)
-s = new_slide(); title(s, "Results vs Baseline: The Generalization Gap")
+# N5: Zero-shot results vs baselines (with chart)
+s = new_slide(); title(s, "Zero-Shot Results: RL vs Baselines (5 seeds, one-lap protocol)")
 img(s, "fig_gen_gap.png", 0.7, 1.5, 11.9)
 bullets(s, [
- ("Read: ", "zero-shot PPO is at RANDOM level on unseen real circuits (0.013 vs 0.011 laps), while the no-learning gap-follower completes them. In-distribution, our SAC completes the training track. That gap is what the diversity sweep tests."),
+ ("Read: ", "zero-shot PPO is at RANDOM level on unseen real circuits (0.013 vs 0.011 laps) while the no-learning gap-follower completes them. In-distribution, SAC completes the training track. The SAC unseen-track row lands when its 2M run finishes."),
 ], top=5.9, size=13.5, width=12.2)
-notes(s, "OURS. RESULTS. Honest labels: PPO row = final 2M checkpoint zero-shot (5 seeds each circuit, one-lap protocol). SAC row lands when its 2M run finishes. RUBRIC: results (3pts).")
+notes(s, "OURS. RESULTS. Honest labels: PPO row = final 2M checkpoint zero-shot (5 seeds each circuit, one-lap protocol). SAC row pending (training). RUBRIC: results (3pts).")
 
 # N6: Conclusions & next steps
 s = new_slide(); title(s, "Conclusions & Next Steps")
@@ -105,8 +105,8 @@ s = new_slide(); title(s, "The Reward: Design & Why It Changed")
 bullets(s, [
  ("What we reward: ", "1.0 \u00d7 metres of centreline progress (speed projected onto the track), \u2212 crash penalty on collision. TIME_COST = 0 deliberately: the fixed step budget already supplies time pressure, and any per-step cost would reward crashing early."),
  ("Why it changed: ", "the original paid 1.0/s alive + 10\u00d7distance \u2212 a steering tax \u2192 its optimum was a CRAWL (standstill 100, crawl 263, 20 m/s 189), and the steering term was net-negative exactly while cornering."),
- ("After: ", "standstill = 0.00; metres pay at every speed (retest on identical rollouts, right)."),
- ("Agent curves (right): ", "all three PPO reward variants plateau at ~0.1 laps \u2014 the reward change fixed the INCENTIVE (crawl \u2192 drive), not PPO's instability. That is exactly why SAC (which completes laps) is our stronger horse."),
+ ("Honest read: ", "the change corrected a PROVEN incentive flaw (the old optimum was a crawl), but it did not by itself fix performance \u2014 all three PPO variants plateau ~0.1 laps (right panel)."),
+ ("What improved: ", "the team's original agent crawled; under the frozen reward agents drive, and SAC completes 2 laps at 24.7 s. Stability comes from the ALGORITHM (SAC's replay buffer), not the reward. (SAC was never trained under the old reward.)"),
 ], top=1.6, width=5.9, size=13)
 img(s, "fig_reward_compare.png", 6.8, 1.95, 6.3)
 notes(s, "OURS. DESIGN framing, not 'bug'. Q&A: V1 also had -5 on termination (punished FINISHING 2 laps like a crash); the scan numbers are spawn-dependent (our 18 m straight vs the team's 8.5 m), hence 263 vs 120 for the same crawl; shape is identical. RUBRIC: methodology + changes-justified.")
