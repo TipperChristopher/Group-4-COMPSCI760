@@ -1,0 +1,133 @@
+{
+  "track": "synthetic_track_0",
+  "cap": 10000,
+  "crash_penalty": 40.0,
+  "rows": [
+    {
+      "speed": 0.0,
+      "steps": 10000,
+      "crashed": false,
+      "dist_m": 0.0,
+      "v_avg": 0.0,
+      "old_return": 100.0,
+      "new_return": 0.0
+    },
+    {
+      "speed": 0.25,
+      "steps": 7533,
+      "crashed": true,
+      "dist_m": 18.01,
+      "v_avg": 0.25,
+      "old_return": 263.11,
+      "new_return": -21.99
+    },
+    {
+      "speed": 0.5,
+      "steps": 3777,
+      "crashed": true,
+      "dist_m": 18.01,
+      "v_avg": 0.5,
+      "old_return": 225.53,
+      "new_return": -21.99
+    },
+    {
+      "speed": 1.0,
+      "steps": 1900,
+      "crashed": true,
+      "dist_m": 18.01,
+      "v_avg": 0.99,
+      "old_return": 206.82,
+      "new_return": -21.99
+    },
+    {
+      "speed": 2.0,
+      "steps": 961,
+      "crashed": true,
+      "dist_m": 18.02,
+      "v_avg": 1.95,
+      "old_return": 197.44,
+      "new_return": -21.98
+    },
+    {
+      "speed": 4.0,
+      "steps": 497,
+      "crashed": true,
+      "dist_m": 18.03,
+      "v_avg": 3.78,
+      "old_return": 192.91,
+      "new_return": -21.97
+    },
+    {
+      "speed": 6.0,
+      "steps": 348,
+      "crashed": true,
+      "dist_m": 18.0,
+      "v_avg": 5.38,
+      "old_return": 190.81,
+      "new_return": -22.0
+    },
+    {
+      "speed": 8.0,
+      "steps": 279,
+      "crashed": true,
+      "dist_m": 17.98,
+      "v_avg": 6.7,
+      "old_return": 189.78,
+      "new_return": -22.02
+    },
+    {
+      "speed": 10.0,
+      "steps": 242,
+      "crashed": true,
+      "dist_m": 17.98,
+      "v_avg": 7.72,
+      "old_return": 189.23,
+      "new_return": -22.02
+    },
+    {
+      "speed": 12.0,
+      "steps": 223,
+      "crashed": true,
+      "dist_m": 18.03,
+      "v_avg": 8.41,
+      "old_return": 189.76,
+      "new_return": -21.97
+    },
+    {
+      "speed": 14.0,
+      "steps": 214,
+      "crashed": true,
+      "dist_m": 18.05,
+      "v_avg": 8.77,
+      "old_return": 189.9,
+      "new_return": -21.95
+    },
+    {
+      "speed": 16.0,
+      "steps": 211,
+      "crashed": true,
+      "dist_m": 18.0,
+      "v_avg": 8.85,
+      "old_return": 188.93,
+      "new_return": -22.0
+    },
+    {
+      "speed": 18.0,
+      "steps": 211,
+      "crashed": true,
+      "dist_m": 18.0,
+      "v_avg": 8.86,
+      "old_return": 188.96,
+      "new_return": -22.0
+    },
+    {
+      "speed": 20.0,
+      "steps": 211,
+      "crashed": true,
+      "dist_m": 18.0,
+      "v_avg": 8.86,
+      "old_return": 188.96,
+      "new_return": -22.0
+    }
+  ]
+}

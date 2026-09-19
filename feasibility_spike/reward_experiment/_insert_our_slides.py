@@ -111,13 +111,24 @@ bullets(s, [
 ])
 notes(s, "OURS. CONCLUSION. INSERT after Timeline. RUBRIC: timeline + honesty + progress.")
 
+# N7: Bug 3 - precise reward retest (replaces the original reward slide)
+s = new_slide(); title(s, "Bug 3 \u2014 The Reward's Optimum Was a Crawl")
+bullets(s, [
+ ("What we tested: ", "the SAME straight-line rollout (fixed speed, steering 0, 10k-step cap, frozen crash penalty 40) scored under both formulas \u2014 isolates the reward definition."),
+ ("OLD: ", "1.0/s alive + 0.1\u00d7speed \u2212 0.5\u00d7|steering| \u2192 pays TIME: return FALLS as speed rises \u2014 crawl 0.25 m/s = 263, standstill = 100, 20 m/s = 189."),
+ ("NEW: ", "1.0\u00d7metres of centreline progress \u2212 40 on crash \u2192 pays METRES: standstill = 0.00; driving into a wall nets \u221222 at ANY speed."),
+ ("What actually improved: ", "no payment for time \u2192 agents stop crawling and actually drive; a completed lap (+189 m \u2212 40) dominates. Proof: SAC completes 2 laps at 24.7 s."),
+], top=1.6, width=6.0, size=13.5)
+img(s, "fig_reward_scan.png", 6.85, 2.2, 6.2)
+notes(s, "OURS. Precise retest on our harness (reward_scan2.py). Q&A: 'why is the new curve flat at -22?' \u2014 this task guarantees a wall crash, so every speed banks the same 18 m then pays 40; the point is time pays NOTHING (standstill 0 vs 100) and crashing costs. The real difference shows on real episodes: a completed lap pays +149 (189-40), so driving dominates \u2014 which is why the agents now drive and SAC completes laps. Numbers differ from the old slide's 100/120/81 because that scan used a different track/cap; ours uses the frozen settings and both formulas on the SAME rollouts.")
+
 # ---- rebuild order: originals kept, ours re-placed ----
 sldIdLst = prs.slides._sldIdLst
 ids = list(sldIdLst)
 o = ids[:13]; ns = ids[13:]
 # o: 0 Title 1 Motiv 2-4 Lit 5 RQ 6 Datasets 7 Bugs12 8 Baselines 9 RewardCrawl 10 Timeline 11 Roles 12 ImgSrc
-# ns: [N1 protocol, N2 spawn, N3 ppovssac, N4 whyfix, N5 gap, N6 concl]
-desired = (o[0:7] + [ns[0]] + o[7:8] + [o[9]] + [ns[1]] + [o[8]] + [ns[2], ns[3], ns[4]] + [o[10]] + [ns[5]] + o[11:13])
+# ns: [N1 protocol, N2 spawn, N3 ppovssac, N4 whyfix, N5 gap, N6 concl, N7 reward]
+desired = (o[0:7] + [ns[0]] + o[7:8] + [ns[6]] + [ns[1]] + [o[8]] + [ns[2], ns[3], ns[4]] + [o[10]] + [ns[5]] + o[11:13])
 for e in ids: sldIdLst.remove(e)
 for e in desired: sldIdLst.append(e)
 
