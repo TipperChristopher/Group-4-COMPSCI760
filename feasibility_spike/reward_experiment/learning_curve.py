@@ -69,6 +69,26 @@ class CompletionBonusWrapper(W.F1TenthSB3Wrapper):
         return obs, reward, terminated, truncated, info
 
 
+class OldRewardWrapper(W.F1TenthSB3Wrapper):
+    """The ORIGINAL pre-fix reward (no main-branch coward penalty), on top of the
+    same obs/action machinery, for the matched old-vs-new ablation:
+        reward = env_timestep (0.01/step = 1.0/s alive) + 0.1*|vx| - 0.5*|steering_rad|"""
+    def step(self, action):
+        steering, speed = self._rescale_action(action)
+        obs, base_r, terminated, truncated, info = self.env.step(
+            np.array([[steering, speed]], dtype=np.float64))
+        vx = abs(float(obs["linear_vels_x"][0]))
+        reward = float(base_r) + 0.1 * vx - 0.5 * abs(steering)
+        if terminated:
+            reward -= 5.0      # Chris's original: -5 on terminated (fired on crash OR 2-lap finish)
+        self._elapsed += 1
+        if not terminated and self._elapsed >= self.max_episode_steps:
+            truncated = True
+        info = dict(info) if info else {}
+        info["collision"] = bool(np.asarray(obs["collisions"]).reshape(-1)[0])
+        return self._process_obs(obs), float(reward), terminated, truncated, info
+
+
 def make_env(wrap_fn, track, cap):
     def _init():
         env = gym.make("f1tenth_gym:f1tenth-v0",
@@ -145,12 +165,16 @@ def main():
     ap.add_argument("--vecnormalize", action="store_true")
     ap.add_argument("--shaping", type=float, default=0.0,
                     help="dense wall-proximity x speed penalty weight (positive-shaping experiment)")
+    ap.add_argument("--old-reward", action="store_true",
+                    help="train under the ORIGINAL old reward (matched ablation vs the progress reward)")
     ap.add_argument("--save-model", type=str, default="",
                     help="dir to save final_model.zip (+ vecnormalize.pkl) so the policy can be re-evaluated")
     args = ap.parse_args()
 
     W.CRASH_PENALTY = args.penalty
-    if args.shaping > 0:
+    if args.old_reward:
+        wrap_fn = lambda env, cap: OldRewardWrapper(env, max_episode_steps=cap)
+    elif args.shaping > 0:
         from shaped_reward_wrapper import ShapedWrapper
         sw = args.shaping
         wrap_fn = lambda env, cap: ShapedWrapper(env, max_episode_steps=cap, shaping_w=sw)
@@ -166,6 +190,7 @@ def main():
     if args.ent_coef > 0: tag += f"_ent{args.ent_coef}"
     if args.completion_bonus > 0: tag += f"_bonus{int(args.completion_bonus)}"
     if args.shaping > 0: tag += f"_shape{args.shaping}"
+    if args.old_reward: tag += "_old"
     if args.warmup_track: tag += f"_warmup-{args.warmup_track}"
 
     print(f"=== learning curve [{args.algo.upper()}]: NEW reward, crash_penalty={args.penalty}, "

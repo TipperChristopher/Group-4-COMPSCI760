@@ -9,7 +9,7 @@ from pptx.dml.color import RGBColor
 ROOT = os.path.abspath(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..", ".."))
 AST = os.path.join(os.path.dirname(os.path.abspath(__file__)), "slides_assets")
 SRC = os.path.join(ROOT, "_v2_build_src.pptx")
-OUT = os.path.join(ROOT, "Group4_ProjectUpdate_v3_latest.pptx")
+OUT = os.path.join(ROOT, "Group4_ProjectUpdate_v5.pptx")
 
 WHITE=RGBColor(0xF8,0xFA,0xFC); GREEN=RGBColor(0x10,0xB9,0x81); BLUE=RGBColor(0x3B,0x82,0xF6)
 BODY=RGBColor(0xCB,0xD5,0xE1); MUTED=RGBColor(0x94,0xA3,0xB8)
@@ -62,21 +62,12 @@ bullets(s, [
 ])
 notes(s, "OURS. INSERT after 'Datasets & Evaluation Protocol'. WHY best-checkpoint: PPO degrades 0.34->0.10; final policy is a poor estimator. RUBRIC: methodology + dataset + experimental design.")
 
-# N2: Spawn fix (bug 4) + before/after figure
-s = new_slide(); title(s, "Bug 4 \u2014 Train/Eval Spawn Mismatch (Our Fix)")
-bullets(s, [
- ("Root cause: ", "eval spawned on the raceline (~0.8 m off-centre, ~0.3 m from the kerb); training used the centreline."),
- ("What it actually did (Silverstone): ", "the raceline spawn was accidentally RESCUING the reactive baseline on 2 of 5 seeds. The centreline fix removes that lottery \u2014 it now fails deterministically at the same 81 m hairpin, every seed."),
- ("Spielberg: ", "stable 5/5 either way (open start straight)."),
- ("So the fix ", "does not rescue a weak policy \u2014 it exposes the TRUE, reproducible performance. That is what a fair protocol is for."),
-], top=1.6, width=5.9, size=13.5)
-img(s, "fig_spawn_outcomes.png", 6.9, 2.35, 6.2)
-notes(s, "OURS. HONEST: Silverstone-before bar uses the TEAM's harness CSV (crash,crash,crash,LAP,LAP) because the seed->spawn mapping is harness-dependent (RNG draw order); our aligned re-run reproduces the AFTER failure (5/5 crash at 80.7-80.9 m) and Spielberg 5/5 both. Also note: the ~1 m start line yields only 3-4 DISTINCT spawns, so '5 seeds' weights ~3 positions, not 5. RUBRIC: changes (3pts).")
+# N2 removed (spawn fix folded into the protocol slide's 'spawn consistency' bullet)
 
 # N3: PPO vs SAC results + figure
-s = new_slide(); title(s, "Pilot Results: PPO vs SAC (single track, 1M steps)")
+s = new_slide(); title(s, "Pilot Results: PPO vs SAC (frozen protocol, single track)")
 img(s, "fig_ppo_vs_sac.png", 0.85, 1.5, 11.6)
-caption(s, "Same reward, budget, obs-normalization: SAC completes 2 laps and gets faster (lap time 40.3 \u2192 24.7 s); PPO peaks at 0.34 laps then degrades to 0.10, reward oscillating +37..\u221219. (Pilots n=1 \u2014 diagnostic, not the grid.)")
+caption(s, "PPO: full 2M curve \u2014 peaks at 0.34 laps then oscillates to a final 0.13; reward swings +37..\u221219. SAC: 1M so far (2M still training) \u2014 completes 2 laps and gets FASTER (40.3 \u2192 24.7 s). Same reward, budget, obs-normalization. n=1 seed \u2014 diagnostic pilots.")
 notes(s, "OURS. RESULTS. INSERT after baselines. WHAT WE DID: segmented training + deterministic per-checkpoint eval; reproducible. Single-track capability, not the generalization result. RUBRIC: results (3pts).")
 
 # N4: Why PPO + how to fix (ties to the survey's prediction)
@@ -90,15 +81,13 @@ bullets(s, [
 ])
 notes(s, "OURS. ANALYSIS. Say: this result CONFIRMS the survey's prediction rather than surprising us. Q&A-proof: 'why didn't you give PPO more envs?' -> fixed budget: more envs = fewer updates, no extra data. RUBRIC: results + Q&A depth.")
 
-# N5: Generalization gap vs baseline
+# N5: Generalization gap vs baseline (with chart)
 s = new_slide(); title(s, "Results vs Baseline: The Generalization Gap")
+img(s, "fig_gen_gap.png", 0.7, 1.5, 11.9)
 bullets(s, [
- ("In-distribution (train track): ", "SAC completes it (24.7 s/lap); gap-follower and random both crash."),
- ("Unseen real circuit (Spielberg): ", "the no-learning gap-follower completes it (67 s/lap); our PPO-5-tracks zero-shot crashes at 0.11 laps."),
- ("Unseen real circuit (Silverstone): ", "both crash \u2014 the baseline dies at the same hairpin every seed."),
- ("The story: ", "RL wins in-distribution; the reactive baseline wins out-of-distribution. Closing that gap is exactly what the 1/5/20/100 diversity sweep is for."),
-])
-notes(s, "OURS. RESULTS. HONEST labels: SAC numbers = single-track pilot; real-circuit rows = PPO_5tracks zero-shot. SAC's first-ever unseen-track eval runs as soon as its save-run finishes. RUBRIC: results (3pts).")
+ ("Read: ", "zero-shot PPO is at RANDOM level on unseen real circuits (0.013 vs 0.011 laps), while the no-learning gap-follower completes them. In-distribution, our SAC completes the training track. That gap is what the diversity sweep tests."),
+], top=5.9, size=13.5, width=12.2)
+notes(s, "OURS. RESULTS. Honest labels: PPO row = final 2M checkpoint zero-shot (5 seeds each circuit, one-lap protocol). SAC row lands when its 2M run finishes. RUBRIC: results (3pts).")
 
 # N6: Conclusions & next steps
 s = new_slide(); title(s, "Conclusions & Next Steps")
@@ -111,24 +100,24 @@ bullets(s, [
 ])
 notes(s, "OURS. CONCLUSION. INSERT after Timeline. RUBRIC: timeline + honesty + progress.")
 
-# N7: Bug 3 - precise reward retest (replaces the original reward slide)
-s = new_slide(); title(s, "Bug 3 \u2014 The Reward's Optimum Was a Crawl")
+# N7: reward DESIGN (replaces the original reward slide; no 'bug' framing)
+s = new_slide(); title(s, "The Reward: Design & Why It Changed")
 bullets(s, [
- ("What we tested: ", "the SAME straight-line rollout (fixed speed, steering 0, 10k-step cap, frozen crash penalty 40) scored under both formulas \u2014 isolates the reward definition."),
- ("OLD: ", "1.0/s alive + 0.1\u00d7speed \u2212 0.5\u00d7|steering| \u2192 pays TIME: return FALLS as speed rises \u2014 crawl 0.25 m/s = 263, standstill = 100, 20 m/s = 189."),
- ("NEW: ", "1.0\u00d7metres of centreline progress \u2212 40 on crash \u2192 pays METRES: standstill = 0.00; driving into a wall nets \u221222 at ANY speed."),
- ("What actually improved: ", "no payment for time \u2192 agents stop crawling and actually drive; a completed lap (+189 m \u2212 40) dominates. Proof: SAC completes 2 laps at 24.7 s."),
-], top=1.6, width=6.0, size=13.5)
-img(s, "fig_reward_scan.png", 6.85, 2.2, 6.2)
-notes(s, "OURS. Precise retest on our harness (reward_scan2.py). Q&A: 'why is the new curve flat at -22?' \u2014 this task guarantees a wall crash, so every speed banks the same 18 m then pays 40; the point is time pays NOTHING (standstill 0 vs 100) and crashing costs. The real difference shows on real episodes: a completed lap pays +149 (189-40), so driving dominates \u2014 which is why the agents now drive and SAC completes laps. Numbers differ from the old slide's 100/120/81 because that scan used a different track/cap; ours uses the frozen settings and both formulas on the SAME rollouts.")
+ ("What we reward: ", "1.0 \u00d7 metres of centreline progress (speed projected onto the track), \u2212 crash penalty on collision. TIME_COST = 0 deliberately: the fixed step budget already supplies time pressure, and any per-step cost would reward crashing early."),
+ ("Why it changed: ", "the original paid 1.0/s alive + 10\u00d7distance \u2212 a steering tax \u2192 its optimum was a CRAWL (standstill 100, crawl 263, 20 m/s 189), and the steering term was net-negative exactly while cornering."),
+ ("After: ", "standstill = 0.00; metres pay at every speed (retest on identical rollouts, right)."),
+ ("Agent curves (right): ", "all three PPO reward variants plateau at ~0.1 laps \u2014 the reward change fixed the INCENTIVE (crawl \u2192 drive), not PPO's instability. That is exactly why SAC (which completes laps) is our stronger horse."),
+], top=1.6, width=5.9, size=13)
+img(s, "fig_reward_compare.png", 6.8, 1.95, 6.3)
+notes(s, "OURS. DESIGN framing, not 'bug'. Q&A: V1 also had -5 on termination (punished FINISHING 2 laps like a crash); the scan numbers are spawn-dependent (our 18 m straight vs the team's 8.5 m), hence 263 vs 120 for the same crawl; shape is identical. RUBRIC: methodology + changes-justified.")
 
 # ---- rebuild order: originals kept, ours re-placed ----
 sldIdLst = prs.slides._sldIdLst
 ids = list(sldIdLst)
 o = ids[:13]; ns = ids[13:]
 # o: 0 Title 1 Motiv 2-4 Lit 5 RQ 6 Datasets 7 Bugs12 8 Baselines 9 RewardCrawl 10 Timeline 11 Roles 12 ImgSrc
-# ns: [N1 protocol, N2 spawn, N3 ppovssac, N4 whyfix, N5 gap, N6 concl, N7 reward]
-desired = (o[0:7] + [ns[0]] + o[7:8] + [ns[6]] + [ns[1]] + [o[8]] + [ns[2], ns[3], ns[4]] + [o[10]] + [ns[5]] + o[11:13])
+# ns: [N1 protocol, N3 ppovssac, N4 whyfix, N5 gap, N6 concl, N7 reward]  (N2 spawn removed)
+desired = (o[0:7] + [ns[0]] + o[7:8] + [ns[5]] + [o[8]] + [ns[1], ns[2], ns[3]] + [o[10]] + [ns[4]] + o[11:13])
 for e in ids: sldIdLst.remove(e)
 for e in desired: sldIdLst.append(e)
 

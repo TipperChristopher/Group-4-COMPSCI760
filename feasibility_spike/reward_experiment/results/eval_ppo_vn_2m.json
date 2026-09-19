@@ -1,0 +1,255 @@
+{
+  "model": "E:\\OneDrive - The University of Auckland\\Desktop\\COMPSCI 760\\team_repo\\feasibility_spike\\reward_experiment\\saved_models\\ppo_vn_cp40",
+  "algo": "PPO",
+  "tracks": [
+    "synthetic_track_0",
+    "synthetic_track_1",
+    "synthetic_track_2",
+    "Spielberg",
+    "Silverstone"
+  ],
+  "seeds": [
+    0,
+    1,
+    2,
+    3,
+    4
+  ],
+  "results": {
+    "synthetic_track_0": [
+      {
+        "seed": 0,
+        "laps": 0.137,
+        "crashed": true,
+        "outcome": "crash",
+        "steps": 282,
+        "ret": 20.94,
+        "lap_time_s": null
+      },
+      {
+        "seed": 1,
+        "laps": 0.137,
+        "crashed": true,
+        "outcome": "crash",
+        "steps": 282,
+        "ret": 20.94,
+        "lap_time_s": null
+      },
+      {
+        "seed": 2,
+        "laps": 0.13,
+        "crashed": true,
+        "outcome": "crash",
+        "steps": 273,
+        "ret": 19.66,
+        "lap_time_s": null
+      },
+      {
+        "seed": 3,
+        "laps": 0.13,
+        "crashed": true,
+        "outcome": "crash",
+        "steps": 273,
+        "ret": 19.66,
+        "lap_time_s": null
+      },
+      {
+        "seed": 4,
+        "laps": 0.136,
+        "crashed": true,
+        "outcome": "crash",
+        "steps": 276,
+        "ret": 20.8,
+        "lap_time_s": null
+      }
+    ],
+    "synthetic_track_1": [
+      {
+        "seed": 0,
+        "laps": 0.191,
+        "crashed": true,
+        "outcome": "crash",
+        "steps": 294,
+        "ret": 24.02,
+        "lap_time_s": null
+      },
+      {
+        "seed": 1,
+        "laps": 0.191,
+        "crashed": true,
+        "outcome": "crash",
+        "steps": 294,
+        "ret": 24.02,
+        "lap_time_s": null
+      },
+      {
+        "seed": 2,
+        "laps": 0.201,
+        "crashed": true,
+        "outcome": "crash",
+        "steps": 296,
+        "ret": 25.81,
+        "lap_time_s": null
+      },
+      {
+        "seed": 3,
+        "laps": 0.201,
+        "crashed": true,
+        "outcome": "crash",
+        "steps": 296,
+        "ret": 25.81,
+        "lap_time_s": null
+      },
+      {
+        "seed": 4,
+        "laps": 0.21,
+        "crashed": true,
+        "outcome": "crash",
+        "steps": 301,
+        "ret": 27.17,
+        "lap_time_s": null
+      }
+    ],
+    "synthetic_track_2": [
+      {
+        "seed": 0,
+        "laps": 0.245,
+        "crashed": true,
+        "outcome": "crash",
+        "steps": 383,
+        "ret": 38.61,
+        "lap_time_s": null
+      },
+      {
+        "seed": 1,
+        "laps": 0.245,
+        "crashed": true,
+        "outcome": "crash",
+        "steps": 383,
+        "ret": 38.61,
+        "lap_time_s": null
+      },
+      {
+        "seed": 2,
+        "laps": 0.235,
+        "crashed": true,
+        "outcome": "crash",
+        "steps": 371,
+        "ret": 36.78,
+        "lap_time_s": null
+      },
+      {
+        "seed": 3,
+        "laps": 0.235,
+        "crashed": true,
+        "outcome": "crash",
+        "steps": 371,
+        "ret": 36.78,
+        "lap_time_s": null
+      },
+      {
+        "seed": 4,
+        "laps": 0.24,
+        "crashed": true,
+        "outcome": "crash",
+        "steps": 391,
+        "ret": 37.68,
+        "lap_time_s": null
+      }
+    ],
+    "Spielberg": [
+      {
+        "seed": 0,
+        "laps": 0.013,
+        "crashed": false,
+        "outcome": "truncated",
+        "steps": 15000,
+        "ret": 4.47,
+        "lap_time_s": null
+      },
+      {
+        "seed": 1,
+        "laps": 0.013,
+        "crashed": false,
+        "outcome": "truncated",
+        "steps": 15000,
+        "ret": 4.47,
+        "lap_time_s": null
+      },
+      {
+        "seed": 2,
+        "laps": 0.013,
+        "crashed": false,
+        "outcome": "truncated",
+        "steps": 15000,
+        "ret": 4.39,
+        "lap_time_s": null
+      },
+      {
+        "seed": 3,
+        "laps": 0.013,
+        "crashed": false,
+        "outcome": "truncated",
+        "steps": 15000,
+        "ret": 4.39,
+        "lap_time_s": null
+      },
+      {
+        "seed": 4,
+        "laps": 0.013,
+        "crashed": false,
+        "outcome": "truncated",
+        "steps": 15000,
+        "ret": 4.34,
+        "lap_time_s": null
+      }
+    ],
+    "Silverstone": [
+      {
+        "seed": 0,
+        "laps": 0.014,
+        "crashed": false,
+        "outcome": "truncated",
+        "steps": 15000,
+        "ret": 6.19,
+        "lap_time_s": null
+      },
+      {
+        "seed": 1,
+        "laps": 0.014,
+        "crashed": false,
+        "outcome": "truncated",
+        "steps": 15000,
+        "ret": 6.19,
+        "lap_time_s": null
+      },
+      {
+        "seed": 2,
+        "laps": 0.013,
+        "crashed": false,
+        "outcome": "truncated",
+        "steps": 15000,
+        "ret": 6.13,
+        "lap_time_s": null
+      },
+      {
+        "seed": 3,
+        "laps": 0.013,
+        "crashed": false,
+        "outcome": "truncated",
+        "steps": 15000,
+        "ret": 6.13,
+        "lap_time_s": null
+      },
+      {
+        "seed": 4,
+        "laps": 0.014,
+        "crashed": false,
+        "outcome": "truncated",
+        "steps": 15000,
+        "ret": 6.24,
+        "lap_time_s": null
+      }
+    ]
+  }
+}

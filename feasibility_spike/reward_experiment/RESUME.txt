@@ -1,0 +1,22 @@
+# RESUME AFTER PC RESTART
+# Run each of these once from this folder; each auto-detects its checkpoint
+# (saved_models/<name>/state.json) and continues from the last completed segment.
+# PPO runs finish ~20 min after start; SAC takes ~5-6 h more.
+
+cd "E:/OneDrive - The University of Auckland/Desktop/COMPSCI 760/team_repo/feasibility_spike/reward_experiment"
+PY="E:/OneDrive - The University of Auckland/Desktop/COMPSCI 760/spike/venv/Scripts/python.exe"
+
+# 1. PPO, ORIGINAL V1 reward (old-vs-new comparison)
+nohup "$PY" -u learning_curve.py --algo ppo --vecnormalize --old-reward --penalty 40 --steps 2000000 --segments 20 --save-model saved_models/ppo_old_v1 > logs/ppo_old_v1_2m.log 2>&1 &
+
+# 2. PPO, new reward, penalty 5 (team's frozen value)
+nohup "$PY" -u learning_curve.py --algo ppo --vecnormalize --penalty 5 --steps 2000000 --segments 20 --save-model saved_models/ppo_new_p5 > logs/ppo_p5_2m.log 2>&1 &
+
+# 3. SAC, new reward, penalty 40 (main SAC result; then run its unseen-track eval)
+nohup "$PY" -u learning_curve.py --algo sac --vecnormalize --penalty 40 --steps 2000000 --segments 20 --save-model saved_models/sac_vn_cp40 > logs/sac_vn_2m.log 2>&1 &
+
+# AFTER the SAC run finishes, run its unseen-track eval (fills the SAC row on the gen-gap chart):
+# nohup "$PY" -u eval_vs_baseline.py --model saved_models/sac_vn_cp40 --algo SAC --tracks synthetic_track_0 synthetic_track_1 synthetic_track_2 Spielberg Silverstone --seeds 0 1 2 3 4 --tag sac_vn_2m > logs/eval_sac_vn_2m.log 2>&1 &
+
+# Check progress:  tail logs/*.log   |   state: saved_models/<name>/state.json
+# PPO-2M (penalty 40) is ALREADY DONE -> its unseen-track eval already ran (results/eval_ppo_vn_2m.json).

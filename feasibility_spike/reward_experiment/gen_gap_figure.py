@@ -16,11 +16,11 @@ plt.rcParams.update({
     "xtick.color":LIGHT, "ytick.color":LIGHT, "text.color":LIGHT, "grid.color":GREY,
     "font.size":12, "axes.titleweight":"bold"})
 
-SERIES = [  # (file-substring, label, color)
-    ("eval_random_protocol", "Random", GREY),
-    ("eval_gap_protocol",    "Gap-follower", ORANGE),
-    ("eval_ppo",             "PPO (ours)", BLUE),
-    ("eval_sac",             "SAC (ours)", GREEN),
+SERIES = [  # (key-substring, label, color)
+    ("random", "Random", GREY),
+    ("gap",    "Gap-follower", ORANGE),
+    ("ppo",    "PPO (ours)", BLUE),
+    ("sac",    "SAC (ours)", GREEN),
 ]
 data = {}
 for fname in sorted(os.listdir(R)):
@@ -43,8 +43,9 @@ tracks = [t for t in tracks if any(t in data[k] for k in data)]
 x = np.arange(len(tracks)); n = len([s for s in SERIES if s[0] in data]); w = 0.8 / max(n, 1)
 fig, ax = plt.subplots(figsize=(11.5, 5.0))
 off = -(n - 1) / 2
-for key, label, color in SERIES:
-    if key not in data: continue
+for sub, label, color in SERIES:
+    key = next((k for k in data if sub in k), None)
+    if key is None: continue
     means = [data[key].get(t, (np.nan, 0))[0] for t in tracks]
     stds  = [data[key].get(t, (0, 0))[1] for t in tracks]
     ax.bar(x + off * w, means, w, label=label, color=color, yerr=stds, capsize=3, error_kw=dict(ecolor=LIGHT, alpha=.6))
