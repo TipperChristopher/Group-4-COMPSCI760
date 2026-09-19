@@ -9,7 +9,7 @@ from pptx.dml.color import RGBColor
 ROOT = os.path.abspath(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..", ".."))
 AST = os.path.join(os.path.dirname(os.path.abspath(__file__)), "slides_assets")
 SRC = os.path.join(ROOT, "_v2_build_src.pptx")
-OUT = os.path.join(ROOT, "Group4_ProjectUpdate_v6.pptx")
+OUT = os.path.join(ROOT, "Group4_ProjectUpdate_v7.pptx")
 
 WHITE=RGBColor(0xF8,0xFA,0xFC); GREEN=RGBColor(0x10,0xB9,0x81); BLUE=RGBColor(0x3B,0x82,0xF6)
 BODY=RGBColor(0xCB,0xD5,0xE1); MUTED=RGBColor(0x94,0xA3,0xB8)
