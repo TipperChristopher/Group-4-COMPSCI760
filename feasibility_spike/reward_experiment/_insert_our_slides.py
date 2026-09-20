@@ -9,7 +9,7 @@ from pptx.dml.color import RGBColor
 ROOT = os.path.abspath(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..", ".."))
 AST = os.path.join(os.path.dirname(os.path.abspath(__file__)), "slides_assets")
 SRC = os.path.join(ROOT, "_v2_build_src.pptx")
-OUT = os.path.join(ROOT, "Group4_ProjectUpdate_FINAL.pptx")
+OUT = os.path.join(ROOT, "Group4_ProjectUpdate_FINAL2.pptx")
 
 WHITE=RGBColor(0xF8,0xFA,0xFC); GREEN=RGBColor(0x10,0xB9,0x81); BLUE=RGBColor(0x3B,0x82,0xF6)
 BODY=RGBColor(0xCB,0xD5,0xE1); MUTED=RGBColor(0x94,0xA3,0xB8)
@@ -85,18 +85,18 @@ notes(s, "OURS. ANALYSIS. Say: this result CONFIRMS the survey's prediction rath
 s = new_slide(); title(s, "Zero-Shot Results: RL vs Baselines (5 seeds, one-lap protocol)")
 img(s, "fig_gen_gap.png", 0.7, 1.5, 11.9)
 bullets(s, [
- ("What this shows: ", "SAC trained on one synthetic track completes unseen synthetic tracks (track_2: 1.0 laps on all 5 seeds) but crashes on real circuits (0.06-0.11 laps). PPO is at random level on real circuits. The no-learning gap-follower completes Spielberg. Training diversity is the open question."),
+ ("What this shows: ", "SAC trained on one synthetic track completes unseen synthetic tracks (track_2: 1.0 laps on all 5 seeds) but crashes on real circuits (0.06-0.11 laps) \u2014 and the same crash reproduces on a NARROW synthetic track with the same spawn scan. PPO is at random level on real circuits; the gap-follower completes Spielberg. A coverage problem, not real-track magic."),
 ], top=5.9, size=13.5, width=12.2)
 notes(s, "OURS. RESULTS. SAC row = 1M checkpoint (paused at 1.2M; 1M->2M only improves lap time). RUBRIC: results (3pts).")
 
-# N6: Conclusions & next steps
+# N6: Conclusions & next steps (staged narrative)
 s = new_slide(); title(s, "Conclusions & Next Steps")
 bullets(s, [
- ("Where we are: ", "two real bugs found and fixed, the reward redesigned, the protocol hardened, baselines set, and the first RL results measured."),
- ("What we learned: ", "SAC completes laps and keeps improving; PPO peaks early then forgets. The reward fix was necessary for the right incentive \u2014 but stability comes from the algorithm."),
- ("The gap: ", "zero-shot RL loses to the reactive baseline on real circuits. Whether training diversity closes that gap is exactly what the grid tests."),
- ("Next: ", "freeze one setup and run the 2 x 4 x >=3-seed grid at the 2M budget, with bootstrap confidence intervals."),
- ("Honest status: ", "these are single-track pilots (one seed); the diversity grid is not yet run."),
+ ("Capability check: ", "same protocol, one track \u2014 SAC completes laps and keeps improving; PPO peaks early then forgets. An on-policy instability under our frozen protocol, not a setup bias."),
+ ("The gap: ", "zero-shot RL loses to the no-learning baseline on real circuits. The failure reproduces on a NARROW synthetic track with the same spawn scan \u2014 a training-coverage problem: the policy memorized its training distribution."),
+ ("Open question: ", "does 1M steps on one track overfit? We are testing whether earlier checkpoints generalize better (saved every 100k)."),
+ ("Fix directions: ", "the 1/5/20/100 diversity grid, real-like geometry in the generator (narrower tracks, sharper corners), and reporting best-checkpoint instead of final."),
+ ("Honest status: ", "these are single-track, single-seed pilots; the grid is not yet run."),
 ])
 notes(s, "OURS. CONCLUSION. INSERT after Timeline. RUBRIC: timeline + honesty + progress.")
 
