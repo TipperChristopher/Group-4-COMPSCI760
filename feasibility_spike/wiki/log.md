@@ -33,3 +33,9 @@ file-level diffs — git records the diff.
   overfitting-timing probe (per-segment checkpoints). Recorded in `RESUME.txt`.
 - Added `_gen_narrow.py` (narrow-track generator, patched temp copy) to probe
   the spawn input-shift hypothesis.
+
+## [2025-09-20] note | title-slide names aligned to roles slide
+- Title slide now uses Victory / Grant (were Yi Wei / Zihang Zhang) to match
+  the roles slide. Mapping team-confirmed: Victory = Yi Wei, Grant = Zihang
+  Zhang. Roles slide unchanged; no stray old-name occurrences remain.
+- Applied via fix_team_text() in the deck builder (reproducible).

@@ -98,8 +98,8 @@ rubric" pack.
 - Check Montserrat/Inter fonts render on the exporting machine (else Calibri
   fallback shifts spacing).
 - Keep only `v2` + `FINAL2`; delete stale deck versions.
-- Roles-slide vs title-slide name consistency (Victory/Grant vs Yi
-  Wei/Zihang) — pending team decision.
+- Names: title slide now uses Victory / Grant to match the roles slide
+  (Victory = Yi Wei, Grant = Zihang Zhang; team-confirmed). Resolved.
 - Rehearse to 8 min (18 slides, 5 speakers).
 
 ## See also

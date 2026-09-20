@@ -33,6 +33,11 @@ def fix_team_text(replacements):
 fix_team_text({
     "Found and fixed four bugs that would have voided the grid.":
         "Found and fixed two bugs, and redesigned the reward and spawn protocol, before the grid.",
+    # title-slide names: use the English names to match the roles slide
+    # (Victory = Yi Wei, Grant = Zihang Zhang; confirmed by team)
+    "Yi Wei": "Victory",
+    "Zihang": "Grant",
+    " Zhang ": " ",
 })
 
 def new_slide():
