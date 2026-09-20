@@ -40,7 +40,7 @@ tracks = sorted(tracks, key=lambda t: ("real" in t or t in ("Spielberg","Silvers
 tracks = ["synthetic_track_0", "synthetic_track_1", "synthetic_track_2", "Spielberg", "Silverstone"]
 tracks = [t for t in tracks if any(t in data[k] for k in data)]
 
-x = np.arange(len(tracks)); n = len([s for s in SERIES if s[0] in data]); w = 0.8 / max(n, 1)
+x = np.arange(len(tracks)); n = sum(1 for sub,_,_ in SERIES if any(sub in k for k in data)); w = 0.8 / max(n, 1)
 fig, ax = plt.subplots(figsize=(11.5, 5.0))
 off = -(n - 1) / 2
 for sub, label, color in SERIES:
