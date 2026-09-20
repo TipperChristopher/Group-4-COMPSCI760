@@ -56,7 +56,7 @@ ax.set_ylabel("laps reached (mean over 5 spawn seeds, \u00b1std)")
 ax.set_title("Zero-shot vs baselines, identical protocol \u2014 RL wins in-distribution, baseline wins on unseen real circuits", fontsize=12)
 ax.legend(facecolor=NAVY, edgecolor="#3A4A63", labelcolor=LIGHT); ax.grid(axis="y", alpha=.25)
 plt.tight_layout()
-out = HERE.parent / "slides_assets" / "fig_gen_gap.png"
+out = HERE / "slides_assets" / "fig_gen_gap.png"
 out.parent.mkdir(exist_ok=True)
 plt.savefig(out, dpi=150); plt.close()
 print("saved", out)

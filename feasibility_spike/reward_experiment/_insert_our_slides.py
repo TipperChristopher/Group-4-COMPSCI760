@@ -9,7 +9,7 @@ from pptx.dml.color import RGBColor
 ROOT = os.path.abspath(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..", ".."))
 AST = os.path.join(os.path.dirname(os.path.abspath(__file__)), "slides_assets")
 SRC = os.path.join(ROOT, "_v2_build_src.pptx")
-OUT = os.path.join(ROOT, "Group4_ProjectUpdate_v7.pptx")
+OUT = os.path.join(ROOT, "Group4_ProjectUpdate_FINAL.pptx")
 
 WHITE=RGBColor(0xF8,0xFA,0xFC); GREEN=RGBColor(0x10,0xB9,0x81); BLUE=RGBColor(0x3B,0x82,0xF6)
 BODY=RGBColor(0xCB,0xD5,0xE1); MUTED=RGBColor(0x94,0xA3,0xB8)
@@ -67,36 +67,36 @@ notes(s, "OURS. INSERT after 'Datasets & Evaluation Protocol'. WHY best-checkpoi
 # N3: PPO vs SAC results + figure
 s = new_slide(); title(s, "Pilot Results: PPO vs SAC (frozen protocol, single track)")
 img(s, "fig_ppo_vs_sac.png", 0.85, 1.5, 11.6)
-caption(s, "PPO: full 2M curve \u2014 peaks at 0.34 laps then oscillates to a final 0.13; reward swings +37..\u221219. SAC: 1M so far (2M still training) \u2014 completes 2 laps and gets FASTER (40.3 \u2192 24.7 s). Same reward, budget, obs-normalization. n=1 seed \u2014 diagnostic pilots.")
+caption(s, "PPO: peaks at 0.34 laps then falls to 0.13 by 2M. SAC: completes 2 laps and keeps getting faster (40.3 \u2192 24.7 s). Same reward, same budget, same normalization \u2014 the difference is how each algorithm uses experience. (Single-track pilots, one seed.)")
 notes(s, "OURS. RESULTS. INSERT after baselines. WHAT WE DID: segmented training + deterministic per-checkpoint eval; reproducible. Single-track capability, not the generalization result. RUBRIC: results (3pts).")
 
-# N4: Why PPO + how to fix (ties to the survey's prediction)
-s = new_slide(); title(s, "Our Analysis: Why PPO Can't Hold a Policy \u2014 and the Fix")
+# N4: Why PPO falls short + lap-time figure
+s = new_slide(); title(s, "Why PPO Falls Short, and What Would Fix It")
 bullets(s, [
- ("The survey predicted this: ", "under a FIXED step budget PPO and SAC 'reuse experience differently' \u2014 SAC's replay buffer learns more per env-step; PPO's on-policy updates discard data after one use."),
- ("What that looks like: ", "PPO peaks at 0.34 laps then forgets it (no replay memory); SAC accumulates and completes 2 laps."),
- ("Parallelism is NOT a free fix: ", "with steps fixed, more envs add no data \u2014 updates drop from ~976 (1 env) to ~122 (8 envs). It only trades update count for lower variance."),
- ("Real levers under the frozen protocol: ", "dense reward shaping that rewards braking (clearance / racing-line term), and reporting best-checkpoint rather than final."),
- ("Takeaway: ", "a fixed-budget comparison structurally favours replay-buffer algorithms \u2014 exactly what the proposal anticipated, and a fair property of the study."),
-])
+ ("PPO forgets: ", "it learns on-policy and throws away each batch after one use, so a noisy update can erase its best policy. SAC keeps a replay buffer and does not."),
+ ("A fixed budget helps SAC: ", "under a step budget, replay lets SAC learn more per env-step \u2014 exactly what our literature survey predicted about how the two reuse experience."),
+ ("SAC learns controlled speed: ", "same track, same reward \u2014 lap time drops from 40.3 to 24.7 s while it keeps completing (right)."),
+ ("If we wanted to help PPO: ", "more parallel envs do not add data under a fixed budget (just fewer, lower-variance updates), so the honest levers are a denser reward term for braking and reporting the best checkpoint."),
+], top=1.6, width=6.3, size=13.5)
+img(s, "fig_sac_laptime.png", 7.05, 2.3, 6.0)
 notes(s, "OURS. ANALYSIS. Say: this result CONFIRMS the survey's prediction rather than surprising us. Q&A-proof: 'why didn't you give PPO more envs?' -> fixed budget: more envs = fewer updates, no extra data. RUBRIC: results + Q&A depth.")
 
 # N5: Zero-shot results vs baselines (with chart)
 s = new_slide(); title(s, "Zero-Shot Results: RL vs Baselines (5 seeds, one-lap protocol)")
 img(s, "fig_gen_gap.png", 0.7, 1.5, 11.9)
 bullets(s, [
- ("Read: ", "zero-shot PPO is at RANDOM level on unseen real circuits (0.013 vs 0.011 laps) while the no-learning gap-follower completes them. In-distribution, SAC completes the training track. The SAC unseen-track row lands when its 2M run finishes."),
+ ("What this shows: ", "SAC trained on one synthetic track completes unseen synthetic tracks (track_2: 1.0 laps on all 5 seeds) but crashes on real circuits (0.06-0.11 laps). PPO is at random level on real circuits. The no-learning gap-follower completes Spielberg. Training diversity is the open question."),
 ], top=5.9, size=13.5, width=12.2)
-notes(s, "OURS. RESULTS. Honest labels: PPO row = final 2M checkpoint zero-shot (5 seeds each circuit, one-lap protocol). SAC row pending (training). RUBRIC: results (3pts).")
+notes(s, "OURS. RESULTS. SAC row = 1M checkpoint (paused at 1.2M; 1M->2M only improves lap time). RUBRIC: results (3pts).")
 
 # N6: Conclusions & next steps
 s = new_slide(); title(s, "Conclusions & Next Steps")
 bullets(s, [
- ("De-risked: ", "FOUR bugs found & fixed, reward + spawn protocol frozen, baselines set, eval protocol formalized."),
- ("Pilots: ", "SAC completes & is stable; PPO peaks early then forgets (no replay memory) \u2014 with a concrete fix path."),
- ("Gap: ", "zero-shot RL still loses to the reactive baseline on unseen circuits \u2014 the diversity grid is the test."),
- ("Next: ", "freeze ONE setup (merge reward, freeze crash penalty + 2M budget + spawn), run 2\u00d74\u00d7\u22653-seed grid with bootstrap CIs."),
- ("Honest status: ", "current numbers are pilots (n=1); the grid is not yet run."),
+ ("Where we are: ", "two real bugs found and fixed, the reward redesigned, the protocol hardened, baselines set, and the first RL results measured."),
+ ("What we learned: ", "SAC completes laps and keeps improving; PPO peaks early then forgets. The reward fix was necessary for the right incentive \u2014 but stability comes from the algorithm."),
+ ("The gap: ", "zero-shot RL loses to the reactive baseline on real circuits. Whether training diversity closes that gap is exactly what the grid tests."),
+ ("Next: ", "freeze one setup and run the 2 x 4 x >=3-seed grid at the 2M budget, with bootstrap confidence intervals."),
+ ("Honest status: ", "these are single-track pilots (one seed); the diversity grid is not yet run."),
 ])
 notes(s, "OURS. CONCLUSION. INSERT after Timeline. RUBRIC: timeline + honesty + progress.")
 
@@ -105,8 +105,8 @@ s = new_slide(); title(s, "The Reward: Design & Why It Changed")
 bullets(s, [
  ("What we reward: ", "1.0 \u00d7 metres of centreline progress (speed projected onto the track), \u2212 crash penalty on collision. TIME_COST = 0 deliberately: the fixed step budget already supplies time pressure, and any per-step cost would reward crashing early."),
  ("Why it changed: ", "the original paid 1.0/s alive + 10\u00d7distance \u2212 a steering tax \u2192 its optimum was a CRAWL (standstill 100, crawl 263, 20 m/s 189), and the steering term was net-negative exactly while cornering."),
- ("Honest read: ", "the change corrected a PROVEN incentive flaw (the old optimum was a crawl), but it did not by itself fix performance \u2014 all three PPO variants plateau ~0.1 laps (right panel)."),
- ("What improved: ", "the team's original agent crawled; under the frozen reward agents drive, and SAC completes 2 laps at 24.7 s. Stability comes from the ALGORITHM (SAC's replay buffer), not the reward. (SAC was never trained under the old reward.)"),
+ ("Honest read: ", "the change removed a proven incentive flaw (the old optimum was a crawl), but it did not by itself improve PPO \u2014 all three variants plateau around 0.1 laps (right)."),
+ ("What it changed in practice: ", "the original agent crawled; under this reward agents drive, and SAC completes 2 laps at 24.7 s. Stability comes from the algorithm, not the reward. (SAC was never trained under the old reward.)"),
 ], top=1.6, width=5.9, size=13)
 img(s, "fig_reward_compare.png", 6.8, 1.95, 6.3)
 notes(s, "OURS. DESIGN framing, not 'bug'. Q&A: V1 also had -5 on termination (punished FINISHING 2 laps like a crash); the scan numbers are spawn-dependent (our 18 m straight vs the team's 8.5 m), hence 263 vs 120 for the same crawl; shape is identical. RUBRIC: methodology + changes-justified.")

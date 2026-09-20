@@ -20,3 +20,6 @@ nohup "$PY" -u learning_curve.py --algo sac --vecnormalize --penalty 40 --steps 
 
 # Check progress:  tail logs/*.log   |   state: saved_models/<name>/state.json
 # PPO-2M (penalty 40) is ALREADY DONE -> its unseen-track eval already ran (results/eval_ppo_vn_2m.json).
+
+NOTE (Sep 20): SAC was paused at 12/20 (1.2M) to finalize the deck on SAC-1M results.
+Rerun command #3 above to continue; the unseen eval ran from that checkpoint (tag sac_1m).
