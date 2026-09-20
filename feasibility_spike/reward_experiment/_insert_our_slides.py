@@ -18,6 +18,23 @@ TFONT="Montserrat"; BFONT="Inter"
 prs = Presentation(SRC)
 BLANK = min(prs.slide_layouts, key=lambda L: len(L.placeholders))
 
+# --- targeted fixes to team slides (authorized): keep wording consistent with our narrative ---
+def fix_team_text(replacements):
+    for s in prs.slides:
+        for sh in s.shapes:
+            if not sh.has_text_frame:
+                continue
+            for para in sh.text_frame.paragraphs:
+                for run in para.runs:
+                    for old, new in replacements.items():
+                        if old in run.text:
+                            run.text = run.text.replace(old, new)
+
+fix_team_text({
+    "Found and fixed four bugs that would have voided the grid.":
+        "Found and fixed two bugs, and redesigned the reward and spawn protocol, before the grid.",
+})
+
 def new_slide():
     s = prs.slides.add_slide(BLANK)
     for ph in list(s.placeholders):
