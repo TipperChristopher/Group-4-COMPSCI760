@@ -1,0 +1,207 @@
+{
+  "model": "E:\\OneDrive - The University of Auckland\\Desktop\\COMPSCI 760\\team_repo\\feasibility_spike\\reward_experiment\\saved_models\\_ck_eval_300000",
+  "algo": "SAC",
+  "tracks": [
+    "synthetic_track_1",
+    "synthetic_track_2",
+    "Spielberg",
+    "Silverstone"
+  ],
+  "seeds": [
+    0,
+    1,
+    2,
+    3,
+    4
+  ],
+  "results": {
+    "synthetic_track_1": [
+      {
+        "seed": 0,
+        "laps": 0.784,
+        "crashed": true,
+        "outcome": "crash",
+        "steps": 3289,
+        "ret": 114.28,
+        "lap_time_s": null
+      },
+      {
+        "seed": 1,
+        "laps": 0.784,
+        "crashed": true,
+        "outcome": "crash",
+        "steps": 3289,
+        "ret": 114.28,
+        "lap_time_s": null
+      },
+      {
+        "seed": 2,
+        "laps": 0.666,
+        "crashed": true,
+        "outcome": "crash",
+        "steps": 3855,
+        "ret": 96.53,
+        "lap_time_s": null
+      },
+      {
+        "seed": 3,
+        "laps": 0.666,
+        "crashed": true,
+        "outcome": "crash",
+        "steps": 3855,
+        "ret": 96.53,
+        "lap_time_s": null
+      },
+      {
+        "seed": 4,
+        "laps": 0.529,
+        "crashed": true,
+        "outcome": "crash",
+        "steps": 5462,
+        "ret": 75.48,
+        "lap_time_s": null
+      }
+    ],
+    "synthetic_track_2": [
+      {
+        "seed": 0,
+        "laps": 0.685,
+        "crashed": true,
+        "outcome": "crash",
+        "steps": 3335,
+        "ret": 116.48,
+        "lap_time_s": null
+      },
+      {
+        "seed": 1,
+        "laps": 0.685,
+        "crashed": true,
+        "outcome": "crash",
+        "steps": 3335,
+        "ret": 116.48,
+        "lap_time_s": null
+      },
+      {
+        "seed": 2,
+        "laps": 1.0,
+        "crashed": null,
+        "outcome": "finished",
+        "steps": 3561,
+        "ret": 177.2,
+        "lap_time_s": 35.59
+      },
+      {
+        "seed": 3,
+        "laps": 1.0,
+        "crashed": null,
+        "outcome": "finished",
+        "steps": 3561,
+        "ret": 177.2,
+        "lap_time_s": 35.59
+      },
+      {
+        "seed": 4,
+        "laps": 0.298,
+        "crashed": true,
+        "outcome": "crash",
+        "steps": 1144,
+        "ret": 47.78,
+        "lap_time_s": null
+      }
+    ],
+    "Spielberg": [
+      {
+        "seed": 0,
+        "laps": 0.104,
+        "crashed": true,
+        "outcome": "crash",
+        "steps": 836,
+        "ret": 30.84,
+        "lap_time_s": null
+      },
+      {
+        "seed": 1,
+        "laps": 0.104,
+        "crashed": true,
+        "outcome": "crash",
+        "steps": 836,
+        "ret": 30.84,
+        "lap_time_s": null
+      },
+      {
+        "seed": 2,
+        "laps": 0.094,
+        "crashed": true,
+        "outcome": "crash",
+        "steps": 803,
+        "ret": 27.38,
+        "lap_time_s": null
+      },
+      {
+        "seed": 3,
+        "laps": 0.094,
+        "crashed": true,
+        "outcome": "crash",
+        "steps": 803,
+        "ret": 27.38,
+        "lap_time_s": null
+      },
+      {
+        "seed": 4,
+        "laps": 0.075,
+        "crashed": true,
+        "outcome": "crash",
+        "steps": 498,
+        "ret": 20.78,
+        "lap_time_s": null
+      }
+    ],
+    "Silverstone": [
+      {
+        "seed": 0,
+        "laps": 0.169,
+        "crashed": true,
+        "outcome": "crash",
+        "steps": 10559,
+        "ret": 72.5,
+        "lap_time_s": null
+      },
+      {
+        "seed": 1,
+        "laps": 0.169,
+        "crashed": true,
+        "outcome": "crash",
+        "steps": 10559,
+        "ret": 72.5,
+        "lap_time_s": null
+      },
+      {
+        "seed": 2,
+        "laps": 0.162,
+        "crashed": true,
+        "outcome": "crash",
+        "steps": 4066,
+        "ret": 69.33,
+        "lap_time_s": null
+      },
+      {
+        "seed": 3,
+        "laps": 0.162,
+        "crashed": true,
+        "outcome": "crash",
+        "steps": 4066,
+        "ret": 69.33,
+        "lap_time_s": null
+      },
+      {
+        "seed": 4,
+        "laps": 0.169,
+        "crashed": true,
+        "outcome": "crash",
+        "steps": 8883,
+        "ret": 72.47,
+        "lap_time_s": null
+      }
+    ]
+  }
+}

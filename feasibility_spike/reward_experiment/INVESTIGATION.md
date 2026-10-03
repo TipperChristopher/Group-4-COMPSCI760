@@ -77,8 +77,12 @@ supported, magnitudes as samples). The deck is frozen; this is what we do NEXT.
 - **Geometry audit:** the synthetic generator caps corner sharpness at ~0.54 1/m
   (`TRACK_TURN_RATE = 0.31` in random_trackgen.py); real circuits reach 1.27
   (Spielberg) on laps 2-2.5× longer with more straights.
-- **Overfitting check (running):** SAC checkpoints every 100k evaluated zero-shot —
-  does unseen performance peak early (overfitting) or rise monotonically (coverage)?
+- **Overfitting check (DONE):** SAC checkpoints 100k/300k/600k/1M evaluated zero-shot.
+  Unseen synthetic laps RISE monotonically (synth_1: 0.42 -> 0.69 -> 0.91 -> 1.00;
+  finishes 0 -> 0 -> 2 -> 5/5), while real circuits stay flat-low (~0.02-0.17) at EVERY
+  checkpoint. **Verdict: not overfitting** \u2014 longer training keeps helping
+  in-distribution; the real-circuit gap is input coverage, present from the first
+  checkpoint. (n=1 seed; evidence files eval_sac_ck*.json.)
 
 ### Diagnosis
 1. **Narrow generalization, not memorization.** One-track SAC completes *different*
