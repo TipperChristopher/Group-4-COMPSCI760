@@ -41,6 +41,7 @@ _wrapper_module = _load_local_module("sb3_wrapper", "sb3_wrapper.py")
 F1TenthSB3Wrapper = _wrapper_module.F1TenthSB3Wrapper
 wrap_vecnormalize = _wrapper_module.wrap_vecnormalize
 save_vecnormalize = _wrapper_module.save_vecnormalize
+DEFAULT_MAX_EPISODE_STEPS = _wrapper_module.DEFAULT_MAX_EPISODE_STEPS
 
 _track_pool_module = _load_local_module(
     "track_pool", os.path.join("src", "track_pool.py")
@@ -48,7 +49,8 @@ _track_pool_module = _load_local_module(
 TrackPoolWrapper = _track_pool_module.TrackPoolWrapper
 
 
-def make_env(track_pool, seed, track_seed, stream=0, cache_size=8):
+def make_env(track_pool, seed, track_seed, stream=0, cache_size=8,
+             max_episode_steps=None):
     """Build one environment that cycles through the whole track pool.
 
     The pool is handled inside a single environment rather than by spawning one
@@ -69,7 +71,13 @@ def make_env(track_pool, seed, track_seed, stream=0, cache_size=8):
                 "map": track_pool[0],
             },
         )
-        env = F1TenthSB3Wrapper(env)
+        env = F1TenthSB3Wrapper(
+            env,
+            max_episode_steps=(
+                DEFAULT_MAX_EPISODE_STEPS if max_episode_steps is None
+                else max_episode_steps
+            ),
+        )
         env = TrackPoolWrapper(
             env,
             tracks=track_pool,
@@ -77,8 +85,9 @@ def make_env(track_pool, seed, track_seed, stream=0, cache_size=8):
             stream=stream,
             cache_size=cache_size,
         )
-        # Monitor records episode returns and the track each episode ran on.
-        env = Monitor(env, info_keywords=("track_name",))
+        # Monitor records episode returns, the track each episode ran on, and
+        # how far around it the car actually got.
+        env = Monitor(env, info_keywords=("track_name", "laps", "progress_m"))
         env.action_space.seed(seed)
         return env
 
@@ -131,6 +140,7 @@ def print_startup_summary(args, model, track_pool, n_envs):
         ("track seed", str(args.track_seed)),
         ("run seed", str(args.seed)),
         ("total timesteps", f"{args.total_timesteps:,}"),
+        ("max episode steps", f"{args.max_episode_steps:,}"),
     ]
     rows += expected_updates(model, args.algo, args.total_timesteps, n_envs)
 
@@ -172,6 +182,14 @@ def main():
     parser.add_argument("--track-cache-size", type=int, default=8,
                         help="Tracks held in memory to keep reset() cheap. "
                              "Roughly 20 MB each.")
+    parser.add_argument("--max-episode-steps", type=int,
+                        default=DEFAULT_MAX_EPISODE_STEPS,
+                        help="Episode step limit, returned as truncated (not "
+                             "terminated). f1tenth_gym never truncates on its "
+                             "own, so without this a stalled policy runs "
+                             "forever, reset() never fires and the track pool "
+                             "never advances. Default 3000 is 30 s of sim time, "
+                             "about one lap of a synthetic track at 6 m/s.")
     args = parser.parse_args()
 
     if args.n_envs < 1:
@@ -188,6 +206,7 @@ def main():
             track_seed=args.track_seed,
             stream=i,
             cache_size=args.track_cache_size,
+            max_episode_steps=args.max_episode_steps,
         )
         for i in range(n_envs)
     ]
