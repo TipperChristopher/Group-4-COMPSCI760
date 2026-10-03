@@ -18,7 +18,8 @@ sources:
 - **Coverage vs overfitting** — *coverage*: the policy never saw a pattern in
   training (fails at any checkpoint). *Overfitting*: the policy got worse at
   generalizing as training went on (early checkpoint would do better). The
-  nar7 finding proves coverage; overfitting-timing is still being tested.
+  nar7 finding proves coverage; the checkpoint probe **ruled out** overfitting
+  (generalization rises monotonically — see `results.md`).
 - **Memorization vs competence** — whether the policy learned the training
   *distribution* (brittle outside it) or a general driving *rule* (transfers).
   The project's framing question.

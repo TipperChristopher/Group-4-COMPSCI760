@@ -109,6 +109,22 @@ Env-level: spawn offset **0.79–0.81 m → 0.00 m** switching
 See table in `experiments.md` (synthetic max curvature 0.544 vs Spielberg
 1.273 / Silverstone 0.938).
 
+## Overfitting-timing probe — `eval_sac_ck{100000,300000,600000,1000000}.json`
+
+SAC checkpoints from the 1M `--keep-checkpoints` run, evaluated zero-shot under
+the standard protocol (4 tracks × 5 seeds, one-lap, centreline, correct loader).
+Mean laps, finishes in brackets where non-zero:
+
+| checkpoint | synthetic_1 | synthetic_2 | Spielberg | Silverstone |
+|---|---|---|---|---|
+| 100k | 0.42 | 0.33 | 0.04 | 0.02 |
+| 300k | 0.69 | 0.73 (2/5) | 0.09 | 0.17 |
+| 600k | 0.91 (2/5) | 0.90 (2/5) | 0.03 | 0.04 |
+| 1M | **1.00 (5/5)** | 0.82 | 0.03 | 0.07 |
+
+Unseen-synthetic rises monotonically; real circuits flat-low at every
+checkpoint. One training seed; 5 spawn seeds per cell.
+
 ## Files not central to the current story
 
 `completion_*`, `learning_curve_cp40_ent*`, `..._bonus100_*`, `..._shape0.2_*`,

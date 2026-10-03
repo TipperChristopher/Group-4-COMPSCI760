@@ -22,7 +22,7 @@ data unless stated otherwise** — point estimates, not ranked results.
 - [Why SAC fails on real circuits](#why-sac-fails-on-real-circuits)
 - [The nar7 coverage finding](#the-nar7-coverage-finding)
 - [Track geometry](#track-geometry)
-- [Overfitting-timing probe (in progress)](#overfitting-timing-probe-in-progress)
+- [Overfitting-timing probe (answered: no)](#overfitting-timing-probe-answered-no)
 
 ## Stage 1 — capability check (one track)
 
@@ -151,19 +151,31 @@ synthetic→real transfer, distinct from the spawn input-shift: it only bites
 *after* the car survives the spawn, so the spawn shift is the binding
 constraint first.
 
-## Overfitting-timing probe (in progress)
+## Overfitting-timing probe (answered: no)
 
 Hypothesis (user's): 1M steps on one track may **overfit** — generalization
 peaking early then degrading, while in-distribution lap time keeps improving.
-The pilots never kept earlier checkpoints (each run overwrote its latest), so
-we added `--keep-checkpoints` to `learning_curve.py` and relaunched **SAC-1M
-with a checkpoint every 100k**. Next step: eval each checkpoint on
-`synthetic_nar7_0` + Spielberg to see if early checkpoints generalize better.
+The pilots never kept earlier checkpoints, so we added `--keep-checkpoints` to
+`learning_curve.py`, kept a model every 100k, and evaluated 100k / 300k / 600k /
+1M zero-shot through the standard protocol and the **correct** loader
+(`eval_sac_ck*.json`).
 
-Note the distinction: **nar7 proves coverage** (memorization at whatever
-checkpoint); the overfitting *timing* claim is what this probe tests. If it
-comes back negative, the coverage conclusion still stands. See
-`open-questions.md`. Resumable via `RESUME.txt`.
+| checkpoint | synth_1 | synth_2 | Spielberg | Silverstone |
+|---|---|---|---|---|
+| 100k | 0.42 | 0.33 | 0.04 | 0.02 |
+| 300k | 0.69 | 0.73 (2/5 fin) | 0.09 | 0.17 |
+| 600k | 0.91 (2/5 fin) | 0.90 (2/5 fin) | 0.03 | 0.04 |
+| 1M | **1.00 (5/5 fin)** | 0.82 | 0.03 | 0.07 |
+
+**Verdict: no overfitting over time.** Unseen-synthetic generalization rises
+**monotonically** with training (0.42 → 1.00; finishes 0 → 5/5), and real-circuit
+performance is flat-low (0.02–0.17) at **every** checkpoint including the
+earliest. "Train less" is therefore not a fix, and the real-circuit gap exists
+from the first checkpoint — consistent with, and complementary to, the nar7
+**coverage** conclusion. Caveat: one training seed, 5 spawn seeds per cell.
+
+A 2M `--keep-checkpoints` extension (`saved_models/sac_overfit`) is running to
+extend the curve past 1M; the verdict is not expected to change.
 
 ## See also
 

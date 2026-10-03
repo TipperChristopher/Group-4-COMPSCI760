@@ -44,8 +44,12 @@ pages carry `updated:` and stale results are re-dated and logged.
 
 - Done: protocol formalized; two bugs fixed; reward + spawn redesigned;
   baselines measured; PPO/SAC single-track pilots + unseen-track eval; nar7
-  coverage finding; Presentation-2 deck (`Group4_ProjectUpdate_FINAL2.pptx`).
-- Running: SAC-1M with per-segment checkpoints (overfitting-timing probe).
-- Not run: the 2×4×≥3-seed diversity grid with bootstrap CIs.
+  coverage finding; **overfitting-timing probe answered (no overfitting —
+  generalization rises monotonically; the real-circuit gap is coverage, present
+  at every checkpoint)**; team tests green; Presentation-2 deck
+  (`Group4_ProjectUpdate_FINAL2.pptx`).
+- Running: SAC-2M `--keep-checkpoints` extension (`sac_overfit`), resumable.
+- Not run: the 2×4×≥3-seed diversity grid with bootstrap CIs; training on a
+  widened generator (real-like corner sharpness) — the top next experiment.
 
 See [log.md](log.md) for the operation history.

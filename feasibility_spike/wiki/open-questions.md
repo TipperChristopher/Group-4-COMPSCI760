@@ -31,14 +31,16 @@ Pilots used ~40; team canonical is 5.0. PPO-p5 vs PPO-p40 both plateau at
 team must freeze **one** value before the grid. Adopting 5.0 is the
 low-friction option. (`decisions.md` D6.)
 
-## Q4 — Overfitting timing (probe running)
+## Q4 — Overfitting timing — ANSWERED (no)
 
-Does 1M steps on one track make generalization **worse over time** while
-in-distribution lap time keeps improving? SAC-1M is retraining with a
-checkpoint every 100k (`--keep-checkpoints`); next step is to eval each
-checkpoint on `synthetic_nar7_0` + Spielberg. **nar7 already proved the
-coverage/memorization problem**; this probe tests only the *timing* claim.
-If negative, the coverage conclusion still stands. Resumable via `RESUME.txt`.
+Does 1M steps on one track make generalization **worse over time**? **No.**
+Checkpoints at 100k/300k/600k/1M evaluated zero-shot show unseen-synthetic laps
+rising monotonically (0.42 → 1.00, finishes 0 → 5/5), while real circuits stay
+flat-low (0.02–0.17) at every checkpoint — see `results.md` (overfitting-timing
+probe) and `experiments.md`. So "train less" is not a fix; the real-circuit gap
+is **coverage**, present from the first checkpoint (nar7 conclusion stands).
+A 2M extension run is in progress; the verdict is not expected to change.
+Caveat: one training seed.
 
 ## Q5 — Did the reward matter for SAC?
 

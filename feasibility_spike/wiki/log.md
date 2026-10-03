@@ -39,3 +39,31 @@ file-level diffs — git records the diff.
   the roles slide. Mapping team-confirmed: Victory = Yi Wei, Grant = Zihang
   Zhang. Roles slide unchanged; no stray old-name occurrences remain.
 - Applied via fix_team_text() in the deck builder (reproducible).
+
+## [2025-09-20] update | overfitting probe answered; branch merged; tests green
+
+- **Q4 (overfitting timing) ANSWERED: no.** Evaluated SAC checkpoints
+  100k/300k/600k/1M zero-shot through the standard protocol and the correct
+  loader (`eval_sac_ck*.json`). Unseen-synthetic laps rise monotonically
+  (0.42 → 0.69 → 0.91 → 1.00; finishes 0 → 5/5); real circuits stay flat-low
+  (0.02–0.17) at every checkpoint. "Train less" is not a fix; the real-circuit
+  gap is coverage, present from the first checkpoint — complements the nar7
+  finding. Updated: `experiments.md`, `results.md`, `open-questions.md` (Q4),
+  `index.md` snapshot, `handoff.md`.
+- **Repo state:** branch merged with `origin/main` (0 behind, ~37 ahead, still
+  purely additive — no team file touched). Main now carries the merged reward
+  PR #2. Recorded in `handoff.md`.
+- **Team tests green** on the merged branch: `check_reward.py` Stage 1,
+  `check_experiment.py` Stage 2 (needed the 20-track pool, generated via
+  `make_synth_tracks.py --n 20 --seed 0`).
+- **Corrected our own docs:** `INVESTIGATION.md` and `EXPERIMENT_LOG.md` carried
+  the retracted "crash at 2.7–10.7 m" figure (VecNormalize-loader artifact).
+  Both now state the verified ~34 m / ~26 m crash locations and point at
+  `incidents.md` for the loader pitfall.
+- **Added session docs** (referenced from `handoff.md`): `EXPERIMENT_LOG.md`
+  (complete what/why/result record for a new session), `INVESTIGATION.md` (the
+  two open problems with ranked fixes), `TRAIN_README.md` (frozen train/eval
+  commands for teammates).
+- Still open: diversity grid + CIs; crash-penalty freeze (5 vs 40); **training
+  on a widened generator** (real-like corner sharpness) — never attempted, now
+  the top-ranked next experiment; PPO n_envs=8 ablation.

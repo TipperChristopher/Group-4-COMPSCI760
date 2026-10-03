@@ -13,8 +13,16 @@ Everything a teammate (or a future session) needs to pick up the work.
 
 ## Git state
 
-- **Branch:** `experiments/feasibility-spike`, ~30 commits ahead of `main`,
-  all additive, pushed to origin. Author: `aolin yang`.
+- **Branch:** `experiments/feasibility-spike`, **merged with `origin/main`**
+  (0 behind, ~37 ahead), all additive, pushed to origin. Author: `aolin yang`.
+  Main now contains the team's merged reward PR #2 (new reward, centreline
+  spawn, one-lap eval, gap-follower threshold 20).
+- **Team tests green on this branch:** `tests/check_reward.py` (Stage 1) and
+  `tests/check_experiment.py` (Stage 2) — the latter needs the 20-track pool:
+  `python make_synth_tracks.py --n 20 --seed 0`.
+- **Session docs:** `reward_experiment/EXPERIMENT_LOG.md` (full what/why/result
+  record), `INVESTIGATION.md` (the two open problems + ranked fixes),
+  `TRAIN_README.md` (how teammates train with the frozen reward/env).
 - **Latest deck commit:** timeline "four bugs" → "two bugs + reward/spawn
   redesign".
 - `.gitignore` excludes `logs/` and `saved_models/` (churn) — models are
@@ -63,9 +71,9 @@ See `RESUME.txt`. Each command auto-detects its checkpoint
 
 - **SAC-2M** was paused at 12/20 (1.2M). Rerun command #3 to finish
   (~4 h). Then run its unseen-track eval (command in RESUME.txt).
-- **Overfitting probe:** SAC-1M with `--keep-checkpoints` (see RESUME.txt
-  "OVERFITTING PROBE"); then eval each `ckpt_*.zip` on `synthetic_nar7_0` +
-  Spielberg.
+- **Overfitting probe: ANSWERED (no overfitting)** — checkpoints 100k–1M
+  evaluated zero-shot; see `results.md`. A 2M extension (`sac_overfit`, was at
+  7/20) is resumable with the same command.
 
 ## Rebuild the deck
 

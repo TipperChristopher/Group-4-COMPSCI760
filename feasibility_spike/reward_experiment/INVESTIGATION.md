@@ -70,7 +70,9 @@ supported, magnitudes as samples). The deck is frozen; this is what we do NEXT.
 - **Action-level verification (the key evidence):** on Spielberg/Silverstone the
   policy CREEPS for ~20 s (0.2-0.7 m/s, vs 5-15 m/s on synthetic) then suddenly
   commands full steering lock + ~17 m/s throttle and rams the wall from a standstill.
-  Crash at 2.7-10.7 m — on straights, ~100 m before the first hard corner.
+  Crash at **~34 m (Spielberg) / ~26 m (Silverstone)** — on the opening stretch,
+  well before the sharp corners it never reaches. (Our earlier "2.7-10.7 m" figure
+  was a VecNormalize-loader artifact — see wiki/incidents.md.)
 - **Narrow-track reproduction:** the same crash reproduces on a NARROW synthetic
   track with the same spawn scan → it is an INPUT-DISTRIBUTION effect, not
   real-track magic.

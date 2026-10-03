@@ -102,7 +102,9 @@ Docs: `INVESTIGATION.md` (the two problems + fixes), `REWARD_ANALYSIS.md`,
   Silverstone 0.057 (5/5 crash). PPO: 0.13-0.24 on synthetic, ~0.013 on real (= random).
   Action-level replay (verified, not assumed): on real circuits SAC CREEPS ~20 s at
   0.2-0.7 m/s then commands full lock + ~17 m/s and rams the wall from standstill;
-  crash at 2.7-10.7 m, on straights, ~100 m before the first hard corner. The SAME
+  crash at ~34 m (Spielberg) / ~26 m (Silverstone), on the opening stretch, well
+  before the sharp corners it never reaches (an earlier "2.7-10.7 m" figure of ours
+  was a VecNormalize-loader artifact — see wiki/incidents.md). The SAME
   failure reproduces on a NARROW synthetic track (parallel narrow-track experiment).
 - **Meaning:** not memorization (unseen synthetic completed) — it is scan-to-action
   brittleness outside the training manifold ("coverage, not real-track magic").
