@@ -1,0 +1,111 @@
+{
+  "model": "E:\\OneDrive - The University of Auckland\\Desktop\\COMPSCI 760\\team_repo\\feasibility_spike\\reward_experiment\\saved_models\\sac_vn_cp40",
+  "algo": "SAC",
+  "tracks": [
+    "synthetic_nar7_0",
+    "synthetic_nar7_1"
+  ],
+  "seeds": [
+    0,
+    1,
+    2,
+    3,
+    4
+  ],
+  "results": {
+    "synthetic_nar7_0": [
+      {
+        "seed": 0,
+        "laps": 0.116,
+        "crashed": true,
+        "outcome": "crash",
+        "steps": 1114,
+        "ret": 13.85,
+        "lap_time_s": null
+      },
+      {
+        "seed": 1,
+        "laps": 0.116,
+        "crashed": true,
+        "outcome": "crash",
+        "steps": 1114,
+        "ret": 13.85,
+        "lap_time_s": null
+      },
+      {
+        "seed": 2,
+        "laps": 0.131,
+        "crashed": true,
+        "outcome": "crash",
+        "steps": 1071,
+        "ret": 16.27,
+        "lap_time_s": null
+      },
+      {
+        "seed": 3,
+        "laps": 0.131,
+        "crashed": true,
+        "outcome": "crash",
+        "steps": 1071,
+        "ret": 16.27,
+        "lap_time_s": null
+      },
+      {
+        "seed": 4,
+        "laps": 0.096,
+        "crashed": true,
+        "outcome": "crash",
+        "steps": 1049,
+        "ret": 10.63,
+        "lap_time_s": null
+      }
+    ],
+    "synthetic_nar7_1": [
+      {
+        "seed": 0,
+        "laps": 0.23,
+        "crashed": true,
+        "outcome": "crash",
+        "steps": 520,
+        "ret": 36.26,
+        "lap_time_s": null
+      },
+      {
+        "seed": 1,
+        "laps": 0.23,
+        "crashed": true,
+        "outcome": "crash",
+        "steps": 520,
+        "ret": 36.26,
+        "lap_time_s": null
+      },
+      {
+        "seed": 2,
+        "laps": 0.068,
+        "crashed": true,
+        "outcome": "crash",
+        "steps": 201,
+        "ret": 7.25,
+        "lap_time_s": null
+      },
+      {
+        "seed": 3,
+        "laps": 0.068,
+        "crashed": true,
+        "outcome": "crash",
+        "steps": 201,
+        "ret": 7.25,
+        "lap_time_s": null
+      },
+      {
+        "seed": 4,
+        "laps": 0.073,
+        "crashed": true,
+        "outcome": "crash",
+        "steps": 224,
+        "ret": 8.17,
+        "lap_time_s": null
+      }
+    ]
+  }
+}

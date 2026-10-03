@@ -107,9 +107,9 @@ notes(s, "OURS. ANALYSIS. Say: this result CONFIRMS the survey's prediction rath
 s = new_slide(); title(s, "Zero-Shot Results: RL vs Baselines (5 seeds, one-lap protocol)")
 img(s, "fig_gen_gap.png", 0.7, 1.5, 11.9)
 bullets(s, [
- ("What this shows: ", "SAC trained on one synthetic track completes unseen synthetic tracks (track_2: 1.0 laps on all 5 seeds) but crashes on real circuits (0.06-0.11 laps) \u2014 and the same crash reproduces on a NARROW synthetic track with the same spawn scan. PPO is at random level on real circuits; the gap-follower completes Spielberg. A coverage problem, not real-track magic."),
+ ("What this shows: ", "SAC trained on one synthetic track completes unseen synthetic tracks (track_2: 1.0 laps on all 5 seeds) but crashes on real circuits (0.06-0.11 laps) \u2014 verified at the action level: it creeps for ~20 s then panic-steers into the wall. The same failure reproduces on a NARROW synthetic track with the same spawn scan. PPO is at random level on real circuits; the gap-follower completes Spielberg. A coverage problem, not real-track magic."),
 ], top=5.9, size=13.5, width=12.2)
-notes(s, "OURS. RESULTS. SAC row = 1M checkpoint (paused at 1.2M; 1M->2M only improves lap time). RUBRIC: results (3pts).")
+notes(s, "OURS. RESULTS. On 'memorization': it is distribution coverage, not memorization \u2014 the policy generalizes inside the synthetic manifold and fails out-of-manifold, measured at the action level (crawl->panic at spawn, ~10 m before the first hard corner). SAC row = 1M checkpoint. RUBRIC: results (3pts).")
 
 # N6: Conclusions & next steps (staged narrative)
 s = new_slide(); title(s, "Conclusions & Next Steps")

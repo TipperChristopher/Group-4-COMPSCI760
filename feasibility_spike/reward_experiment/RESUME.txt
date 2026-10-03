@@ -23,3 +23,12 @@ nohup "$PY" -u learning_curve.py --algo sac --vecnormalize --penalty 40 --steps 
 
 NOTE (Sep 20): SAC was paused at 12/20 (1.2M) to finalize the deck on SAC-1M results.
 Rerun command #3 above to continue; the unseen eval ran from that checkpoint (tag sac_1m).
+
+# OVERFITTING PROBE (Sep 20): SAC-1M with per-segment checkpoints saved.
+nohup "$PY" -u learning_curve.py --algo sac --vecnormalize --penalty 40 --steps 1000000 --segments 10 --save-model saved_models/sac_ckpts --keep-checkpoints > logs/sac_ckpts.log 2>&1 &
+# When done, eval each ckpt_{steps}.zip on nar7_0 + Spielberg to see if EARLY checkpoints generalize better:
+#   for s in 100000 200000 300000 400000 600000 800000 1000000; do
+#     cp saved_models/sac_ckpts/ckpt_${s}.zip saved_models/sac_ckpts/final_model.zip
+#     cp saved_models/sac_ckpts/vecnormalize_${s}.pkl saved_models/sac_ckpts/vecnormalize.pkl
+#     eval_vs_baseline.py --model saved_models/sac_ckpts --algo SAC --tracks synthetic_nar7_0 Spielberg --seeds 0 1 2 --tag sac_ck${s}
+#   done

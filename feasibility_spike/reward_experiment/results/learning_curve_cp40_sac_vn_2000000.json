@@ -79,6 +79,78 @@
       "lap_time_s": 33.56389337871039,
       "ep_rew_mean": 139.83810083999998,
       "ep_len_mean": 2675.73
+    },
+    {
+      "steps": 700000,
+      "eval_track": "synthetic_track_0",
+      "laps": 1.9985598752568399,
+      "max_progress_m": 377.7472433273551,
+      "crashed": false,
+      "speed_before_crash": 7.028758525848389,
+      "eval_steps": 6696,
+      "lap_time_s": 33.50412505974824,
+      "ep_rew_mean": 159.02319129,
+      "ep_len_mean": 2769.12
+    },
+    {
+      "steps": 800000,
+      "eval_track": "synthetic_track_0",
+      "laps": 1.998625295536294,
+      "max_progress_m": 377.7592145382888,
+      "crashed": false,
+      "speed_before_crash": 6.742489814758301,
+      "eval_steps": 5630,
+      "lap_time_s": 28.16936227402893,
+      "ep_rew_mean": 184.07603544000008,
+      "ep_len_mean": 2840.91
+    },
+    {
+      "steps": 900000,
+      "eval_track": "synthetic_track_0",
+      "laps": 1.9985638901375844,
+      "max_progress_m": 377.73502220841567,
+      "crashed": false,
+      "speed_before_crash": 8.056818962097168,
+      "eval_steps": 6696,
+      "lap_time_s": 33.504057753885654,
+      "ep_rew_mean": 190.70193315,
+      "ep_len_mean": 2829.67
+    },
+    {
+      "steps": 1000000,
+      "eval_track": "synthetic_track_0",
+      "laps": 1.99876783136662,
+      "max_progress_m": 377.7647807013391,
+      "crashed": false,
+      "speed_before_crash": 8.882314682006836,
+      "eval_steps": 4936,
+      "lap_time_s": 24.69521433424863,
+      "ep_rew_mean": 196.57682164999994,
+      "ep_len_mean": 2807.12
+    },
+    {
+      "steps": 1100000,
+      "eval_track": "synthetic_track_0",
+      "laps": 1.9986981290293608,
+      "max_progress_m": 377.75189419603953,
+      "crashed": false,
+      "speed_before_crash": 8.878495216369629,
+      "eval_steps": 4566,
+      "lap_time_s": 22.844870536889996,
+      "ep_rew_mean": 202.55984952,
+      "ep_len_mean": 2817.87
+    },
+    {
+      "steps": 1200000,
+      "eval_track": "synthetic_track_0",
+      "laps": 1.9983470502276912,
+      "max_progress_m": 377.6896104773747,
+      "crashed": false,
+      "speed_before_crash": 8.823653221130371,
+      "eval_steps": 4542,
+      "lap_time_s": 22.728784769805053,
+      "ep_rew_mean": 213.48524700000002,
+      "ep_len_mean": 2818.79
     }
   ],
   "final": null

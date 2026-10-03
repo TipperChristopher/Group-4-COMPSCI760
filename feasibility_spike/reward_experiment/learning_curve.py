@@ -169,6 +169,8 @@ def main():
                     help="train under the ORIGINAL old reward (matched ablation vs the progress reward)")
     ap.add_argument("--save-model", type=str, default="",
                     help="dir to save final_model.zip (+ vecnormalize.pkl) so the policy can be re-evaluated")
+    ap.add_argument("--keep-checkpoints", action="store_true",
+                    help="also save ckpt_{steps}.zip + vecnormalize_{steps}.pkl after EVERY segment (overfitting probe)")
     args = ap.parse_args()
 
     W.CRASH_PENALTY = args.penalty
@@ -234,6 +236,10 @@ def main():
         model.save(str(resume_dir / "model.zip"))
         if args.vecnormalize:
             train_venv.save(str(resume_dir / "vecnormalize.pkl"))
+        if args.keep_checkpoints:
+            model.save(str(resume_dir / f"ckpt_{done*seg}.zip"))
+            if args.vecnormalize:
+                train_venv.save(str(resume_dir / f"vecnormalize_{done*seg}.pkl"))
         (resume_dir / "state.json").write_text(json.dumps(dict(
             penalty=args.penalty, algo=args.algo, vecnormalize=args.vecnormalize,
             steps=args.steps, ent_coef=args.ent_coef, completion_bonus=args.completion_bonus,
