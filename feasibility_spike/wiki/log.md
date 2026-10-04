@@ -56,6 +56,15 @@ file-level diffs — git records the diff.
 - **Team tests green** on the merged branch: `check_reward.py` Stage 1,
   `check_experiment.py` Stage 2 (needed the 20-track pool, generated via
   `make_synth_tracks.py --n 20 --seed 0`).
+  - **Correction (added later; the record above is left as it happened):**
+    seed 0 was the wrong seed. The canonical training tracks come from seed
+    123 (`generate_track_pool.py`'s effective default), and seed 0 produces
+    different tracks under the same `synthetic_track_0..19` names, so the
+    pool generated here does not match the canonical set. The tests still
+    passed because they check mechanics (resets, rotation, determinism), not
+    track identity. Any model trained on that pool used non-canonical tracks.
+    Regenerate with `--seed 123` and confirm with
+    `python tracks/make_heldout_tracks.py --verify`. See `handoff.md`.
 - **Corrected our own docs:** `INVESTIGATION.md` and `EXPERIMENT_LOG.md` carried
   the retracted "crash at 2.7–10.7 m" figure (VecNormalize-loader artifact).
   Both now state the verified ~34 m / ~26 m crash locations and point at
