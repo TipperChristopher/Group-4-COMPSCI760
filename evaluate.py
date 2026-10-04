@@ -66,6 +66,49 @@ _baselines_module = _load_local_module(
 make_baseline = _baselines_module.make_baseline
 BASELINES = _baselines_module.BASELINES
 
+TRACK_MANIFEST = os.path.join(_PROJECT_ROOT, "tracks", "manifest.json")
+TRACK_SETS = ("train", "val", "test", "real")
+
+
+def resolve_track_set(name):
+    """Track names for a named set, verified against the manifest first.
+
+    train/val/test come from tracks/manifest.json and are checked file by file
+    against its checksums before anything runs. The check exists because track
+    names are not unique across machines: make_synth_tracks.py --seed 0 writes
+    different geometry under the same synthetic_track_N names than the
+    seed-123 set the manifest records, so a bare name list cannot prove two
+    runs evaluated the same tracks. "real" is the locally downloaded circuits,
+    which the manifest does not cover.
+    """
+    if name == "real":
+        return list(DEFAULT_TRACKS)
+    if not os.path.exists(TRACK_MANIFEST):
+        raise SystemExit(f"--track-set {name} needs {TRACK_MANIFEST}. "
+                         "Create it with: python tracks/make_heldout_tracks.py")
+    with open(TRACK_MANIFEST) as fh:
+        manifest = json.load(fh)
+    names = manifest["splits"][name]["names"]
+
+    mh = _load_local_module("make_heldout_tracks",
+                            os.path.join("tracks", "make_heldout_tracks.py"))
+    maps = mh.maps_dir()
+    bad = []
+    for n in names:
+        if not (maps / n).exists():
+            bad.append(f"{n} (missing)")
+        elif not mh.same(manifest["tracks"][n]["files"], mh.checksums(maps, n)):
+            bad.append(f"{n} (contents differ)")
+    if bad:
+        raise SystemExit(
+            f"{len(bad)} of {len(names)} '{name}' tracks do not match "
+            f"tracks/manifest.json, e.g. {', '.join(bad[:5])}. These are not the "
+            "canonical tracks, so results would not be comparable with other "
+            "runs. Check with: python tracks/make_heldout_tracks.py --verify. "
+            "To evaluate unverified tracks deliberately, list them with --tracks.")
+    print(f"Track set '{name}': {len(names)} tracks, all verified against the manifest")
+    return names
+
 
 def _warn_on_action_space_mismatch(model):
     """Catch models trained before the action space was normalised.
@@ -339,7 +382,17 @@ def main():
     parser.add_argument("--seed", type=int, help="Run seed used during training.")
     parser.add_argument("--model-path", type=str,
                         help="Run directory or .zip. Overrides the lookup above.")
-    parser.add_argument("--tracks", nargs="+", default=DEFAULT_TRACKS)
+    parser.add_argument("--tracks", nargs="+", default=None,
+                        help="Explicit track names. Not checked against the "
+                             "manifest. Defaults to the real circuits.")
+    parser.add_argument("--track-set", choices=TRACK_SETS, default=None,
+                        help="Evaluate a named set from tracks/manifest.json: "
+                             "train (synthetic_track_0..99), val (val_track_0..9, "
+                             "for checkpoint selection), test (test_track_0..19, "
+                             "for reporting), or real (the local real circuits). "
+                             "Synthetic sets are verified against the manifest's "
+                             "checksums before running. Mutually exclusive with "
+                             "--tracks.")
     parser.add_argument("--episodes", type=int, default=1,
                         help="f1tenth's default reset places the car on a static "
                              "grid pose, so a greedy policy replays an identical "
@@ -375,6 +428,13 @@ def main():
     parser.add_argument("--no-plot", action="store_true")
     args = parser.parse_args()
 
+    if args.track_set and args.tracks:
+        parser.error("--track-set and --tracks are mutually exclusive")
+    if args.track_set:
+        args.tracks = resolve_track_set(args.track_set)
+    elif not args.tracks:
+        args.tracks = list(DEFAULT_TRACKS)
+
     if args.baseline:
         # Reference policies run through the identical harness: same circuits,
         # same episode caps, same metrics, same CSV. They skip VecNormalize
@@ -395,6 +455,7 @@ def main():
             "reset_type": args.reset_type,
             "episodes": args.episodes,
             "eval_seed": args.eval_seed,
+            "track_set": args.track_set,
             "tracks": list(args.tracks),
         })
         cfg_path = os.path.join(run_dir, "baseline_config.json")
@@ -467,7 +528,13 @@ def main():
           f"({sum(all_completed)}/{len(all_completed)} episodes)")
     print(f"  OVERALL mean laps completed : {np.mean(all_laps):.3f}")
     print("=" * 62)
-    print("All circuits are unseen. Training used synthetic tracks only.")
+    if args.track_set in ("val", "test"):
+        print(f"Held-out synthetic '{args.track_set}' tracks: same generator as "
+              "training, disjoint from every training pool.")
+    elif args.track_set == "train":
+        print("Training-pool tracks: in-distribution, not a generalisation result.")
+    else:
+        print("All circuits are unseen. Training used synthetic tracks only.")
 
     # Guard against reporting a spread that does not exist. A static start pose
     # and a greedy policy replay the same episode, so a std of 0 over several
