@@ -197,6 +197,35 @@
         "test_track_18",
         "test_track_19"
       ]
+    },
+    "real": {
+      "names": [
+        "Austin",
+        "BrandsHatch",
+        "Budapest",
+        "Catalunya",
+        "Hockenheim",
+        "IMS",
+        "Melbourne",
+        "MexicoCity",
+        "Montreal",
+        "Monza",
+        "MoscowRaceway",
+        "Nuerburgring",
+        "Oschersleben",
+        "Sakhir",
+        "SaoPaulo",
+        "Sepang",
+        "Shanghai",
+        "Silverstone",
+        "Sochi",
+        "Spa",
+        "Spielberg",
+        "YasMarina",
+        "Zandvoort"
+      ],
+      "source": "http://api.f1tenth.org/<name>.tar.xz (f1tenth_racetracks)",
+      "install_with": "python tracks/install_real_tracks.py"
     }
   },
   "tracks": {
@@ -2537,6 +2566,481 @@
         "test_track_19_centerline.csv": {
           "sha256": "dc6dca54983b815d0194b9594036081ac5fdbc27b217780183221a7176aa3cb0",
           "sha256_lf": "133ddbf095c3a8af3ceb004d83eeff11d3700fbf5b5b7c5d74fc9b0d20405dc5"
+        }
+      }
+    },
+    "Austin": {
+      "split": "real",
+      "files": {
+        "Austin_map.yaml": {
+          "sha256": "2520c406ce885fec026fe76d2b66f1c59db9f1260d4ed963db44e4f6b213d5bb",
+          "sha256_lf": "2520c406ce885fec026fe76d2b66f1c59db9f1260d4ed963db44e4f6b213d5bb"
+        },
+        "Austin.png": {
+          "sha256": "16501f0cf2333305c305efb6cc3110c7a31e2843263067ddc52edfe826633318",
+          "sha256_lf": "16501f0cf2333305c305efb6cc3110c7a31e2843263067ddc52edfe826633318"
+        },
+        "Austin_centerline.csv": {
+          "sha256": "74b5f86d89ca0a276e6b158c923161a0e47ed88404729852b6c13ada05d5af04",
+          "sha256_lf": "74b5f86d89ca0a276e6b158c923161a0e47ed88404729852b6c13ada05d5af04"
+        },
+        "Austin_raceline.csv": {
+          "sha256": "f984fc20bc0a08eb584be75ef7dfad137a95747981f0f1dc0afcbf4332671779",
+          "sha256_lf": "9fe671053bfe853fe0256d45aa941de058c27b6b847667ce4d5588e714d4e3ce"
+        }
+      }
+    },
+    "BrandsHatch": {
+      "split": "real",
+      "files": {
+        "BrandsHatch_map.yaml": {
+          "sha256": "2b92588eb4af2b6c6916602fcf6a3fb23884377d2ebd5ecf0e69634e8260bab0",
+          "sha256_lf": "2b92588eb4af2b6c6916602fcf6a3fb23884377d2ebd5ecf0e69634e8260bab0"
+        },
+        "BrandsHatch.png": {
+          "sha256": "e56c8cd34766ef38476ff3637dcec167ff275041f12a0cfc122e5f87aacd2eeb",
+          "sha256_lf": "e56c8cd34766ef38476ff3637dcec167ff275041f12a0cfc122e5f87aacd2eeb"
+        },
+        "BrandsHatch_centerline.csv": {
+          "sha256": "1d6246e6e6db1e065d22c19e102292c70dca71e34ded44968a1d5a4c2a8649c4",
+          "sha256_lf": "1d6246e6e6db1e065d22c19e102292c70dca71e34ded44968a1d5a4c2a8649c4"
+        },
+        "BrandsHatch_raceline.csv": {
+          "sha256": "b1cf2cf858383d3a93ca45c80a8438fd289e3cb3a537483e67bdba6db2e32e8f",
+          "sha256_lf": "3244510a22cac85c3b38a477507eafb38f1725d769ac6fdcedf67e22e1a36250"
+        }
+      }
+    },
+    "Budapest": {
+      "split": "real",
+      "files": {
+        "Budapest_map.yaml": {
+          "sha256": "e028ce57d014966b1d77c4f76a7f9578e7ecd276af1ba6d68c19f44ccddab6f8",
+          "sha256_lf": "e028ce57d014966b1d77c4f76a7f9578e7ecd276af1ba6d68c19f44ccddab6f8"
+        },
+        "Budapest.png": {
+          "sha256": "563d819bb68ee66236647f92ec68a2f7f60ecb90b92c9aab487be6f7840d04d6",
+          "sha256_lf": "563d819bb68ee66236647f92ec68a2f7f60ecb90b92c9aab487be6f7840d04d6"
+        },
+        "Budapest_centerline.csv": {
+          "sha256": "759ff3fa6096a9de5354a177582889425f16c529dc350d3ec3817f3c8b1d14ad",
+          "sha256_lf": "759ff3fa6096a9de5354a177582889425f16c529dc350d3ec3817f3c8b1d14ad"
+        },
+        "Budapest_raceline.csv": {
+          "sha256": "a0b2774651b261c108c9793983203686f9a7623bea0fe25fa1987d38ea13b195",
+          "sha256_lf": "2ebef20d0eb6617e96e141d2d83dc84cf2beb5c29fd01b9605dd30cb865f7d21"
+        }
+      }
+    },
+    "Catalunya": {
+      "split": "real",
+      "files": {
+        "Catalunya_map.yaml": {
+          "sha256": "5df00f13873da44208c52f5b7897deb8f41fa07c0593faea13eda228bfeca4a3",
+          "sha256_lf": "5df00f13873da44208c52f5b7897deb8f41fa07c0593faea13eda228bfeca4a3"
+        },
+        "Catalunya.png": {
+          "sha256": "fe7087e601144ba869496859de1194a0f9eaddaed6b20db523186e51bd28e79c",
+          "sha256_lf": "fe7087e601144ba869496859de1194a0f9eaddaed6b20db523186e51bd28e79c"
+        },
+        "Catalunya_centerline.csv": {
+          "sha256": "f1276de8d59c63f0285cdb79d8626b4ccddad5e97bd69b9bf0b6b1cc13a98365",
+          "sha256_lf": "f1276de8d59c63f0285cdb79d8626b4ccddad5e97bd69b9bf0b6b1cc13a98365"
+        },
+        "Catalunya_raceline.csv": {
+          "sha256": "3dfca97d061702b712fefa114cb709ed1a10fbcb35b8ac19650bb3bef19e43c3",
+          "sha256_lf": "b263873eafe5e04d200e3d18963b7edcfe373a567c732eb178d48f1441670130"
+        }
+      }
+    },
+    "Hockenheim": {
+      "split": "real",
+      "files": {
+        "Hockenheim_map.yaml": {
+          "sha256": "63bc4ed043e75395d390e00cb9c4cdbde4cbca7767d4ce97ffe99e5e463b3d8e",
+          "sha256_lf": "63bc4ed043e75395d390e00cb9c4cdbde4cbca7767d4ce97ffe99e5e463b3d8e"
+        },
+        "Hockenheim.png": {
+          "sha256": "39a31a54cd59b1c1b983d2c5a57c9324d08148bb554034be335db8efed66c9fa",
+          "sha256_lf": "39a31a54cd59b1c1b983d2c5a57c9324d08148bb554034be335db8efed66c9fa"
+        },
+        "Hockenheim_centerline.csv": {
+          "sha256": "47c888fe26a5ffa01758b613c57e5eaf8d165b3507c2e9b277b0715031cc9ce9",
+          "sha256_lf": "47c888fe26a5ffa01758b613c57e5eaf8d165b3507c2e9b277b0715031cc9ce9"
+        },
+        "Hockenheim_raceline.csv": {
+          "sha256": "a797ec0bec60fa913c18c8e4a1ec1391d4064d4519a03fe92c45849fc36fe561",
+          "sha256_lf": "5bb2feaddd89532bdb5277ee2c2df6ccc85dd864d064a77816db9c4859f26909"
+        }
+      }
+    },
+    "IMS": {
+      "split": "real",
+      "files": {
+        "IMS_map.yaml": {
+          "sha256": "8b98be2d1d7cc2e4e5b22cf0dca6f9b54ea123fc168a1096ed458a8e49aa00ea",
+          "sha256_lf": "8b98be2d1d7cc2e4e5b22cf0dca6f9b54ea123fc168a1096ed458a8e49aa00ea"
+        },
+        "IMS.png": {
+          "sha256": "72dc803ba3bdcddbfe10503abd4d1bf49c7b12e9f13ded01a7803360d3af21f8",
+          "sha256_lf": "72dc803ba3bdcddbfe10503abd4d1bf49c7b12e9f13ded01a7803360d3af21f8"
+        },
+        "IMS_centerline.csv": {
+          "sha256": "ca9c4f2926650592f9041b40e323684cb1f8b985c483d24aef5cf9a42ac6ef3d",
+          "sha256_lf": "ca9c4f2926650592f9041b40e323684cb1f8b985c483d24aef5cf9a42ac6ef3d"
+        },
+        "IMS_raceline.csv": {
+          "sha256": "88ecc448196be54abbb1f37218f872daf1020b7417288e4359746bd3f34e39bc",
+          "sha256_lf": "9bc8831221eea0c37abcf6ddd56d12260f6122e99bb3b4f4be6271834fbe4a86"
+        }
+      }
+    },
+    "Melbourne": {
+      "split": "real",
+      "files": {
+        "Melbourne_map.yaml": {
+          "sha256": "30c325aa00fef690ec2cc1cb55f0896760295bae8f7e407392143d7fc72c0afb",
+          "sha256_lf": "30c325aa00fef690ec2cc1cb55f0896760295bae8f7e407392143d7fc72c0afb"
+        },
+        "Melbourne.png": {
+          "sha256": "aea9221ae58b853b097cac0657b0311fe588219250a7500fd59a6de5a531a890",
+          "sha256_lf": "aea9221ae58b853b097cac0657b0311fe588219250a7500fd59a6de5a531a890"
+        },
+        "Melbourne_centerline.csv": {
+          "sha256": "7445a6921dbd468ecc687bd5d00d8520178fc248bfa45b09544aa349c5232197",
+          "sha256_lf": "7445a6921dbd468ecc687bd5d00d8520178fc248bfa45b09544aa349c5232197"
+        },
+        "Melbourne_raceline.csv": {
+          "sha256": "c8b722710169b3c7d819d4aa25c7712619de53dd85d6fdc47b4f045b6d162006",
+          "sha256_lf": "0132cfef4761fec322103df20bccb92a4e3dd49463e47561317872e9fafa993b"
+        }
+      }
+    },
+    "MexicoCity": {
+      "split": "real",
+      "files": {
+        "MexicoCity_map.yaml": {
+          "sha256": "e08d9930947f1c52bb0cabd637be34b2300ede1b788a3d53744b3c71b0c2ae0d",
+          "sha256_lf": "e08d9930947f1c52bb0cabd637be34b2300ede1b788a3d53744b3c71b0c2ae0d"
+        },
+        "MexicoCity.png": {
+          "sha256": "b891887c5319774459aee5a2033c3134053e9e04d036a6198be0c292993bf857",
+          "sha256_lf": "b891887c5319774459aee5a2033c3134053e9e04d036a6198be0c292993bf857"
+        },
+        "MexicoCity_centerline.csv": {
+          "sha256": "90af9b2f72ccf8481340ac5c1965bff4f8b2249fe182e947cf389c719566cf3b",
+          "sha256_lf": "90af9b2f72ccf8481340ac5c1965bff4f8b2249fe182e947cf389c719566cf3b"
+        },
+        "MexicoCity_raceline.csv": {
+          "sha256": "7be224432e31aa3733b84bd6a2fa5750e955a4a7972934e0efde0d806e742118",
+          "sha256_lf": "0b5bf18ad7ed224610cb5675bbce0b5082d824b26d6eaa7f81967765ff38ef13"
+        }
+      }
+    },
+    "Montreal": {
+      "split": "real",
+      "files": {
+        "Montreal_map.yaml": {
+          "sha256": "43e68fbc5261326d586c35e6dda27c09fa46ba376acd550f0fee295ef1554e55",
+          "sha256_lf": "43e68fbc5261326d586c35e6dda27c09fa46ba376acd550f0fee295ef1554e55"
+        },
+        "Montreal.png": {
+          "sha256": "22cf9b8b8a15fa7c20a0cdf1348957e763e89be12201fe17820c9bbdff889308",
+          "sha256_lf": "22cf9b8b8a15fa7c20a0cdf1348957e763e89be12201fe17820c9bbdff889308"
+        },
+        "Montreal_centerline.csv": {
+          "sha256": "d24aa9a86c7ac93d140a067a19734d1e1cd4c3a6ec40264b5c28a3dda98d8608",
+          "sha256_lf": "d24aa9a86c7ac93d140a067a19734d1e1cd4c3a6ec40264b5c28a3dda98d8608"
+        }
+      }
+    },
+    "Monza": {
+      "split": "real",
+      "files": {
+        "Monza_map.yaml": {
+          "sha256": "4815eb6863a9e486609535a0ac87a25483e3518d3d5f06d01f16eeb0fdad8253",
+          "sha256_lf": "4815eb6863a9e486609535a0ac87a25483e3518d3d5f06d01f16eeb0fdad8253"
+        },
+        "Monza.png": {
+          "sha256": "a550c761e4f360703b374c714ee20920281fe25078862f52ae21b4570d47b2cf",
+          "sha256_lf": "a550c761e4f360703b374c714ee20920281fe25078862f52ae21b4570d47b2cf"
+        },
+        "Monza_centerline.csv": {
+          "sha256": "198ea1f4d574477415c9f2065352574b34b120949c6ba9889fc26426312d31bf",
+          "sha256_lf": "198ea1f4d574477415c9f2065352574b34b120949c6ba9889fc26426312d31bf"
+        },
+        "Monza_raceline.csv": {
+          "sha256": "0a28fa43852a914922e10082b1a49103d932c1ea501b594e74a509b4d1992bfa",
+          "sha256_lf": "971953536c4a30ef5fb6317797cc90f97bb10e14f78200a681a4b76242834088"
+        }
+      }
+    },
+    "MoscowRaceway": {
+      "split": "real",
+      "files": {
+        "MoscowRaceway_map.yaml": {
+          "sha256": "38190a613cffdd0aaca23c90b57e5e82c0879130ee177229f51e7eabb254a104",
+          "sha256_lf": "38190a613cffdd0aaca23c90b57e5e82c0879130ee177229f51e7eabb254a104"
+        },
+        "MoscowRaceway.png": {
+          "sha256": "af4c9818717b9f4066acd971fc65311c2794bc12f0fa5e1b742904e9bd634381",
+          "sha256_lf": "af4c9818717b9f4066acd971fc65311c2794bc12f0fa5e1b742904e9bd634381"
+        },
+        "MoscowRaceway_centerline.csv": {
+          "sha256": "d4db7d3419f17b86564ad447790be8d356f6c6f10235dd5abdc51bf990d959cd",
+          "sha256_lf": "d4db7d3419f17b86564ad447790be8d356f6c6f10235dd5abdc51bf990d959cd"
+        },
+        "MoscowRaceway_raceline.csv": {
+          "sha256": "0dcbffc5677f42dcdc63ce6e1d8645aa4dca9d535e15da85c594b8d7b027f53a",
+          "sha256_lf": "e715f4e19acdb5e904bd9dadadf7737799dfaf48f8dcba6b2b6290e04bb3f2bb"
+        }
+      }
+    },
+    "Nuerburgring": {
+      "split": "real",
+      "files": {
+        "Nuerburgring_map.yaml": {
+          "sha256": "13be8775d69406d07a152de86550286ac02b7f1fa2c6ada1015981ef9c2cd9f4",
+          "sha256_lf": "13be8775d69406d07a152de86550286ac02b7f1fa2c6ada1015981ef9c2cd9f4"
+        },
+        "Nuerburgring.png": {
+          "sha256": "6f933ceb7718bae7649ecbe6c20359c1d881ba109c2a76cf378fccb9fec2215b",
+          "sha256_lf": "6f933ceb7718bae7649ecbe6c20359c1d881ba109c2a76cf378fccb9fec2215b"
+        },
+        "Nuerburgring_centerline.csv": {
+          "sha256": "7b7c2f1d122d92e66fecb1d7510f70901b27cee9ad093bd946e5432590f5eeb2",
+          "sha256_lf": "7b7c2f1d122d92e66fecb1d7510f70901b27cee9ad093bd946e5432590f5eeb2"
+        },
+        "Nuerburgring_raceline.csv": {
+          "sha256": "c4a60b8ab2330c063046b08a39dc8563e61bc75322af66133e829e7784a3f007",
+          "sha256_lf": "46ee1e3d9511c6ab4a871852a0c9db93555bf02925f8cfba9260cfa7a56d6bd1"
+        }
+      }
+    },
+    "Oschersleben": {
+      "split": "real",
+      "files": {
+        "Oschersleben_map.yaml": {
+          "sha256": "610dd677a6686441868b164d7468f4d50ed36d7be4070f9292fb98076fe76456",
+          "sha256_lf": "610dd677a6686441868b164d7468f4d50ed36d7be4070f9292fb98076fe76456"
+        },
+        "Oschersleben.png": {
+          "sha256": "3753d0ec3e0cb13602d4c34b172b877a1ba12eb6b4117dfd56da5d1b51ce4634",
+          "sha256_lf": "3753d0ec3e0cb13602d4c34b172b877a1ba12eb6b4117dfd56da5d1b51ce4634"
+        },
+        "Oschersleben_centerline.csv": {
+          "sha256": "6d906ee0fde07fd3f80ef4339abe289b596385aa7ff6f5318836b0b9c4012d44",
+          "sha256_lf": "6d906ee0fde07fd3f80ef4339abe289b596385aa7ff6f5318836b0b9c4012d44"
+        },
+        "Oschersleben_raceline.csv": {
+          "sha256": "713e4d0f129172b058680afe604b29aed7b81d544abfbca18c942672a2ae62dd",
+          "sha256_lf": "aaaddea2fb2873897b355e5e667c7773bece46aa92b700db21ff6692a7a632e5"
+        }
+      }
+    },
+    "Sakhir": {
+      "split": "real",
+      "files": {
+        "Sakhir_map.yaml": {
+          "sha256": "eee986f4e15198d298b727637eba2477639bbe3090b5a4a0b31832d42412fe6d",
+          "sha256_lf": "eee986f4e15198d298b727637eba2477639bbe3090b5a4a0b31832d42412fe6d"
+        },
+        "Sakhir.png": {
+          "sha256": "f3746a4d48a72ccc3cad020bc383e370dd3a915009c87d4d6041af06e7de85eb",
+          "sha256_lf": "f3746a4d48a72ccc3cad020bc383e370dd3a915009c87d4d6041af06e7de85eb"
+        },
+        "Sakhir_centerline.csv": {
+          "sha256": "910dc96da4e11895d59e4364eb13b7d2d4ea63ad799354718a86f3266efb169a",
+          "sha256_lf": "910dc96da4e11895d59e4364eb13b7d2d4ea63ad799354718a86f3266efb169a"
+        },
+        "Sakhir_raceline.csv": {
+          "sha256": "c24fe76a6436d121fdd98252536fd5c62c65498d94235f7dc229ba88917ecf50",
+          "sha256_lf": "56fd34189246beb3845bd71092d8142e9a5a832dc2abb9e33033329515e6efe1"
+        }
+      }
+    },
+    "SaoPaulo": {
+      "split": "real",
+      "files": {
+        "SaoPaulo_map.yaml": {
+          "sha256": "25b67cde2e6e01402c11aaf42f79dfbc4e56aee88dfd1310ab2fe229b48d5334",
+          "sha256_lf": "25b67cde2e6e01402c11aaf42f79dfbc4e56aee88dfd1310ab2fe229b48d5334"
+        },
+        "SaoPaulo.png": {
+          "sha256": "88e6ef4fdf95478699afa5a3e5206494a34716f7327b64444cd8579f5ee594c9",
+          "sha256_lf": "88e6ef4fdf95478699afa5a3e5206494a34716f7327b64444cd8579f5ee594c9"
+        },
+        "SaoPaulo_centerline.csv": {
+          "sha256": "648d3dad6242690ccab34078995e85d5c2fb5362b8ab39975df47599b775ae83",
+          "sha256_lf": "648d3dad6242690ccab34078995e85d5c2fb5362b8ab39975df47599b775ae83"
+        },
+        "SaoPaulo_raceline.csv": {
+          "sha256": "1dd52f1983e779ebc6aba52675b101e539fce367bf40f7ddfc30ed9a2263b335",
+          "sha256_lf": "7e0ad5df755f492ad23fe9bd7f53ca07349d83ade7e0b3704ddda072ed754836"
+        }
+      }
+    },
+    "Sepang": {
+      "split": "real",
+      "files": {
+        "Sepang_map.yaml": {
+          "sha256": "a7896c699c6f4851202d974b39434588867589ad462f8ba57f6e375f2df7c924",
+          "sha256_lf": "a7896c699c6f4851202d974b39434588867589ad462f8ba57f6e375f2df7c924"
+        },
+        "Sepang.png": {
+          "sha256": "869e8896a6e43e9648929f7c731c92501f79f92a10d2b273d60b15fe52f37f0f",
+          "sha256_lf": "869e8896a6e43e9648929f7c731c92501f79f92a10d2b273d60b15fe52f37f0f"
+        },
+        "Sepang_centerline.csv": {
+          "sha256": "fe92a57c4f51c10a6e216ec1fbbe324df466b0304e7f37e0c695493c1a1d88dd",
+          "sha256_lf": "fe92a57c4f51c10a6e216ec1fbbe324df466b0304e7f37e0c695493c1a1d88dd"
+        },
+        "Sepang_raceline.csv": {
+          "sha256": "9b8125d1a712dd40d71383e76e3e5cdab1ce823ebaa165cb97b77b85fc64bfe0",
+          "sha256_lf": "0883f67850cdba241360742370b491391b5ce0c2b013b7dda0ceb9f8e484b6c4"
+        }
+      }
+    },
+    "Shanghai": {
+      "split": "real",
+      "files": {
+        "Shanghai_map.yaml": {
+          "sha256": "6ae71dd4942b898c6aff402499c4afe261ba3a584a37fbc002521174495ed1ae",
+          "sha256_lf": "6ae71dd4942b898c6aff402499c4afe261ba3a584a37fbc002521174495ed1ae"
+        },
+        "Shanghai.png": {
+          "sha256": "e3f5cfed82160eca7401bbc91c7a44ac9b83bbb818e49b378e31ee1270055d43",
+          "sha256_lf": "e3f5cfed82160eca7401bbc91c7a44ac9b83bbb818e49b378e31ee1270055d43"
+        },
+        "Shanghai_centerline.csv": {
+          "sha256": "24bf4e88656937e84d11b66c8f06e6a0bb4a8de04674cc843fbfbcf316b61a9f",
+          "sha256_lf": "24bf4e88656937e84d11b66c8f06e6a0bb4a8de04674cc843fbfbcf316b61a9f"
+        }
+      }
+    },
+    "Silverstone": {
+      "split": "real",
+      "files": {
+        "Silverstone_map.yaml": {
+          "sha256": "3b28b387aba6d77c43279a5004a2d1c4a78ea9a64fe26c10cb34f9616936bc6e",
+          "sha256_lf": "3b28b387aba6d77c43279a5004a2d1c4a78ea9a64fe26c10cb34f9616936bc6e"
+        },
+        "Silverstone.png": {
+          "sha256": "074bfe8080ab70b18068c77ab19179f8c289305b1964888ad72a503d4c7baf4a",
+          "sha256_lf": "074bfe8080ab70b18068c77ab19179f8c289305b1964888ad72a503d4c7baf4a"
+        },
+        "Silverstone_centerline.csv": {
+          "sha256": "c32b892aadee729368c56ece2064471be09d7b42f464491e2f28675d24d3150a",
+          "sha256_lf": "c32b892aadee729368c56ece2064471be09d7b42f464491e2f28675d24d3150a"
+        },
+        "Silverstone_raceline.csv": {
+          "sha256": "cc2925c22468c3cb57b225dc88eab933589c037805af4de6823fff340a64fd97",
+          "sha256_lf": "47c552bea97f9faeb2b54bc69e7cd75e8964f664f20bf56d9c91d5209e758821"
+        }
+      }
+    },
+    "Sochi": {
+      "split": "real",
+      "files": {
+        "Sochi_map.yaml": {
+          "sha256": "016b025fc0922c6eec6073d16429b314f71eaf4e62ea7ded38b70680a3abeac6",
+          "sha256_lf": "016b025fc0922c6eec6073d16429b314f71eaf4e62ea7ded38b70680a3abeac6"
+        },
+        "Sochi.png": {
+          "sha256": "d4dea886ea0f036ef781026cd500e897c8cee8429192a1ce94d5defc1ee8c138",
+          "sha256_lf": "d4dea886ea0f036ef781026cd500e897c8cee8429192a1ce94d5defc1ee8c138"
+        },
+        "Sochi_centerline.csv": {
+          "sha256": "af6af0333e42d60e7c033d772b028149da36fa2f760767fccd458b5b0d57b8e8",
+          "sha256_lf": "af6af0333e42d60e7c033d772b028149da36fa2f760767fccd458b5b0d57b8e8"
+        },
+        "Sochi_raceline.csv": {
+          "sha256": "50f4384adccb577844eebd6e0f118a6c74f9531ba5d56836166067307d59aa7d",
+          "sha256_lf": "cea53c974fa7278a6cab15d03ba10996a93b3e7defb7aa7f884196119a7220e3"
+        }
+      }
+    },
+    "Spa": {
+      "split": "real",
+      "files": {
+        "Spa_map.yaml": {
+          "sha256": "9fd25af4f4f015a528386bb1ce23a366d687fccb8f3cd7661564cba6a3e4cfe3",
+          "sha256_lf": "9fd25af4f4f015a528386bb1ce23a366d687fccb8f3cd7661564cba6a3e4cfe3"
+        },
+        "Spa.png": {
+          "sha256": "0ac745f24fcc713ce9917327787ee725519e7e544de089bd43751a15ffcfd99c",
+          "sha256_lf": "0ac745f24fcc713ce9917327787ee725519e7e544de089bd43751a15ffcfd99c"
+        },
+        "Spa_centerline.csv": {
+          "sha256": "9febbab07831915f51c297e4b7d9b4b938139157301689d4f36ea6cf050e5189",
+          "sha256_lf": "9febbab07831915f51c297e4b7d9b4b938139157301689d4f36ea6cf050e5189"
+        },
+        "Spa_raceline.csv": {
+          "sha256": "b1184c0ef28eae03c8e7018f21a3b5faf22a1a9a49c4832c62e41a46ea5aee9f",
+          "sha256_lf": "ca77d258d1541718a4624bb61ff71e2607e8678ac7dee9dcabbc7353a3af18ab"
+        }
+      }
+    },
+    "Spielberg": {
+      "split": "real",
+      "files": {
+        "Spielberg_map.yaml": {
+          "sha256": "43fa0026ecb663ce8a68f6d8959f01303bbcda122379070edcbd9f332747e6de",
+          "sha256_lf": "43fa0026ecb663ce8a68f6d8959f01303bbcda122379070edcbd9f332747e6de"
+        },
+        "Spielberg.png": {
+          "sha256": "3378ea1da231e00b4c41015311f7f3a63fb62420d8c54aaa23b6d1ca7c947e56",
+          "sha256_lf": "3378ea1da231e00b4c41015311f7f3a63fb62420d8c54aaa23b6d1ca7c947e56"
+        },
+        "Spielberg_centerline.csv": {
+          "sha256": "3c690173dda7772bffc36190e6d6f0e11e61be86a65e3910cd78cdd0c098c602",
+          "sha256_lf": "3c690173dda7772bffc36190e6d6f0e11e61be86a65e3910cd78cdd0c098c602"
+        },
+        "Spielberg_raceline.csv": {
+          "sha256": "4b79179d42e712c9121ffbfb045cd0b06689d96607ffa5701324360450d1f0bd",
+          "sha256_lf": "4884a2cd8e7c24801f069162b46e3ffc99c01e51b5f4002c30a7b74ab45dd300"
+        }
+      }
+    },
+    "YasMarina": {
+      "split": "real",
+      "files": {
+        "YasMarina_map.yaml": {
+          "sha256": "43a498ede965f43600df3f14061566783426440b8ad99ba25c2186ccf075529d",
+          "sha256_lf": "43a498ede965f43600df3f14061566783426440b8ad99ba25c2186ccf075529d"
+        },
+        "YasMarina.png": {
+          "sha256": "13c6019c61b0891e4a2068bd7b0b34d499415d1d002c29c0b31dbc7bae632969",
+          "sha256_lf": "13c6019c61b0891e4a2068bd7b0b34d499415d1d002c29c0b31dbc7bae632969"
+        },
+        "YasMarina_centerline.csv": {
+          "sha256": "317f95f1400a74ac368640a5c54a394690186ca9a8488fad1be1845659ef0c75",
+          "sha256_lf": "317f95f1400a74ac368640a5c54a394690186ca9a8488fad1be1845659ef0c75"
+        },
+        "YasMarina_raceline.csv": {
+          "sha256": "73000bf917ae57dd5e6a378784160c4dcbbcf046f0f5c71a12a5fd3f6ac50212",
+          "sha256_lf": "68daabd770652d25ac7ed99d21d99f2dd55113d2af0ae9e12e639ce6553a4097"
+        }
+      }
+    },
+    "Zandvoort": {
+      "split": "real",
+      "files": {
+        "Zandvoort_map.yaml": {
+          "sha256": "346491749f374e7ce32746e44fab922499c0e418642f416924783419f2528f8d",
+          "sha256_lf": "346491749f374e7ce32746e44fab922499c0e418642f416924783419f2528f8d"
+        },
+        "Zandvoort.png": {
+          "sha256": "7d2dbc9682152f5567892752202e27c823856e4440e011fdc7e87797b31791c0",
+          "sha256_lf": "7d2dbc9682152f5567892752202e27c823856e4440e011fdc7e87797b31791c0"
+        },
+        "Zandvoort_centerline.csv": {
+          "sha256": "7065587bea9f4e53502f6add44b5b5b9da141c4dbedb31eaf6027c2ab7d6fffa",
+          "sha256_lf": "7065587bea9f4e53502f6add44b5b5b9da141c4dbedb31eaf6027c2ab7d6fffa"
+        },
+        "Zandvoort_raceline.csv": {
+          "sha256": "13c4acef70be6b0d7b16e3445f862698a9a69833cf8cfae467b946db7fc0997f",
+          "sha256_lf": "98e4bd4e0df54e39aa267b339cb17e153a6b34c318a21d90695c5874239a8d17"
         }
       }
     }

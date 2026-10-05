@@ -43,6 +43,28 @@ python tracks/verify_heldout_tracks.py          # load, spawn and drive checks
 Do not use make_synth_tracks.py --seed 0 to build a training pool: it writes
 different tracks under the same synthetic_track_N names. --verify catches this.
 
+2c. Real Circuits (zero-shot test)
+The manifest's "real" split holds the 23 f1tenth_racetracks circuits (Austin,
+BrandsHatch, Budapest, Catalunya, Hockenheim, IMS, Melbourne, MexicoCity,
+Montreal, Monza, MoscowRaceway, Nuerburgring, Oschersleben, Sakhir, SaoPaulo,
+Sepang, Shanghai, Silverstone, Sochi, Spa, Spielberg, YasMarina, Zandvoort).
+Download and install them, and check them, with:
+
+Bash
+python tracks/install_real_tracks.py            # download, fix names, verify checksums
+python tracks/verify_real_tracks.py             # load, loop, spawn and length checks
+python tracks/verify_real_tracks.py --sim       # plus one gap-follower episode each
+
+install_real_tracks.py applies the only fix these need (the <name>_map.yaml
+copy that fix_tracks.py makes). Do not run patch_yamls.py for them: it edits
+the training tracks' yaml files and none of the real circuits.
+
+Six circuits are longer than 450 m (Melbourne, Sepang, Shanghai, Silverstone,
+Sochi, Spa). Under the 15,000-step evaluation cap one lap at 3 m/s needs at
+most 450 m, so a slow policy can be truncated there before finishing a lap.
+Report lap completion on these separately, or alongside progress, not as a
+plain failure.
+
 3. Train the Agents
 Launch the Stable-Baselines3 training grid. You can specify the algorithm, track diversity, and random seed:
 
@@ -55,12 +77,16 @@ Test the frozen policy against held-out F1 circuits (e.g., Monza, Silverstone) t
 Bash
 python evaluate.py
 
-Evaluate on a named split with --track-set. Synthetic splits are verified
-against the manifest's checksums before anything runs:
+A bare python evaluate.py (no --track-set) still runs only Spielberg, Monza
+and Silverstone. For all 23 real circuits use --track-set real.
+
+Evaluate on a named split with --track-set. Every split, real included, is
+verified against the manifest's checksums before anything runs:
 
 Bash
 python evaluate.py --algo SAC --diversity 5 --seed 42 --track-set val
 python evaluate.py --algo SAC --diversity 5 --seed 42 --track-set test
+python evaluate.py --algo SAC --diversity 5 --seed 42 --track-set real
 python evaluate.py --baseline gap --track-set test
 
 If issues running the code:

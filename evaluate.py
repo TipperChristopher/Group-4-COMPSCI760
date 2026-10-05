@@ -78,16 +78,17 @@ def resolve_track_set(name):
     names are not unique across machines: make_synth_tracks.py --seed 0 writes
     different geometry under the same synthetic_track_N names than the
     seed-123 set the manifest records, so a bare name list cannot prove two
-    runs evaluated the same tracks. "real" is the locally downloaded circuits,
-    which the manifest does not cover.
+    runs evaluated the same tracks. "real" is the 23 downloaded f1tenth_racetracks
+    circuits, recorded in the same manifest by tracks/install_real_tracks.py
+    and checked the same way.
     """
-    if name == "real":
-        return list(DEFAULT_TRACKS)
     if not os.path.exists(TRACK_MANIFEST):
         raise SystemExit(f"--track-set {name} needs {TRACK_MANIFEST}. "
                          "Create it with: python tracks/make_heldout_tracks.py")
     with open(TRACK_MANIFEST) as fh:
         manifest = json.load(fh)
+    if name not in manifest["splits"]:
+        raise SystemExit(f"tracks/manifest.json has no '{name}' split.")
     names = manifest["splits"][name]["names"]
 
     mh = _load_local_module("make_heldout_tracks",
@@ -95,16 +96,22 @@ def resolve_track_set(name):
     maps = mh.maps_dir()
     bad = []
     for n in names:
-        if not (maps / n).exists():
+        files = manifest["tracks"][n]["files"]
+        try:
+            ok = mh.same(files, mh.checksums(maps, n, list(files)))
+        except FileNotFoundError:
             bad.append(f"{n} (missing)")
-        elif not mh.same(manifest["tracks"][n]["files"], mh.checksums(maps, n)):
+            continue
+        if not ok:
             bad.append(f"{n} (contents differ)")
     if bad:
+        fix = ("python tracks/install_real_tracks.py" if name == "real"
+               else "python tracks/make_heldout_tracks.py --verify")
         raise SystemExit(
             f"{len(bad)} of {len(names)} '{name}' tracks do not match "
             f"tracks/manifest.json, e.g. {', '.join(bad[:5])}. These are not the "
             "canonical tracks, so results would not be comparable with other "
-            "runs. Check with: python tracks/make_heldout_tracks.py --verify. "
+            f"runs. Check with: {fix}. "
             "To evaluate unverified tracks deliberately, list them with --tracks.")
     print(f"Track set '{name}': {len(names)} tracks, all verified against the manifest")
     return names
@@ -384,13 +391,15 @@ def main():
                         help="Run directory or .zip. Overrides the lookup above.")
     parser.add_argument("--tracks", nargs="+", default=None,
                         help="Explicit track names. Not checked against the "
-                             "manifest. Defaults to the real circuits.")
+                             "manifest. Defaults to Spielberg, Monza and "
+                             "Silverstone; use --track-set real for all 23.")
     parser.add_argument("--track-set", choices=TRACK_SETS, default=None,
                         help="Evaluate a named set from tracks/manifest.json: "
                              "train (synthetic_track_0..99), val (val_track_0..9, "
                              "for checkpoint selection), test (test_track_0..19, "
-                             "for reporting), or real (the local real circuits). "
-                             "Synthetic sets are verified against the manifest's "
+                             "for reporting), or real (the 23 f1tenth_racetracks "
+                             "circuits; install with tracks/install_real_tracks.py). "
+                             "Every set is verified against the manifest's "
                              "checksums before running. Mutually exclusive with "
                              "--tracks.")
     parser.add_argument("--episodes", type=int, default=1,

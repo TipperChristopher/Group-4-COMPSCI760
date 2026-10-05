@@ -9,6 +9,9 @@ WHAT THIS PRODUCES
     val    val_track_0        .. val_track_9          (raw generator indices 100-109)
     test   test_track_0       .. test_track_19        (raw generator indices 110-129)
 
+The manifest also holds a "real" split (23 downloaded circuits), recorded by
+tracks/install_real_tracks.py. --verify checks it too; generating here keeps it.
+
 HOW THE SETS ARE DEFINED
 
 The training tracks were produced by generate_track_pool.py, which runs
@@ -201,9 +204,10 @@ def generate(tmp: pathlib.Path) -> pathlib.Path:
     return pkg
 
 
-def checksums(folder_root: pathlib.Path, name: str) -> dict:
+def checksums(folder_root: pathlib.Path, name: str, files: list[str] | None = None) -> dict:
+    """Checksums of a track's files; by default the synthetic layout's three."""
     out = {}
-    for fn in track_files(name):
+    for fn in files or track_files(name):
         p = folder_root / name / fn
         out[fn] = {"sha256": sha_raw(p), "sha256_lf": sha_norm(p)}
     return out
@@ -314,13 +318,19 @@ def cmd_generate(args) -> int:
               f"{N_VAL + N_TEST - installed} already present and identical")
 
     manifest = build_manifest(settings, sums)
-    if MANIFEST.exists() and not args.force:
-        old = json.loads(MANIFEST.read_text())
+    old = json.loads(MANIFEST.read_text()) if MANIFEST.exists() else None
+    if old and not args.force:
         if all(same(old["tracks"][n]["files"], manifest["tracks"][n]["files"])
                for n in manifest["tracks"]):
             print(f"manifest unchanged: {MANIFEST}")
             return 0
         raise SystemExit(f"{MANIFEST} exists and differs. Refusing to overwrite; pass --force.")
+    # The real circuits are recorded by install_real_tracks.py, not generated
+    # here. Carry them over so rewriting the synthetic splits never drops them.
+    if old and "real" in old["splits"]:
+        manifest["splits"]["real"] = old["splits"]["real"]
+        for n in old["splits"]["real"]["names"]:
+            manifest["tracks"][n] = old["tracks"][n]
     write_json(MANIFEST, manifest)
     print(f"manifest written: {MANIFEST}")
     return 0
@@ -332,7 +342,7 @@ def cmd_verify(args) -> int:
         raise SystemExit(f"No manifest at {MANIFEST}; run without --verify first.")
     manifest = json.loads(MANIFEST.read_text())
     maps = maps_dir()
-    counts = {"train": [0, 0], "val": [0, 0], "test": [0, 0]}
+    counts = {split: [0, 0] for split in manifest["splits"]}
     failures = []
     for name, entry in manifest["tracks"].items():
         split = entry["split"]
@@ -340,7 +350,11 @@ def cmd_verify(args) -> int:
         if not (maps / name).exists():
             failures.append(f"{name}: missing")
             continue
-        if same(entry["files"], checksums(maps, name)):
+        try:
+            ok = same(entry["files"], checksums(maps, name, list(entry["files"])))
+        except FileNotFoundError:
+            ok = False
+        if ok:
             counts[split][0] += 1
         else:
             failures.append(f"{name}: contents differ from manifest")
