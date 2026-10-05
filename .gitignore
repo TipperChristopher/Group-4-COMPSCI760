@@ -31,6 +31,11 @@ models/
 # Evaluation figures are regenerated on every evaluate.py run.
 generalization_results.png
 
+# Per-cell training logs and PID files written by launch_grid.ps1. The
+# durable record of each run is models/<cell>/run_config.json, progress.csv
+# and monitor_*.monitor.csv, not these.
+logs/
+
 # NOT ignored: results/
 # Baseline reference numbers (random and gap-follower) are committed on
 # purpose. They are fixed points the write-up cites, they are small CSVs, and

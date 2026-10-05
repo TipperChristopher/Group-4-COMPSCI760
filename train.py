@@ -2,7 +2,12 @@ import sys
 import types
 import os
 import math
+import json
+import time
+import hashlib
 import argparse
+import platform
+import subprocess
 import importlib.util
 
 # 1. The Bulletproof 'gym' Override (Must be at the very top)
@@ -16,8 +21,11 @@ from stable_baselines3 import PPO, SAC
 from stable_baselines3.common.monitor import Monitor
 from stable_baselines3.common.vec_env import DummyVecEnv, SubprocVecEnv
 from stable_baselines3.common.callbacks import CheckpointCallback
+from stable_baselines3.common.logger import configure
 
 _PROJECT_ROOT = os.path.dirname(os.path.abspath(__file__))
+_WRAPPER_FILE = os.path.join(_PROJECT_ROOT, "sb3_wrapper.py")
+_TRACK_MANIFEST = os.path.join(_PROJECT_ROOT, "tracks", "manifest.json")
 
 DEFAULT_TOTAL_TIMESTEPS = 5_000_000
 # Fixed default so that every cell of the grid, and both algorithms, draw the
@@ -50,7 +58,7 @@ TrackPoolWrapper = _track_pool_module.TrackPoolWrapper
 
 
 def make_env(track_pool, seed, track_seed, stream=0, cache_size=8,
-             max_episode_steps=None):
+             max_episode_steps=None, monitor_path=None):
     """Build one environment that cycles through the whole track pool.
 
     The pool is handled inside a single environment rather than by spawning one
@@ -86,8 +94,11 @@ def make_env(track_pool, seed, track_seed, stream=0, cache_size=8,
             cache_size=cache_size,
         )
         # Monitor records episode returns, the track each episode ran on, and
-        # how far around it the car actually got.
-        env = Monitor(env, info_keywords=("track_name", "laps", "progress_m"))
+        # how far around it the car actually got. With a path it also writes
+        # one row per episode to <path>.monitor.csv, which is the per-episode
+        # learning curve; without one the curve only ever reached stdout.
+        env = Monitor(env, filename=monitor_path,
+                      info_keywords=("track_name", "laps", "progress_m"))
         env.action_space.seed(seed)
         return env
 
@@ -163,6 +174,92 @@ def print_startup_summary(args, model, track_pool, n_envs):
     print(line)
 
 
+def _sha256(path):
+    with open(path, "rb") as fh:
+        return hashlib.sha256(fh.read()).hexdigest()
+
+
+def _git(*args):
+    try:
+        out = subprocess.run(["git", *args], cwd=_PROJECT_ROOT,
+                             capture_output=True, text=True)
+        return out.stdout.strip() if out.returncode == 0 else None
+    except Exception:
+        return None
+
+
+def code_provenance():
+    """Commit and reward identity, recorded so every cell is provably comparable.
+
+    The reward hash covers the whole of sb3_wrapper.py, so it also pins the
+    observation, action scaling and episode termination. Identical hashes
+    across cells therefore prove more than an identical reward. The constants
+    are recorded in plain text alongside so a reader need not trust the hash.
+    """
+    porcelain = _git("status", "--porcelain", "--untracked-files=no") or ""
+    # Split on whitespace rather than slicing at column 3: _git strips the
+    # output, which removes the leading space of the first line's status code.
+    paths = [line.split(None, 1)[1] for line in porcelain.splitlines() if line.strip()]
+    # The submodule pointer is long-standing local state, not project code.
+    dirty = [p for p in paths if p != "f1tenth_gym"]
+    w = _wrapper_module
+    return {
+        "git_commit": _git("rev-parse", "HEAD"),
+        "git_branch": _git("rev-parse", "--abbrev-ref", "HEAD"),
+        "git_dirty_files": dirty,
+        "reward_code_file": "sb3_wrapper.py",
+        "reward_code_sha256": _sha256(_WRAPPER_FILE),
+        "reward_constants": {
+            "PROGRESS_WEIGHT": w.PROGRESS_WEIGHT,
+            "TIME_COST": w.TIME_COST,
+            "CRASH_PENALTY": w.CRASH_PENALTY,
+            "STEERING_LIMIT": w.STEERING_LIMIT,
+            "SPEED_MIN": w.SPEED_MIN,
+            "SPEED_MAX": w.SPEED_MAX,
+        },
+    }
+
+
+def verify_training_pool(track_pool):
+    """Refuse to train on tracks that differ from the canonical manifest.
+
+    Track names are not unique across machines: make_synth_tracks.py --seed 0
+    writes different geometry under the same synthetic_track_N names than the
+    seed-123 set in tracks/manifest.json. A model trained on such a pool is not
+    comparable with any other cell, and nothing downstream would notice.
+    """
+    if not os.path.exists(_TRACK_MANIFEST):
+        raise SystemExit(f"No track manifest at {_TRACK_MANIFEST}. "
+                         "Create it with: python tracks/make_heldout_tracks.py")
+    with open(_TRACK_MANIFEST) as fh:
+        manifest = json.load(fh)
+    train_names = set(manifest["splits"]["train"]["names"])
+    outside = [n for n in track_pool if n not in train_names]
+    if outside:
+        raise SystemExit(f"Training pool contains non-training tracks: {outside[:5]}")
+    mh = _load_local_module("make_heldout_tracks",
+                            os.path.join("tracks", "make_heldout_tracks.py"))
+    maps = mh.maps_dir()
+    bad = [n for n in track_pool
+           if not (maps / n).exists()
+           or not mh.same(manifest["tracks"][n]["files"], mh.checksums(maps, n))]
+    if bad:
+        raise SystemExit(
+            f"{len(bad)} of {len(track_pool)} pool tracks do not match "
+            f"tracks/manifest.json, e.g. {bad[:5]}. Refusing to train on "
+            "non-canonical tracks. Check with: python tracks/make_heldout_tracks.py --verify")
+    return {"manifest_sha256": _sha256(_TRACK_MANIFEST),
+            "pool_verified_against_manifest": True}
+
+
+def _write_json(path, obj):
+    tmp = path + ".tmp"
+    with open(tmp, "w", encoding="utf-8", newline="\n") as fh:
+        json.dump(obj, fh, indent=2)
+        fh.write("\n")
+    os.replace(tmp, path)
+
+
 def main():
     # Setup command-line arguments
     parser = argparse.ArgumentParser()
@@ -190,13 +287,74 @@ def main():
                              "forever, reset() never fires and the track pool "
                              "never advances. Default 3000 is 30 s of sim time, "
                              "about one lap of a synthetic track at 6 m/s.")
+    parser.add_argument("--torch-threads", type=int, default=None,
+                        help="Cap torch's intra-op threads for this process. "
+                             "Set to 1 when running cells in parallel: torch "
+                             "defaults to one thread per physical core, so eight "
+                             "concurrent runs would oversubscribe the CPU.")
+    parser.add_argument("--overwrite", action="store_true",
+                        help="Allow reusing a run directory that already holds "
+                             "a run_config.json. Off by default so relaunching a "
+                             "grid cannot clobber a run that is in progress or done.")
     args = parser.parse_args()
 
     if args.n_envs < 1:
         parser.error("--n-envs must be at least 1")
 
+    if args.torch_threads:
+        import torch
+        torch.set_num_threads(args.torch_threads)
+
     # The pool grows with diversity; the environment count does not.
     track_pool = [f"synthetic_track_{i}" for i in range(args.diversity)]
+
+    # One directory per cell. Absolute, so the launch directory cannot change it.
+    save_dir = os.path.join(_PROJECT_ROOT, "models",
+                            f"{args.algo}_{args.diversity}tracks_s{args.seed}")
+    config_path = os.path.join(save_dir, "run_config.json")
+    if os.path.exists(config_path) and not args.overwrite:
+        raise SystemExit(f"{save_dir} already holds a run. Refusing to overwrite it; "
+                         "pass --overwrite to reuse the directory deliberately.")
+    os.makedirs(save_dir, exist_ok=True)
+
+    pool_info = verify_training_pool(track_pool)
+    prov = code_provenance()
+    import torch
+    import stable_baselines3
+    run_config = {
+        "status": "running",
+        "started_at": time.strftime("%Y-%m-%dT%H:%M:%S%z"),
+        "pid": os.getpid(),
+        "host": platform.node(),
+        **prov,
+        "args": vars(args),
+        "track_pool": track_pool,
+        **pool_info,
+        "device": "cpu",
+        "torch_threads": torch.get_num_threads(),
+        "env_threads": {k: os.environ.get(k) for k in
+                        ("OMP_NUM_THREADS", "MKL_NUM_THREADS", "OPENBLAS_NUM_THREADS")},
+        "versions": {"python": platform.python_version(), "torch": torch.__version__,
+                     "stable_baselines3": stable_baselines3.__version__},
+        "outputs": {"checkpoints_every": 100000, "monitor_csv": "monitor_*.monitor.csv",
+                    "progress_csv": "progress.csv", "final_model": "final_model.zip"},
+    }
+    _write_json(config_path, run_config)
+
+    line = "=" * 62
+    print(line)
+    print("RUN PROVENANCE")
+    print(line)
+    print(f"  commit            : {prov['git_commit']} ({prov['git_branch']})")
+    print(f"  uncommitted code  : {prov['git_dirty_files'] or 'none'}")
+    print(f"  reward code sha256: {prov['reward_code_sha256']}")
+    print(f"  pool verified     : {len(track_pool)} tracks match tracks/manifest.json")
+    print(f"  torch threads     : {torch.get_num_threads()}   device: cpu")
+    print(f"  run directory     : {save_dir}")
+    print(line)
+    if prov["git_dirty_files"]:
+        print("WARNING: uncommitted changes to tracked code. This run cannot be "
+              "reproduced from its commit hash alone.")
 
     n_envs = args.n_envs
     env_fns = [
@@ -207,6 +365,7 @@ def main():
             stream=i,
             cache_size=args.track_cache_size,
             max_episode_steps=args.max_episode_steps,
+            monitor_path=os.path.join(save_dir, f"monitor_{i}"),
         )
         for i in range(n_envs)
     ]
@@ -229,16 +388,19 @@ def main():
     vec_env = wrap_vecnormalize(vec_env, training=True)
 
     # Instantiate the selected algorithm
+    # Both pinned to CPU explicitly. SAC previously defaulted to device="auto",
+    # so installing CUDA torch would have silently moved one algorithm, and
+    # only one, onto the GPU.
     if args.algo == "PPO":
         model = PPO("MlpPolicy", vec_env, verbose=1, seed=args.seed, device="cpu")
     else:
-        model = SAC("MlpPolicy", vec_env, verbose=1, seed=args.seed)
+        model = SAC("MlpPolicy", vec_env, verbose=1, seed=args.seed, device="cpu")
+
+    # Training statistics (ep_rew_mean, losses, fps, ...) to progress.csv as
+    # well as stdout, so convergence curves survive the terminal.
+    model.set_logger(configure(save_dir, ["stdout", "csv"]))
 
     print_startup_summary(args, model, track_pool, n_envs)
-
-    # Setup Checkpointing in organized folders
-    save_dir = f"./models/{args.algo}_{args.diversity}tracks_s{args.seed}/"
-    os.makedirs(save_dir, exist_ok=True)
 
     checkpoint_callback = CheckpointCallback(
         save_freq=max(1, 100000 // n_envs),
@@ -248,6 +410,7 @@ def main():
     )
 
     print(f"Starting {args.algo} training loop for {args.total_timesteps:,} steps...")
+    t0 = time.time()
     model.learn(total_timesteps=args.total_timesteps, callback=checkpoint_callback)
 
     # Save the final model alongside the normalisation statistics it needs.
@@ -255,6 +418,15 @@ def main():
     model.save(final_path)
     stats_path = save_vecnormalize(vec_env, save_dir)
     vec_env.close()
+
+    run_config.update({
+        "status": "completed",
+        "finished_at": time.strftime("%Y-%m-%dT%H:%M:%S%z"),
+        "wall_seconds": round(time.time() - t0, 1),
+        "num_timesteps": int(model.num_timesteps),
+        "steps_per_second": round(model.num_timesteps / max(time.time() - t0, 1e-9), 1),
+    })
+    _write_json(config_path, run_config)
 
     print(f"Training complete! Model saved to {final_path}.zip")
     if stats_path:
