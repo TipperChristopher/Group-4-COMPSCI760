@@ -1,0 +1,1196 @@
+{
+  "method": {
+    "sampling": "simulator centreline resampling, every 0.1 m of spline arc length",
+    "half_width": "EDT of loader's thresholded occupancy, bilinear, minus half a pixel",
+    "curvature": "heading change over a centred 1.0 m arc (alt 2.0 m)",
+    "lookback_m": 5.0,
+    "outside_training": "half-width < training min OR |curvature| > training max",
+    "dedup": "one record per (cell, circuit, spawn index): deterministic replays are identical"
+  },
+  "training_range": {
+    "width_min": 1.4304,
+    "curv_max": 0.661,
+    "curv2_max": 0.5948
+  },
+  "training_range_per_pool": {
+    "d1": {
+      "width_min": 1.4577,
+      "curv_max": 0.5942
+    },
+    "d5": {
+      "width_min": 1.4575,
+      "curv_max": 0.5964
+    },
+    "d20": {
+      "width_min": 1.4536,
+      "curv_max": 0.6105
+    },
+    "d100": {
+      "width_min": 1.4304,
+      "curv_max": 0.661
+    }
+  },
+  "by_split": {
+    "train": {
+      "n_tracks": 100,
+      "width_min_m": 1.43,
+      "width_median_m": 1.473,
+      "curv_max_per_m": 0.661,
+      "curv_p90_per_m": 0.408,
+      "share_outside_training": 0.0,
+      "share_narrower_than_training": 0.0,
+      "share_sharper_than_training": 0.0
+    },
+    "test": {
+      "n_tracks": 20,
+      "width_min_m": 1.437,
+      "width_median_m": 1.473,
+      "curv_max_per_m": 1.138,
+      "curv_p90_per_m": 0.426,
+      "share_outside_training": 0.0003,
+      "share_narrower_than_training": 0.0,
+      "share_sharper_than_training": 0.0003
+    },
+    "real": {
+      "n_tracks": 23,
+      "width_min_m": 0.647,
+      "width_median_m": 1.075,
+      "curv_max_per_m": 1.626,
+      "curv_p90_per_m": 0.195,
+      "share_outside_training": 1.0,
+      "share_narrower_than_training": 1.0,
+      "share_sharper_than_training": 0.0095
+    },
+    "narrowA": {
+      "n_tracks": 20,
+      "width_min_m": 1.033,
+      "width_median_m": 1.072,
+      "curv_max_per_m": 1.138,
+      "curv_p90_per_m": 0.426,
+      "share_outside_training": 1.0,
+      "share_narrower_than_training": 1.0,
+      "share_sharper_than_training": 0.0003
+    },
+    "narrowB": {
+      "n_tracks": 20,
+      "width_min_m": 0.703,
+      "width_median_m": 0.751,
+      "curv_max_per_m": 1.138,
+      "curv_p90_per_m": 0.426,
+      "share_outside_training": 1.0,
+      "share_narrower_than_training": 1.0,
+      "share_sharper_than_training": 0.0003
+    }
+  },
+  "spawn_check": {
+    "max_spawn_idx": 8,
+    "spawn_idx_counts": {
+      "5": 344,
+      "7": 172,
+      "8": 344
+    },
+    "max_spawn_offset_from_centreline_point_m": 0.0007,
+    "same_spawn_different_outcome_groups": 0,
+    "groups": 516
+  },
+  "episodes": {
+    "sac_rows": 860,
+    "outcomes": {
+      "crash": 767,
+      "finished": 93
+    },
+    "crash_rows": 767,
+    "unique_crashes": 460
+  },
+  "sac_crashes": {
+    "real": {
+      "all_cells": {
+        "n_unique_crashes": 276,
+        "n_crash_episodes": 460,
+        "outside_training_point": {
+          "observed": 276,
+          "observed_share": 1.0,
+          "expected_if_random": 276.0,
+          "expected_share": 1.0,
+          "ratio": 1.0,
+          "p_value_one_sided": 1.0
+        },
+        "outside_training_lookback_5m": {
+          "observed": 276,
+          "observed_share": 1.0,
+          "expected_if_random": 276.0,
+          "expected_share": 1.0,
+          "ratio": 1.0,
+          "p_value_one_sided": 1.0
+        },
+        "outside_training_own_pool_point": {
+          "observed": 276,
+          "observed_share": 1.0,
+          "expected_if_random": 276.0,
+          "expected_share": 1.0,
+          "ratio": 1.0,
+          "p_value_one_sided": 1.0
+        },
+        "narrower_than_train": 276,
+        "sharper_than_train": 5,
+        "sharper_than_train_2m_window": 5,
+        "mean_width_rank_track": {
+          "mean": 0.523,
+          "ci95": [
+            0.489,
+            0.556
+          ],
+          "n": 276
+        },
+        "mean_curv_rank_track": {
+          "mean": 0.605,
+          "ci95": [
+            0.565,
+            0.647
+          ],
+          "n": 276
+        },
+        "mean_lookback_width_rank_track": {
+          "mean": 0.573,
+          "ci95": [
+            0.537,
+            0.608
+          ],
+          "n": 276
+        },
+        "mean_lookback_curv_rank_track": {
+          "mean": 0.632,
+          "ci95": [
+            0.591,
+            0.671
+          ],
+          "n": 276
+        },
+        "mean_width_rank_driven": {
+          "mean": 0.511,
+          "ci95": [
+            0.463,
+            0.555
+          ],
+          "n": 156
+        },
+        "mean_curv_rank_driven": {
+          "mean": 0.226,
+          "ci95": [
+            0.18,
+            0.276
+          ],
+          "n": 156
+        },
+        "median_progress_m": 21.6,
+        "share_within_15m_of_spawn": 0.435
+      },
+      "SAC_d1": {
+        "n_unique_crashes": 69,
+        "n_crash_episodes": 115,
+        "outside_training_point": {
+          "observed": 69,
+          "observed_share": 1.0,
+          "expected_if_random": 69.0,
+          "expected_share": 1.0,
+          "ratio": 1.0,
+          "p_value_one_sided": 1.0
+        },
+        "outside_training_lookback_5m": {
+          "observed": 69,
+          "observed_share": 1.0,
+          "expected_if_random": 69.0,
+          "expected_share": 1.0,
+          "ratio": 1.0,
+          "p_value_one_sided": 1.0
+        },
+        "outside_training_own_pool_point": {
+          "observed": 69,
+          "observed_share": 1.0,
+          "expected_if_random": 69.0,
+          "expected_share": 1.0,
+          "ratio": 1.0,
+          "p_value_one_sided": 1.0
+        },
+        "narrower_than_train": 69,
+        "sharper_than_train": 0,
+        "sharper_than_train_2m_window": 0,
+        "mean_width_rank_track": {
+          "mean": 0.5,
+          "ci95": [
+            0.431,
+            0.565
+          ],
+          "n": 69
+        },
+        "mean_curv_rank_track": {
+          "mean": 0.762,
+          "ci95": [
+            0.697,
+            0.823
+          ],
+          "n": 69
+        },
+        "mean_lookback_width_rank_track": {
+          "mean": 0.587,
+          "ci95": [
+            0.514,
+            0.656
+          ],
+          "n": 69
+        },
+        "mean_lookback_curv_rank_track": {
+          "mean": 0.798,
+          "ci95": [
+            0.742,
+            0.85
+          ],
+          "n": 69
+        },
+        "mean_width_rank_driven": {
+          "mean": 0.441,
+          "ci95": [
+            0.267,
+            0.626
+          ],
+          "n": 11
+        },
+        "mean_curv_rank_driven": {
+          "mean": 0.193,
+          "ci95": [
+            0.056,
+            0.35
+          ],
+          "n": 11
+        },
+        "median_progress_m": 7.7,
+        "share_within_15m_of_spawn": 0.841
+      },
+      "SAC_d100": {
+        "n_unique_crashes": 69,
+        "n_crash_episodes": 115,
+        "outside_training_point": {
+          "observed": 69,
+          "observed_share": 1.0,
+          "expected_if_random": 69.0,
+          "expected_share": 1.0,
+          "ratio": 1.0,
+          "p_value_one_sided": 1.0
+        },
+        "outside_training_lookback_5m": {
+          "observed": 69,
+          "observed_share": 1.0,
+          "expected_if_random": 69.0,
+          "expected_share": 1.0,
+          "ratio": 1.0,
+          "p_value_one_sided": 1.0
+        },
+        "outside_training_own_pool_point": {
+          "observed": 69,
+          "observed_share": 1.0,
+          "expected_if_random": 69.0,
+          "expected_share": 1.0,
+          "ratio": 1.0,
+          "p_value_one_sided": 1.0
+        },
+        "narrower_than_train": 69,
+        "sharper_than_train": 3,
+        "sharper_than_train_2m_window": 1,
+        "mean_width_rank_track": {
+          "mean": 0.542,
+          "ci95": [
+            0.48,
+            0.608
+          ],
+          "n": 69
+        },
+        "mean_curv_rank_track": {
+          "mean": 0.516,
+          "ci95": [
+            0.439,
+            0.595
+          ],
+          "n": 69
+        },
+        "mean_lookback_width_rank_track": {
+          "mean": 0.559,
+          "ci95": [
+            0.492,
+            0.623
+          ],
+          "n": 69
+        },
+        "mean_lookback_curv_rank_track": {
+          "mean": 0.557,
+          "ci95": [
+            0.481,
+            0.633
+          ],
+          "n": 69
+        },
+        "mean_width_rank_driven": {
+          "mean": 0.547,
+          "ci95": [
+            0.471,
+            0.622
+          ],
+          "n": 59
+        },
+        "mean_curv_rank_driven": {
+          "mean": 0.25,
+          "ci95": [
+            0.17,
+            0.33
+          ],
+          "n": 59
+        },
+        "median_progress_m": 33.3,
+        "share_within_15m_of_spawn": 0.145
+      },
+      "SAC_d20": {
+        "n_unique_crashes": 69,
+        "n_crash_episodes": 115,
+        "outside_training_point": {
+          "observed": 69,
+          "observed_share": 1.0,
+          "expected_if_random": 69.0,
+          "expected_share": 1.0,
+          "ratio": 1.0,
+          "p_value_one_sided": 1.0
+        },
+        "outside_training_lookback_5m": {
+          "observed": 69,
+          "observed_share": 1.0,
+          "expected_if_random": 69.0,
+          "expected_share": 1.0,
+          "ratio": 1.0,
+          "p_value_one_sided": 1.0
+        },
+        "outside_training_own_pool_point": {
+          "observed": 69,
+          "observed_share": 1.0,
+          "expected_if_random": 69.0,
+          "expected_share": 1.0,
+          "ratio": 1.0,
+          "p_value_one_sided": 1.0
+        },
+        "narrower_than_train": 69,
+        "sharper_than_train": 2,
+        "sharper_than_train_2m_window": 3,
+        "mean_width_rank_track": {
+          "mean": 0.522,
+          "ci95": [
+            0.455,
+            0.586
+          ],
+          "n": 69
+        },
+        "mean_curv_rank_track": {
+          "mean": 0.372,
+          "ci95": [
+            0.294,
+            0.453
+          ],
+          "n": 69
+        },
+        "mean_lookback_width_rank_track": {
+          "mean": 0.515,
+          "ci95": [
+            0.446,
+            0.589
+          ],
+          "n": 69
+        },
+        "mean_lookback_curv_rank_track": {
+          "mean": 0.372,
+          "ci95": [
+            0.296,
+            0.451
+          ],
+          "n": 69
+        },
+        "mean_width_rank_driven": {
+          "mean": 0.487,
+          "ci95": [
+            0.414,
+            0.561
+          ],
+          "n": 63
+        },
+        "mean_curv_rank_driven": {
+          "mean": 0.174,
+          "ci95": [
+            0.114,
+            0.244
+          ],
+          "n": 63
+        },
+        "median_progress_m": 35.5,
+        "share_within_15m_of_spawn": 0.087
+      },
+      "SAC_d5": {
+        "n_unique_crashes": 69,
+        "n_crash_episodes": 115,
+        "outside_training_point": {
+          "observed": 69,
+          "observed_share": 1.0,
+          "expected_if_random": 69.0,
+          "expected_share": 1.0,
+          "ratio": 1.0,
+          "p_value_one_sided": 1.0
+        },
+        "outside_training_lookback_5m": {
+          "observed": 69,
+          "observed_share": 1.0,
+          "expected_if_random": 69.0,
+          "expected_share": 1.0,
+          "ratio": 1.0,
+          "p_value_one_sided": 1.0
+        },
+        "outside_training_own_pool_point": {
+          "observed": 69,
+          "observed_share": 1.0,
+          "expected_if_random": 69.0,
+          "expected_share": 1.0,
+          "ratio": 1.0,
+          "p_value_one_sided": 1.0
+        },
+        "narrower_than_train": 69,
+        "sharper_than_train": 0,
+        "sharper_than_train_2m_window": 1,
+        "mean_width_rank_track": {
+          "mean": 0.526,
+          "ci95": [
+            0.462,
+            0.591
+          ],
+          "n": 69
+        },
+        "mean_curv_rank_track": {
+          "mean": 0.772,
+          "ci95": [
+            0.705,
+            0.833
+          ],
+          "n": 69
+        },
+        "mean_lookback_width_rank_track": {
+          "mean": 0.631,
+          "ci95": [
+            0.565,
+            0.697
+          ],
+          "n": 69
+        },
+        "mean_lookback_curv_rank_track": {
+          "mean": 0.799,
+          "ci95": [
+            0.737,
+            0.854
+          ],
+          "n": 69
+        },
+        "mean_width_rank_driven": {
+          "mean": 0.516,
+          "ci95": [
+            0.404,
+            0.629
+          ],
+          "n": 23
+        },
+        "mean_curv_rank_driven": {
+          "mean": 0.326,
+          "ci95": [
+            0.184,
+            0.479
+          ],
+          "n": 23
+        },
+        "median_progress_m": 8.6,
+        "share_within_15m_of_spawn": 0.667
+      }
+    },
+    "test": {
+      "all_cells": {
+        "n_unique_crashes": 184,
+        "n_crash_episodes": 307,
+        "outside_training_point": {
+          "observed": 0,
+          "observed_share": 0.0,
+          "expected_if_random": 0.1,
+          "expected_share": 0.0,
+          "ratio": 0.0,
+          "p_value_one_sided": 1.0
+        },
+        "outside_training_lookback_5m": {
+          "observed": 0,
+          "observed_share": 0.0,
+          "expected_if_random": 0.5,
+          "expected_share": 0.003,
+          "ratio": 0.0,
+          "p_value_one_sided": 1.0
+        },
+        "outside_training_own_pool_point": {
+          "observed": 1,
+          "observed_share": 0.005,
+          "expected_if_random": 0.4,
+          "expected_share": 0.002,
+          "ratio": 2.56,
+          "p_value_one_sided": 0.3192840357982101
+        },
+        "narrower_than_train": 0,
+        "sharper_than_train": 0,
+        "sharper_than_train_2m_window": 0,
+        "mean_width_rank_track": {
+          "mean": 0.509,
+          "ci95": [
+            0.466,
+            0.553
+          ],
+          "n": 184
+        },
+        "mean_curv_rank_track": {
+          "mean": 0.461,
+          "ci95": [
+            0.409,
+            0.513
+          ],
+          "n": 184
+        },
+        "mean_lookback_width_rank_track": {
+          "mean": 0.443,
+          "ci95": [
+            0.401,
+            0.484
+          ],
+          "n": 184
+        },
+        "mean_lookback_curv_rank_track": {
+          "mean": 0.459,
+          "ci95": [
+            0.414,
+            0.504
+          ],
+          "n": 184
+        },
+        "mean_width_rank_driven": {
+          "mean": 0.514,
+          "ci95": [
+            0.47,
+            0.559
+          ],
+          "n": 182
+        },
+        "mean_curv_rank_driven": {
+          "mean": 0.366,
+          "ci95": [
+            0.311,
+            0.419
+          ],
+          "n": 182
+        },
+        "median_progress_m": 49.7,
+        "share_within_15m_of_spawn": 0.011
+      },
+      "SAC_d1": {
+        "n_unique_crashes": 58,
+        "n_crash_episodes": 98,
+        "outside_training_point": {
+          "observed": 0,
+          "observed_share": 0.0,
+          "expected_if_random": 0.0,
+          "expected_share": 0.0,
+          "ratio": 0.0,
+          "p_value_one_sided": 1.0
+        },
+        "outside_training_lookback_5m": {
+          "observed": 0,
+          "observed_share": 0.0,
+          "expected_if_random": 0.1,
+          "expected_share": 0.002,
+          "ratio": 0.0,
+          "p_value_one_sided": 1.0
+        },
+        "outside_training_own_pool_point": {
+          "observed": 0,
+          "observed_share": 0.0,
+          "expected_if_random": 0.2,
+          "expected_share": 0.003,
+          "ratio": 0.0,
+          "p_value_one_sided": 1.0
+        },
+        "narrower_than_train": 0,
+        "sharper_than_train": 0,
+        "sharper_than_train_2m_window": 0,
+        "mean_width_rank_track": {
+          "mean": 0.509,
+          "ci95": [
+            0.43,
+            0.587
+          ],
+          "n": 58
+        },
+        "mean_curv_rank_track": {
+          "mean": 0.299,
+          "ci95": [
+            0.23,
+            0.373
+          ],
+          "n": 58
+        },
+        "mean_lookback_width_rank_track": {
+          "mean": 0.377,
+          "ci95": [
+            0.311,
+            0.449
+          ],
+          "n": 58
+        },
+        "mean_lookback_curv_rank_track": {
+          "mean": 0.285,
+          "ci95": [
+            0.223,
+            0.352
+          ],
+          "n": 58
+        },
+        "mean_width_rank_driven": {
+          "mean": 0.517,
+          "ci95": [
+            0.435,
+            0.601
+          ],
+          "n": 57
+        },
+        "mean_curv_rank_driven": {
+          "mean": 0.167,
+          "ci95": [
+            0.105,
+            0.237
+          ],
+          "n": 57
+        },
+        "median_progress_m": 37.1,
+        "share_within_15m_of_spawn": 0.017
+      },
+      "SAC_d100": {
+        "n_unique_crashes": 37,
+        "n_crash_episodes": 62,
+        "outside_training_point": {
+          "observed": 0,
+          "observed_share": 0.0,
+          "expected_if_random": 0.0,
+          "expected_share": 0.001,
+          "ratio": 0.0,
+          "p_value_one_sided": 1.0
+        },
+        "outside_training_lookback_5m": {
+          "observed": 0,
+          "observed_share": 0.0,
+          "expected_if_random": 0.1,
+          "expected_share": 0.003,
+          "ratio": 0.0,
+          "p_value_one_sided": 1.0
+        },
+        "outside_training_own_pool_point": {
+          "observed": 0,
+          "observed_share": 0.0,
+          "expected_if_random": 0.0,
+          "expected_share": 0.001,
+          "ratio": 0.0,
+          "p_value_one_sided": 1.0
+        },
+        "narrower_than_train": 0,
+        "sharper_than_train": 0,
+        "sharper_than_train_2m_window": 0,
+        "mean_width_rank_track": {
+          "mean": 0.471,
+          "ci95": [
+            0.383,
+            0.561
+          ],
+          "n": 37
+        },
+        "mean_curv_rank_track": {
+          "mean": 0.543,
+          "ci95": [
+            0.431,
+            0.654
+          ],
+          "n": 37
+        },
+        "mean_lookback_width_rank_track": {
+          "mean": 0.554,
+          "ci95": [
+            0.465,
+            0.641
+          ],
+          "n": 37
+        },
+        "mean_lookback_curv_rank_track": {
+          "mean": 0.562,
+          "ci95": [
+            0.47,
+            0.648
+          ],
+          "n": 37
+        },
+        "mean_width_rank_driven": {
+          "mean": 0.471,
+          "ci95": [
+            0.383,
+            0.558
+          ],
+          "n": 37
+        },
+        "mean_curv_rank_driven": {
+          "mean": 0.5,
+          "ci95": [
+            0.382,
+            0.621
+          ],
+          "n": 37
+        },
+        "median_progress_m": 80.4,
+        "share_within_15m_of_spawn": 0.0
+      },
+      "SAC_d20": {
+        "n_unique_crashes": 42,
+        "n_crash_episodes": 69,
+        "outside_training_point": {
+          "observed": 0,
+          "observed_share": 0.0,
+          "expected_if_random": 0.0,
+          "expected_share": 0.0,
+          "ratio": 0.0,
+          "p_value_one_sided": 1.0
+        },
+        "outside_training_lookback_5m": {
+          "observed": 0,
+          "observed_share": 0.0,
+          "expected_if_random": 0.1,
+          "expected_share": 0.003,
+          "ratio": 0.0,
+          "p_value_one_sided": 1.0
+        },
+        "outside_training_own_pool_point": {
+          "observed": 0,
+          "observed_share": 0.0,
+          "expected_if_random": 0.1,
+          "expected_share": 0.001,
+          "ratio": 0.0,
+          "p_value_one_sided": 1.0
+        },
+        "narrower_than_train": 0,
+        "sharper_than_train": 0,
+        "sharper_than_train_2m_window": 0,
+        "mean_width_rank_track": {
+          "mean": 0.534,
+          "ci95": [
+            0.446,
+            0.621
+          ],
+          "n": 42
+        },
+        "mean_curv_rank_track": {
+          "mean": 0.461,
+          "ci95": [
+            0.355,
+            0.57
+          ],
+          "n": 42
+        },
+        "mean_lookback_width_rank_track": {
+          "mean": 0.429,
+          "ci95": [
+            0.34,
+            0.525
+          ],
+          "n": 42
+        },
+        "mean_lookback_curv_rank_track": {
+          "mean": 0.504,
+          "ci95": [
+            0.408,
+            0.603
+          ],
+          "n": 42
+        },
+        "mean_width_rank_driven": {
+          "mean": 0.545,
+          "ci95": [
+            0.459,
+            0.629
+          ],
+          "n": 41
+        },
+        "mean_curv_rank_driven": {
+          "mean": 0.378,
+          "ci95": [
+            0.269,
+            0.494
+          ],
+          "n": 41
+        },
+        "median_progress_m": 70.9,
+        "share_within_15m_of_spawn": 0.024
+      },
+      "SAC_d5": {
+        "n_unique_crashes": 47,
+        "n_crash_episodes": 78,
+        "outside_training_point": {
+          "observed": 0,
+          "observed_share": 0.0,
+          "expected_if_random": 0.0,
+          "expected_share": 0.0,
+          "ratio": 0.0,
+          "p_value_one_sided": 1.0
+        },
+        "outside_training_lookback_5m": {
+          "observed": 0,
+          "observed_share": 0.0,
+          "expected_if_random": 0.1,
+          "expected_share": 0.002,
+          "ratio": 0.0,
+          "p_value_one_sided": 1.0
+        },
+        "outside_training_own_pool_point": {
+          "observed": 1,
+          "observed_share": 0.021,
+          "expected_if_random": 0.1,
+          "expected_share": 0.003,
+          "ratio": 7.01,
+          "p_value_one_sided": 0.1327933603319834
+        },
+        "narrower_than_train": 0,
+        "sharper_than_train": 0,
+        "sharper_than_train_2m_window": 0,
+        "mean_width_rank_track": {
+          "mean": 0.516,
+          "ci95": [
+            0.421,
+            0.61
+          ],
+          "n": 47
+        },
+        "mean_curv_rank_track": {
+          "mean": 0.598,
+          "ci95": [
+            0.493,
+            0.702
+          ],
+          "n": 47
+        },
+        "mean_lookback_width_rank_track": {
+          "mean": 0.448,
+          "ci95": [
+            0.372,
+            0.524
+          ],
+          "n": 47
+        },
+        "mean_lookback_curv_rank_track": {
+          "mean": 0.552,
+          "ci95": [
+            0.453,
+            0.649
+          ],
+          "n": 47
+        },
+        "mean_width_rank_driven": {
+          "mean": 0.517,
+          "ci95": [
+            0.419,
+            0.613
+          ],
+          "n": 47
+        },
+        "mean_curv_rank_driven": {
+          "mean": 0.492,
+          "ci95": [
+            0.375,
+            0.611
+          ],
+          "n": 47
+        },
+        "median_progress_m": 46.4,
+        "share_within_15m_of_spawn": 0.0
+      }
+    }
+  },
+  "real_circuit_level": {
+    "SAC_d1": {
+      "spearman_mean_progress_vs_width_median_m": {
+        "rho": 0.399,
+        "p": 0.0591,
+        "n_circuits": 23
+      },
+      "spearman_mean_progress_vs_width_min_m": {
+        "rho": 0.397,
+        "p": 0.0605,
+        "n_circuits": 23
+      },
+      "spearman_mean_progress_vs_curv_max_per_m": {
+        "rho": -0.156,
+        "p": 0.4768,
+        "n_circuits": 23
+      },
+      "spearman_mean_progress_vs_curv_p90_per_m": {
+        "rho": -0.071,
+        "p": 0.747,
+        "n_circuits": 23
+      }
+    },
+    "SAC_d100": {
+      "spearman_mean_progress_vs_width_median_m": {
+        "rho": 0.457,
+        "p": 0.0285,
+        "n_circuits": 23
+      },
+      "spearman_mean_progress_vs_width_min_m": {
+        "rho": 0.463,
+        "p": 0.0259,
+        "n_circuits": 23
+      },
+      "spearman_mean_progress_vs_curv_max_per_m": {
+        "rho": 0.065,
+        "p": 0.7675,
+        "n_circuits": 23
+      },
+      "spearman_mean_progress_vs_curv_p90_per_m": {
+        "rho": -0.122,
+        "p": 0.5806,
+        "n_circuits": 23
+      }
+    },
+    "SAC_d20": {
+      "spearman_mean_progress_vs_width_median_m": {
+        "rho": 0.704,
+        "p": 0.0002,
+        "n_circuits": 23
+      },
+      "spearman_mean_progress_vs_width_min_m": {
+        "rho": 0.702,
+        "p": 0.0002,
+        "n_circuits": 23
+      },
+      "spearman_mean_progress_vs_curv_max_per_m": {
+        "rho": 0.06,
+        "p": 0.7847,
+        "n_circuits": 23
+      },
+      "spearman_mean_progress_vs_curv_p90_per_m": {
+        "rho": -0.376,
+        "p": 0.0766,
+        "n_circuits": 23
+      }
+    },
+    "SAC_d5": {
+      "spearman_mean_progress_vs_width_median_m": {
+        "rho": 0.786,
+        "p": 0.0,
+        "n_circuits": 23
+      },
+      "spearman_mean_progress_vs_width_min_m": {
+        "rho": 0.781,
+        "p": 0.0,
+        "n_circuits": 23
+      },
+      "spearman_mean_progress_vs_curv_max_per_m": {
+        "rho": -0.053,
+        "p": 0.8089,
+        "n_circuits": 23
+      },
+      "spearman_mean_progress_vs_curv_p90_per_m": {
+        "rho": -0.256,
+        "p": 0.2385,
+        "n_circuits": 23
+      }
+    }
+  },
+  "narrow_vs_test": {
+    "narrowA": {
+      "n_tracks": 20,
+      "centreline_identical": true,
+      "map_frame_identical": true,
+      "curvature_identical": true,
+      "half_width_median_m": 1.0722,
+      "half_width_min_m": 1.0332,
+      "half_width_max_m": 1.1167,
+      "test_half_width_median_m": 1.4733
+    },
+    "narrowB": {
+      "n_tracks": 20,
+      "centreline_identical": true,
+      "map_frame_identical": true,
+      "curvature_identical": true,
+      "half_width_median_m": 0.7513,
+      "half_width_min_m": 0.7029,
+      "half_width_max_m": 0.7813,
+      "test_half_width_median_m": 1.4733
+    }
+  },
+  "real_circuits": {
+    "Austin": {
+      "share_outside_training": 1.0,
+      "share_narrower": 1.0,
+      "share_sharper": 0.0192,
+      "sac_unique_crashes": 12,
+      "sac_crashes_outside_training": 12
+    },
+    "BrandsHatch": {
+      "share_outside_training": 1.0,
+      "share_narrower": 1.0,
+      "share_sharper": 0.0,
+      "sac_unique_crashes": 12,
+      "sac_crashes_outside_training": 12
+    },
+    "Budapest": {
+      "share_outside_training": 1.0,
+      "share_narrower": 1.0,
+      "share_sharper": 0.0012,
+      "sac_unique_crashes": 12,
+      "sac_crashes_outside_training": 12
+    },
+    "Catalunya": {
+      "share_outside_training": 1.0,
+      "share_narrower": 1.0,
+      "share_sharper": 0.0074,
+      "sac_unique_crashes": 12,
+      "sac_crashes_outside_training": 12
+    },
+    "Hockenheim": {
+      "share_outside_training": 1.0,
+      "share_narrower": 1.0,
+      "share_sharper": 0.0078,
+      "sac_unique_crashes": 12,
+      "sac_crashes_outside_training": 12
+    },
+    "IMS": {
+      "share_outside_training": 1.0,
+      "share_narrower": 1.0,
+      "share_sharper": 0.0,
+      "sac_unique_crashes": 12,
+      "sac_crashes_outside_training": 12
+    },
+    "Melbourne": {
+      "share_outside_training": 1.0,
+      "share_narrower": 1.0,
+      "share_sharper": 0.0093,
+      "sac_unique_crashes": 12,
+      "sac_crashes_outside_training": 12
+    },
+    "MexicoCity": {
+      "share_outside_training": 1.0,
+      "share_narrower": 1.0,
+      "share_sharper": 0.0272,
+      "sac_unique_crashes": 12,
+      "sac_crashes_outside_training": 12
+    },
+    "Montreal": {
+      "share_outside_training": 1.0,
+      "share_narrower": 1.0,
+      "share_sharper": 0.0221,
+      "sac_unique_crashes": 12,
+      "sac_crashes_outside_training": 12
+    },
+    "Monza": {
+      "share_outside_training": 1.0,
+      "share_narrower": 1.0,
+      "share_sharper": 0.0099,
+      "sac_unique_crashes": 12,
+      "sac_crashes_outside_training": 12
+    },
+    "MoscowRaceway": {
+      "share_outside_training": 1.0,
+      "share_narrower": 1.0,
+      "share_sharper": 0.0155,
+      "sac_unique_crashes": 12,
+      "sac_crashes_outside_training": 12
+    },
+    "Nuerburgring": {
+      "share_outside_training": 1.0,
+      "share_narrower": 1.0,
+      "share_sharper": 0.0029,
+      "sac_unique_crashes": 12,
+      "sac_crashes_outside_training": 12
+    },
+    "Oschersleben": {
+      "share_outside_training": 1.0,
+      "share_narrower": 1.0,
+      "share_sharper": 0.0,
+      "sac_unique_crashes": 12,
+      "sac_crashes_outside_training": 12
+    },
+    "Sakhir": {
+      "share_outside_training": 1.0,
+      "share_narrower": 1.0,
+      "share_sharper": 0.0149,
+      "sac_unique_crashes": 12,
+      "sac_crashes_outside_training": 12
+    },
+    "SaoPaulo": {
+      "share_outside_training": 1.0,
+      "share_narrower": 1.0,
+      "share_sharper": 0.0038,
+      "sac_unique_crashes": 12,
+      "sac_crashes_outside_training": 12
+    },
+    "Sepang": {
+      "share_outside_training": 1.0,
+      "share_narrower": 1.0,
+      "share_sharper": 0.0045,
+      "sac_unique_crashes": 12,
+      "sac_crashes_outside_training": 12
+    },
+    "Shanghai": {
+      "share_outside_training": 1.0,
+      "share_narrower": 1.0,
+      "share_sharper": 0.0106,
+      "sac_unique_crashes": 12,
+      "sac_crashes_outside_training": 12
+    },
+    "Silverstone": {
+      "share_outside_training": 1.0,
+      "share_narrower": 1.0,
+      "share_sharper": 0.0037,
+      "sac_unique_crashes": 12,
+      "sac_crashes_outside_training": 12
+    },
+    "Sochi": {
+      "share_outside_training": 1.0,
+      "share_narrower": 1.0,
+      "share_sharper": 0.0099,
+      "sac_unique_crashes": 12,
+      "sac_crashes_outside_training": 12
+    },
+    "Spa": {
+      "share_outside_training": 1.0,
+      "share_narrower": 1.0,
+      "share_sharper": 0.0076,
+      "sac_unique_crashes": 12,
+      "sac_crashes_outside_training": 12
+    },
+    "Spielberg": {
+      "share_outside_training": 1.0,
+      "share_narrower": 1.0,
+      "share_sharper": 0.0073,
+      "sac_unique_crashes": 12,
+      "sac_crashes_outside_training": 12
+    },
+    "YasMarina": {
+      "share_outside_training": 1.0,
+      "share_narrower": 1.0,
+      "share_sharper": 0.0324,
+      "sac_unique_crashes": 12,
+      "sac_crashes_outside_training": 12
+    },
+    "Zandvoort": {
+      "share_outside_training": 1.0,
+      "share_narrower": 1.0,
+      "share_sharper": 0.0028,
+      "sac_unique_crashes": 12,
+      "sac_crashes_outside_training": 12
+    }
+  }
+}

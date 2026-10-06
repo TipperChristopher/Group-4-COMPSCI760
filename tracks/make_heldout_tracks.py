@@ -9,8 +9,10 @@ WHAT THIS PRODUCES
     val    val_track_0        .. val_track_9          (raw generator indices 100-109)
     test   test_track_0       .. test_track_19        (raw generator indices 110-129)
 
-The manifest also holds a "real" split (23 downloaded circuits), recorded by
-tracks/install_real_tracks.py. --verify checks it too; generating here keeps it.
+The manifest also holds a "real" split (23 downloaded circuits, recorded by
+tracks/install_real_tracks.py) and "narrowA"/"narrowB" (the test shapes with
+narrower walls, recorded by tracks/make_narrow_tracks.py). --verify checks
+them too; generating here keeps them.
 
 HOW THE SETS ARE DEFINED
 
@@ -325,11 +327,13 @@ def cmd_generate(args) -> int:
             print(f"manifest unchanged: {MANIFEST}")
             return 0
         raise SystemExit(f"{MANIFEST} exists and differs. Refusing to overwrite; pass --force.")
-    # The real circuits are recorded by install_real_tracks.py, not generated
-    # here. Carry them over so rewriting the synthetic splits never drops them.
-    if old and "real" in old["splits"]:
-        manifest["splits"]["real"] = old["splits"]["real"]
-        for n in old["splits"]["real"]["names"]:
+    # Other splits (real, narrowA, narrowB) are recorded by their own scripts,
+    # not generated here. Carry them over so rewriting never drops them.
+    for split, entry in (old["splits"].items() if old else ()):
+        if split in manifest["splits"]:
+            continue
+        manifest["splits"][split] = entry
+        for n in entry["names"]:
             manifest["tracks"][n] = old["tracks"][n]
     write_json(MANIFEST, manifest)
     print(f"manifest written: {MANIFEST}")

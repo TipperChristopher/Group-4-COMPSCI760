@@ -67,7 +67,7 @@ make_baseline = _baselines_module.make_baseline
 BASELINES = _baselines_module.BASELINES
 
 TRACK_MANIFEST = os.path.join(_PROJECT_ROOT, "tracks", "manifest.json")
-TRACK_SETS = ("train", "val", "test", "real")
+TRACK_SETS = ("train", "val", "test", "real", "narrowA", "narrowB")
 
 
 def resolve_track_set(name):
@@ -398,7 +398,9 @@ def main():
                              "train (synthetic_track_0..99), val (val_track_0..9, "
                              "for checkpoint selection), test (test_track_0..19, "
                              "for reporting), or real (the 23 f1tenth_racetracks "
-                             "circuits; install with tracks/install_real_tracks.py). "
+                             "circuits; install with tracks/install_real_tracks.py), "
+                             "or narrowA / narrowB (the test shapes at 1.07 m / "
+                             "0.75 m half-width; tracks/make_narrow_tracks.py). "
                              "Every set is verified against the manifest's "
                              "checksums before running. Mutually exclusive with "
                              "--tracks.")

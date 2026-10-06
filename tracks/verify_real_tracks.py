@@ -2,8 +2,9 @@
 
     python tracks/verify_real_tracks.py          # static checks (seconds)
     python tracks/verify_real_tracks.py --sim    # plus one gap-follower episode each
+    python tracks/verify_real_tracks.py --split narrowA [--sim]   # any other split
 
-Static checks, per circuit:
+Static checks, per circuit (or track, with --split):
 
   1. files match tracks/manifest.json (install with tracks/install_real_tracks.py)
   2. loads in F1TENTH: Track.from_track_name and the evaluation env
@@ -20,7 +21,8 @@ centreline spawn, one-lap termination, 15,000-step cap). It runs in this one
 process; set OMP_NUM_THREADS=1 to keep it to one core. A gap-follower crash is
 reported, not failed: the planner crashes on some legitimate tracks.
 
-Results go to tracks/real_verification.json. Exits non-zero on any hard failure.
+Results go to tracks/<split>_verification.json (real_verification.json by
+default). Exits non-zero on any hard failure.
 """
 
 from __future__ import annotations
@@ -36,7 +38,6 @@ import verify_heldout_tracks as vh  # sets up paths, gym shim, cwd
 
 from scipy.ndimage import distance_transform_edt
 
-OUT = vh.HERE / "real_verification.json"
 CAP = vh.CAP
 DT = 0.01
 SLOW_SPEED = 3.0
@@ -58,13 +59,15 @@ def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__.split("\n\n")[0])
     ap.add_argument("--sim", action="store_true",
                     help="Also run one gap-follower episode per circuit.")
+    ap.add_argument("--split", default="real",
+                    help="Manifest split to check (default real).")
     args = ap.parse_args()
+    OUT = vh.HERE / f"{args.split}_verification.json"
 
     manifest = json.loads(vh.MANIFEST.read_text())
-    if "real" not in manifest["splits"]:
-        raise SystemExit("tracks/manifest.json has no real split. "
-                         "Run: python tracks/install_real_tracks.py --manifest")
-    names = manifest["splits"]["real"]["names"]
+    if args.split not in manifest["splits"]:
+        raise SystemExit(f"tracks/manifest.json has no {args.split} split.")
+    names = manifest["splits"][args.split]["names"]
     mh = vh._load("make_heldout_tracks", "tracks/make_heldout_tracks.py")
     maps = mh.maps_dir()
     ev = vh._load("evaluate_mod", "evaluate.py")

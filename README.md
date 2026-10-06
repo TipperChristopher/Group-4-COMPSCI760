@@ -65,6 +65,27 @@ most 450 m, so a slow policy can be truncated there before finishing a lap.
 Report lap completion on these separately, or alongside progress, not as a
 plain failure.
 
+2d. Narrow Test Tracks (width ablation)
+Every training track has a half-width of about 1.47 m; real circuits have a
+median of 1.07 m and a minimum near 0.65 m. Two splits isolate width:
+
+  narrowA  narrowA_track_0..19   test shapes at half-width ~1.07 m (WIDTH 7.5)
+  narrowB  narrowB_track_0..19   test shapes at half-width ~0.75 m (WIDTH 5.52)
+
+narrowX_track_k has exactly the centreline and map frame of test_track_k;
+only the walls move. Rebuild or check them with:
+
+Bash
+python tracks/make_narrow_tracks.py              # build, verify vs test, record in manifest
+python tracks/make_narrow_tracks.py --calibrate  # WIDTH -> half-width fit, writes nothing
+python tracks/verify_real_tracks.py --split narrowA
+python analysis/track_geometry.py                # confirms centreline identical to test
+
+Do not make narrow tracks by editing WIDTH in random_trackgen.py and
+rerunning it: a different WIDTH can change which attempts the generator
+retries (shifting the whole RNG stream), and its tight_layout() call can
+rescale the track. make_narrow_tracks.py avoids both.
+
 3. Train the Agents
 Launch the Stable-Baselines3 training grid. You can specify the algorithm, track diversity, and random seed:
 
