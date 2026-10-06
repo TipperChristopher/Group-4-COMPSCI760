@@ -129,10 +129,25 @@ Seed 0 rose to 82% and then fell back to 64%; it did not hold. Final numbers bel
 | 1.8–2.0 M | 64% | **82%** | **3%** |
 
 - **seed 1: still improving at 2 M.** **seed 0: peaked at 82% (97% in one 100 k window at 1.7 M) then fell to 64%.** **seed 2: collapsed** (0% in the 1.8 M and 1.9 M windows).
-- Seed 2's crashes sit at the same place before and after the collapse (median 77 m at 1 M, 72 m at 2 M) — i.e. it stopped getting past one corner, the same spot where the γ 0.99 V4 policy crashes (73.9 m). Consistent with sliding back toward the crash-fast basin; not proven.
+- *(Corrected below — the "crashes at 72 m, back in the crash-fast basin" reading was wrong.)*
 - Optimiser health does not explain it: seed 2 has the *lowest* KL (0.036) and similar σ (0.23) to the seeds that kept lapping. In all three, σ keeps falling (0.8 → ~0.2) and KL keeps rising (0.014 → 0.04–0.08) — the same drift as the original collapse, just ~3× slower.
 - `G999_ns2048` (γ alone) finished 2 M at **0%** — no laps at any point.
 - **Net:** the fix produces laps on 3/3 seeds by 1 M; at 2 M it is 2/3 lapping well and 1/3 collapsed. Late-training stability is **not** established. Expect large seed variance in the final grid.
+
+### Correction: seed 2 does not "slide back into crash-fast" — it stalls before the hairpin; and the training log misreads seed 0
+The "failures at ~72 m" figure counted every non-lap episode as a crash. Split by outcome, and measured with the policy's noise off (`results/ppo_diagnosis/eval_own_track/`, team `evaluate.py`, 30 episodes ≈ 9 distinct spawns, own training track):
+
+| deterministic, own track | 1.0 M | 1.6 M | 2.0 M |
+|---|---|---|---|
+| seed 0 | 3/30 laps | 25/30 | **30/30, 0 crashes** |
+| seed 1 | 18/30 | 23/30 | 18/30 |
+| seed 2 | 0/30 | **25/30** | **0/30** (14 crash, 16 stall) |
+
+- **Seed 0 did not degrade** — its noise-free policy went 3 → 25 → 30/30. The training-log drop (82% → 64%) is the *noisy* training policy crashing more; the policy itself got better. (Why the noise hurts more late on is untested — a plausible guess is a tighter, faster line with less margin.)
+- **Seed 1 fluctuates** (60–77%).
+- **Seed 2 really did lose it:** 25/30 at 1.6 M → 0/30 at 2 M. The track's sharpest corner is a hairpin at **75.5 m (radius 2.4 m)**. At 2 M the noise-free policy brakes at 65–68 m, commands ~0 m/s at 68–71 m and **sits there for ~23 s** until the episode times out. With noise (training log, last 200 k) it laps 3%, crashes 78%, stalls 18% (stall point median 72.6 m). This is *not* the γ 0.99 crash-fast strategy — stopping earns no further reward — so the earlier basin explanation does not fit. Cause still open.
+- **Lesson:** the training-log lap rate is a poor proxy for the policy that gets evaluated, in both directions. Score with deterministic evaluation (as `final-run-plan.md` already requires) and look at more than one checkpoint.
+Raw rollout traces: `results/ppo_diagnosis/eval_own_track/corner_trace_output.txt`.
 
 ## Why SAC copes at γ=0.99 — and is not immune
 
@@ -154,7 +169,7 @@ of `G999_SAC`, which was running at the time of writing.
 ## How good is the fixed PPO? (evidence quality)
 
 - **Training-log lap rate (stochastic, own track):** 65% at 2 M, n=3 seeds at 1 M.
-- **Own track, deterministic:** 2 clean laps (basin table, n=1 episode).
+- **Own track, deterministic (30 episodes):** at 2 M seed 0 30/30, seed 1 18/30, seed 2 0/30; at 1.6 M 25/23/25 of 30 (see the correction below).
 - **Held-out synthetic, deterministic:** volatile across checkpoints —
   0/0/10/0/6/5/4/0/0 of 25 for 400 k…2 M; last-5 average **12%**, 83.5 m
   (`eval_g999_curve/`). V4 at 2 M: 0/25, 31.6 m. A d1 policy is *expected* to

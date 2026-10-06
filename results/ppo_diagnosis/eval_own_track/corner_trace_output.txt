@@ -1,0 +1,29 @@
+Output of diagnostics/corner_trace.py and diagnostics/stall_trace.py, run 2026-10-06 ~22:00 (copied verbatim).
+Deterministic rollouts on synthetic_track_0 (training env wrapper, 3000-step cap, no lap target).
+"LAP" = survived the 30 s with >160 m; "crash@X" = collision at X m; "71m" = no crash, stopped at 71 m.
+
+track length 164.1 m.  Curvature |k| (1/m) by 5 m bin, 40-100 m:
+  40-45:0.01  45-50:0.27  50-55:0.31  55-60:0.17  60-65:0.35  65-70:0.11  70-75:0.41  75-80:0.41  80-85:0.20  85-90:0.16  90-95:0.03  95-100:0.01
+  sharpest point: s = 75.5 m, |k| = 0.41, radius 2.4 m
+
+spawn seeds 0 2 4 6 8:
+  seed 0 @ 1.0M: crash@161 crash@160  crash@54  crash@54  crash@54 | v(40-55m) 10.6  v(55-75m) mean 9.4 max 11.6  |steer| 0.36
+  seed 0 @ 2.0M:       LAP       LAP       LAP       LAP       LAP | v(40-55m) 10.2  v(55-75m) mean 8.1 max 10.3  |steer| 0.41
+  seed 1 @ 1.0M:       LAP  crash@64 crash@218 crash@242 crash@162 | v(40-55m) 10.4  v(55-75m) mean 10.0 max 12.0  |steer| 0.49
+  seed 1 @ 2.0M:  crash@51       LAP       LAP crash@149       LAP | v(40-55m) 10.1  v(55-75m) mean 8.7 max 10.8  |steer| 0.58
+  seed 2 @ 1.0M:  crash@49  crash@48  crash@48  crash@49 crash@161 | v(40-55m) 10.4  v(55-75m) mean 6.1 max 9.7  |steer| 0.51
+  seed 2 @ 2.0M:       71m  crash@30       71m       71m  crash@48 | v(40-55m) 10.3  v(55-75m) mean 0.6 max 10.7  |steer| 0.10
+
+seed 2 @ 2.0M spawn 0 -> no crash at 70.9 m, 3000 steps
+    50-53 m:    22 steps  speed 10.59  cmd_speed 14.54  steer +0.47
+    53-56 m:    30 steps  speed 10.04  cmd_speed  3.77  steer -0.41
+    56-59 m:    42 steps  speed  7.26  cmd_speed  7.02  steer +0.17
+    59-62 m:    27 steps  speed  8.16  cmd_speed  9.53  steer +0.63
+    62-65 m:    29 steps  speed  9.29  cmd_speed 11.49  steer +0.53
+    65-68 m:    34 steps  speed  8.96  cmd_speed  5.07  steer -0.35
+    68-71 m:  2308 steps  speed  0.13  cmd_speed  0.01  steer -0.07
+
+Training log, share of episodes LAPPED / CRASHED / STALLED (3000 steps, <1 lap), per 200k window:
+  seed0: 0.6M 61/39/0  1.0M 75/25/0  1.4M 82/18/0  1.6M 79/21/0  1.8M 64/36/0
+  seed1: 0.6M 25/75/0  1.0M 64/36/0  1.4M 64/36/0  1.6M 79/21/0  1.8M 82/18/0
+  seed2: 0.6M 56/44/0  1.0M 39/61/0  1.4M 46/54/0  1.6M  9/87/4  1.8M  3/78/18   (stalls at median 72.6 m)

@@ -39,6 +39,7 @@ Completed runs also carry `final_model.zip` + `vecnormalize.pkl`.
 | `eval_ck800k/`, `eval_ck2M/` | V4, G999_gamma, G999L99_full, P40 at 800 k and 2 M | same |
 | `eval_g999_curve/` | G999_gamma at every 200 k checkpoint 400 k–2 M | same |
 | `eval_width_oursac/` | our `sac_overfit` (penalty 40) at 1.2 M and 2 M on test / narrowA / narrowB / real | 5 tracks × 10 (real 2 × 10) |
+| `eval_own_track/` | γ-fix PPO seeds 0/1/2 at 1.0/1.6/2.0 M on their OWN training track, + corner/stall traces | synthetic_track_0 × 30 |
 | `repro_desmond_grid/` | re-evaluation of Desmond's seed-0 grid weights (noise floor, penalty comparison, spawn probes) | see file names |
 
 **Warning — `repro_desmond_grid/SACd*_trainpool.csv` and `repro_SACd1_oursynth.csv`
