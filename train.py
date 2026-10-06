@@ -3,6 +3,7 @@ import types
 import os
 import math
 import json
+import re
 import time
 import hashlib
 import argparse
@@ -31,6 +32,13 @@ DEFAULT_TOTAL_TIMESTEPS = 2_000_000
 # Fixed default so that every cell of the grid, and both algorithms, draw the
 # same tracks unless the track seed is overridden explicitly.
 DEFAULT_TRACK_SEED = 0
+DEFAULT_TRACK_PREFIX = "synthetic_track_"
+
+
+def run_dir_name(algo, diversity, seed, run_tag=""):
+    """models/ subfolder for a cell; the tag keeps reruns apart from the original grid."""
+    name = f"{algo}_{diversity}tracks_s{seed}"
+    return f"{name}_{run_tag}" if run_tag else name
 
 
 def _load_local_module(module_name, relative_path):
@@ -144,9 +152,14 @@ def expected_updates(model, algo, total_timesteps, n_envs):
 
 def print_startup_summary(args, model, track_pool, n_envs):
     """Guard rail: these numbers must match across cells except for diversity."""
+    w = _wrapper_module
     rows = [
         ("algo", args.algo),
+        ("run tag", args.run_tag or "(none)"),
         ("diversity (pool size)", f"{args.diversity} tracks"),
+        ("track prefix", args.track_prefix),
+        ("reward", f"PROGRESS_WEIGHT {w.PROGRESS_WEIGHT}, TIME_COST {w.TIME_COST}, "
+                   f"CRASH_PENALTY {w.CRASH_PENALTY}"),
         ("n_envs", str(n_envs)),
         ("track seed", str(args.track_seed)),
         ("run seed", str(args.seed)),
@@ -220,6 +233,12 @@ def code_provenance():
     }
 
 
+# Manifest splits a pool may be drawn from. Everything else (val, test, real,
+# narrowA, narrowB) is evaluation-only and refused. vw_train is accepted once
+# it exists in the manifest.
+TRAINING_SPLITS = ("train", "vw_train")
+
+
 def verify_training_pool(track_pool):
     """Refuse to train on tracks that differ from the canonical manifest.
 
@@ -227,29 +246,46 @@ def verify_training_pool(track_pool):
     writes different geometry under the same synthetic_track_N names than the
     seed-123 set in tracks/manifest.json. A model trained on such a pool is not
     comparable with any other cell, and nothing downstream would notice.
+
+    Every pool track must be in the manifest, all in ONE split, and that split
+    must be a training split. Held-out names are refused whatever prefix
+    produced them.
     """
     if not os.path.exists(_TRACK_MANIFEST):
         raise SystemExit(f"No track manifest at {_TRACK_MANIFEST}. "
                          "Create it with: python tracks/make_heldout_tracks.py")
     with open(_TRACK_MANIFEST) as fh:
         manifest = json.load(fh)
-    train_names = set(manifest["splits"]["train"]["names"])
-    outside = [n for n in track_pool if n not in train_names]
-    if outside:
-        raise SystemExit(f"Training pool contains non-training tracks: {outside[:5]}")
+    unknown = [n for n in track_pool if n not in manifest["tracks"]]
+    if unknown:
+        raise SystemExit(f"Training pool contains tracks not in tracks/manifest.json: {unknown[:5]}")
+    splits = sorted({manifest["tracks"][n]["split"] for n in track_pool})
+    if len(splits) != 1:
+        raise SystemExit(f"Training pool mixes manifest splits {splits}; refusing.")
+    split = splits[0]
+    if split not in TRAINING_SPLITS:
+        raise SystemExit(f"Training pool tracks belong to the '{split}' split, which is "
+                         f"held out for evaluation. Training splits: {', '.join(TRAINING_SPLITS)}.")
     mh = _load_local_module("make_heldout_tracks",
                             os.path.join("tracks", "make_heldout_tracks.py"))
     maps = mh.maps_dir()
-    bad = [n for n in track_pool
-           if not (maps / n).exists()
-           or not mh.same(manifest["tracks"][n]["files"], mh.checksums(maps, n))]
+    bad = []
+    for n in track_pool:
+        files = manifest["tracks"][n]["files"]
+        try:
+            ok = mh.same(files, mh.checksums(maps, n, list(files)))
+        except FileNotFoundError:
+            ok = False
+        if not ok:
+            bad.append(n)
     if bad:
         raise SystemExit(
             f"{len(bad)} of {len(track_pool)} pool tracks do not match "
             f"tracks/manifest.json, e.g. {bad[:5]}. Refusing to train on "
             "non-canonical tracks. Check with: python tracks/make_heldout_tracks.py --verify")
     return {"manifest_sha256": _sha256(_TRACK_MANIFEST),
-            "pool_verified_against_manifest": True}
+            "pool_verified_against_manifest": True,
+            "track_split": split}
 
 
 def _write_json(path, obj):
@@ -296,28 +332,38 @@ def main():
                         help="Allow reusing a run directory that already holds "
                              "a run_config.json. Off by default so relaunching a "
                              "grid cannot clobber a run that is in progress or done.")
+    parser.add_argument("--run-tag", type=str, default="",
+                        help="Appended to the run directory, e.g. r40 gives "
+                             "models/SAC_20tracks_s0_r40/. Default: none, the "
+                             "original directory name.")
+    parser.add_argument("--track-prefix", type=str, default=DEFAULT_TRACK_PREFIX,
+                        help="Pool is <prefix>0..N-1. Must name tracks of a "
+                             f"training split in tracks/manifest.json "
+                             f"({', '.join(TRAINING_SPLITS)}).")
     args = parser.parse_args()
 
     if args.n_envs < 1:
         parser.error("--n-envs must be at least 1")
+    if args.run_tag and not re.fullmatch(r"[A-Za-z0-9-]+", args.run_tag):
+        parser.error("--run-tag may contain only letters, digits and '-'")
 
     if args.torch_threads:
         import torch
         torch.set_num_threads(args.torch_threads)
 
     # The pool grows with diversity; the environment count does not.
-    track_pool = [f"synthetic_track_{i}" for i in range(args.diversity)]
+    track_pool = [f"{args.track_prefix}{i}" for i in range(args.diversity)]
 
     # One directory per cell. Absolute, so the launch directory cannot change it.
-    save_dir = os.path.join(_PROJECT_ROOT, "models",
-                            f"{args.algo}_{args.diversity}tracks_s{args.seed}")
+    save_dir = os.path.join(_PROJECT_ROOT, "models", run_dir_name(
+        args.algo, args.diversity, args.seed, args.run_tag))
     config_path = os.path.join(save_dir, "run_config.json")
     if os.path.exists(config_path) and not args.overwrite:
         raise SystemExit(f"{save_dir} already holds a run. Refusing to overwrite it; "
                          "pass --overwrite to reuse the directory deliberately.")
-    os.makedirs(save_dir, exist_ok=True)
-
+    # Before creating the directory, so a refused pool leaves nothing behind.
     pool_info = verify_training_pool(track_pool)
+    os.makedirs(save_dir, exist_ok=True)
     prov = code_provenance()
     import torch
     import stable_baselines3
@@ -328,6 +374,8 @@ def main():
         "host": platform.node(),
         **prov,
         "args": vars(args),
+        "run_tag": args.run_tag,
+        "track_prefix": args.track_prefix,
         "track_pool": track_pool,
         **pool_info,
         "device": "cpu",
@@ -348,6 +396,12 @@ def main():
     print(f"  commit            : {prov['git_commit']} ({prov['git_branch']})")
     print(f"  uncommitted code  : {prov['git_dirty_files'] or 'none'}")
     print(f"  reward code sha256: {prov['reward_code_sha256']}")
+    rc = prov["reward_constants"]
+    print(f"  reward constants  : PROGRESS_WEIGHT {rc['PROGRESS_WEIGHT']}  "
+          f"TIME_COST {rc['TIME_COST']}  CRASH_PENALTY {rc['CRASH_PENALTY']}")
+    print(f"  run tag           : {args.run_tag or '(none)'}")
+    print(f"  track prefix      : {args.track_prefix} (manifest split "
+          f"'{pool_info['track_split']}')")
     print(f"  pool verified     : {len(track_pool)} tracks match tracks/manifest.json")
     print(f"  torch threads     : {torch.get_num_threads()}   device: cpu")
     print(f"  run directory     : {save_dir}")

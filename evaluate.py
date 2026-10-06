@@ -152,10 +152,11 @@ def find_run_dir(args):
         return os.path.dirname(path) if os.path.isfile(path) else path
 
     if args.diversity is not None and args.seed is not None:
-        return os.path.join(
-            _PROJECT_ROOT, "models",
-            f"{args.algo}_{args.diversity}tracks_s{args.seed}",
-        )
+        # Same naming as train.py's run_dir_name: the tag, if any, is a suffix.
+        name = f"{args.algo}_{args.diversity}tracks_s{args.seed}"
+        if args.run_tag:
+            name += f"_{args.run_tag}"
+        return os.path.join(_PROJECT_ROOT, "models", name)
 
     # Nothing specified: fall back to the most recent run so that a bare
     # "python evaluate.py" still does something sensible.
@@ -387,6 +388,10 @@ def main():
                              "loaded.")
     parser.add_argument("--diversity", type=int)
     parser.add_argument("--seed", type=int, help="Run seed used during training.")
+    parser.add_argument("--run-tag", type=str, default="",
+                        help="Run tag used during training: --algo SAC --diversity 20 "
+                             "--seed 0 --run-tag r40 loads models/SAC_20tracks_s0_r40/ "
+                             "and its own vecnormalize.pkl.")
     parser.add_argument("--model-path", type=str,
                         help="Run directory or .zip. Overrides the lookup above.")
     parser.add_argument("--tracks", nargs="+", default=None,

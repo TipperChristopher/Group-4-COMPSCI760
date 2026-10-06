@@ -48,10 +48,11 @@ PROGRESS_WEIGHT = 1.0
 # positive, with no configuration that inverts the ordering.
 TIME_COST = 0.0
 
-# Fires on collision only, never on lap completion. Small relative to a lap
-# (roughly 179 m on the synthetic tracks), so it discourages crashing without
-# making the agent so crash-averse that it refuses to move.
-CRASH_PENALTY = 5.0
+# Fires on collision only, never on lap completion. 40.0 is Aolin's final
+# reward (experiments/feasibility-spike), replacing the earlier 5.0. Still
+# well under a lap's progress (roughly 179 m on the synthetic tracks), so the
+# agent is not so crash-averse that it refuses to move.
+CRASH_PENALTY = 40.0
 
 # --------------------------------------------------------------------------
 # ACTION SCALING
