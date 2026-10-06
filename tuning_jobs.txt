@@ -1,0 +1,20 @@
+# Tuning batch: SAC and PPO on the varied-width pool (d20), penalty 40 by default.
+# One job per line: <run tag> | <train.py arguments>. launch_queue.ps1 adds
+# --run-tag and --torch-threads (SAC 2, PPO 1). All SAC first, then all PPO.
+# S0 and P0 are baselines; S1-S3 and P1-P3 are the candidates.
+tune_S0_s99 | --algo SAC --diversity 20 --seed 99 --track-prefix vw_synthetic_track_
+tune_S0_s98 | --algo SAC --diversity 20 --seed 98 --track-prefix vw_synthetic_track_
+tune_S1_s99 | --algo SAC --diversity 20 --seed 99 --track-prefix vw_synthetic_track_ --gamma 0.999
+tune_S1_s98 | --algo SAC --diversity 20 --seed 98 --track-prefix vw_synthetic_track_ --gamma 0.999
+tune_S2_s99 | --algo SAC --diversity 20 --seed 99 --track-prefix vw_synthetic_track_ --gamma 0.999 --time-cost 0.01
+tune_S2_s98 | --algo SAC --diversity 20 --seed 98 --track-prefix vw_synthetic_track_ --gamma 0.999 --time-cost 0.01
+tune_S3_s99 | --algo SAC --diversity 20 --seed 99 --track-prefix vw_synthetic_track_ --gamma 0.999 --buffer-size 2000000
+tune_S3_s98 | --algo SAC --diversity 20 --seed 98 --track-prefix vw_synthetic_track_ --gamma 0.999 --buffer-size 2000000
+tune_P0_s99 | --algo PPO --diversity 20 --seed 99 --track-prefix vw_synthetic_track_
+tune_P0_s98 | --algo PPO --diversity 20 --seed 98 --track-prefix vw_synthetic_track_
+tune_P1_s99 | --algo PPO --diversity 20 --seed 99 --track-prefix vw_synthetic_track_ --gamma 0.999 --n-steps 8192
+tune_P1_s98 | --algo PPO --diversity 20 --seed 98 --track-prefix vw_synthetic_track_ --gamma 0.999 --n-steps 8192
+tune_P2_s99 | --algo PPO --diversity 20 --seed 99 --track-prefix vw_synthetic_track_ --gamma 0.999 --n-steps 8192 --time-cost 0.01
+tune_P2_s98 | --algo PPO --diversity 20 --seed 98 --track-prefix vw_synthetic_track_ --gamma 0.999 --n-steps 8192 --time-cost 0.01
+tune_P3_s99 | --algo PPO --diversity 20 --seed 99 --track-prefix vw_synthetic_track_ --gamma 0.999 --n-steps 8192 --target-kl 0.03 --ent-coef 0.01
+tune_P3_s98 | --algo PPO --diversity 20 --seed 98 --track-prefix vw_synthetic_track_ --gamma 0.999 --n-steps 8192 --target-kl 0.03 --ent-coef 0.01

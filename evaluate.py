@@ -393,6 +393,11 @@ def main():
                         help="Run tag used during training: --algo SAC --diversity 20 "
                              "--seed 0 --run-tag r40 loads models/SAC_20tracks_s0_r40/ "
                              "and its own vecnormalize.pkl.")
+    parser.add_argument("--checkpoint", type=int, default=None, metavar="STEPS",
+                        help="Evaluate the checkpoint saved at STEPS instead of the final "
+                             "model: <ALGO>_checkpoint_<STEPS>_steps.zip with its matching "
+                             "<ALGO>_checkpoint_vecnormalize_<STEPS>_steps.pkl from the "
+                             "(tagged) run folder.")
     parser.add_argument("--model-path", type=str,
                         help="Run directory or .zip. Overrides the lookup above.")
     parser.add_argument("--tracks", nargs="+", default=None,
@@ -491,14 +496,23 @@ def main():
         args.algo = infer_algo(run_dir, args.algo)
 
         model_file = os.path.join(run_dir, "final_model.zip")
-        if args.model_path and os.path.isfile(os.path.abspath(args.model_path)):
+        stats_path = vecnormalize_path(run_dir)
+        if args.checkpoint is not None:
+            # A checkpoint must be paired with the normalisation statistics saved
+            # at the same step; the final vecnormalize.pkl would silently mismatch.
+            model_file = os.path.join(run_dir, f"{args.algo}_checkpoint_{args.checkpoint}_steps.zip")
+            stats_path = os.path.join(
+                run_dir, f"{args.algo}_checkpoint_vecnormalize_{args.checkpoint}_steps.pkl")
+            if not (os.path.exists(model_file) and os.path.exists(stats_path)):
+                raise SystemExit(f"Checkpoint {args.checkpoint} incomplete in {run_dir}: need "
+                                 f"{os.path.basename(model_file)} and {os.path.basename(stats_path)}")
+        elif args.model_path and os.path.isfile(os.path.abspath(args.model_path)):
             model_file = os.path.abspath(args.model_path)
         if not os.path.exists(model_file):
             raise SystemExit(f"No model at {model_file}")
 
         # Observation normalisation: the presence of this file records which
         # regime the policy was trained in, so detection is safer than a flag.
-        stats_path = vecnormalize_path(run_dir)
         if os.path.exists(stats_path):
             print(f"Loading normalisation statistics from {stats_path}")
         else:

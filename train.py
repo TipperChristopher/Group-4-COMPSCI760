@@ -65,8 +65,36 @@ _track_pool_module = _load_local_module(
 TrackPoolWrapper = _track_pool_module.TrackPoolWrapper
 
 
+# The reward constants exactly as committed in sb3_wrapper.py, captured once.
+_FILE_REWARD = {"CRASH_PENALTY": _wrapper_module.CRASH_PENALTY,
+                "TIME_COST": _wrapper_module.TIME_COST}
+
+
+def apply_reward_overrides(overrides=None):
+    """Set the reward constants the wrapper reads, for this process.
+
+    F1TenthSB3Wrapper.step() reads CRASH_PENALTY and TIME_COST as globals of
+    the sb3_wrapper module at call time, so assigning them on that module (the
+    one the environment class was defined in) changes the reward the
+    environment actually computes. Unset keys are restored to the committed
+    file values, so a run without overrides is identical to before. The file on
+    disk is never changed.
+    """
+    overrides = overrides or {}
+    for key, file_value in _FILE_REWARD.items():
+        value = overrides.get(key)
+        setattr(_wrapper_module, key, float(file_value if value is None else value))
+    return effective_reward()
+
+
+def effective_reward():
+    w = _wrapper_module
+    return {"PROGRESS_WEIGHT": w.PROGRESS_WEIGHT, "TIME_COST": w.TIME_COST,
+            "CRASH_PENALTY": w.CRASH_PENALTY}
+
+
 def make_env(track_pool, seed, track_seed, stream=0, cache_size=8,
-             max_episode_steps=None, monitor_path=None):
+             max_episode_steps=None, monitor_path=None, reward_overrides=None):
     """Build one environment that cycles through the whole track pool.
 
     The pool is handled inside a single environment rather than by spawning one
@@ -74,9 +102,14 @@ def make_env(track_pool, seed, track_seed, stream=0, cache_size=8,
     Stable-Baselines3 updates is inversely proportional to n_envs, and
     f1tenth_gym shares one ray-casting engine across every environment in a
     process.
+
+    reward_overrides ({"CRASH_PENALTY": x, "TIME_COST": y}, either optional) is
+    applied inside the factory, so it also holds in a SubprocVecEnv worker,
+    which imports sb3_wrapper afresh.
     """
 
     def _init():
+        apply_reward_overrides(reward_overrides)
         # The map given here is only the one loaded at construction time.
         # TrackPoolWrapper replaces it on every reset.
         env = gym.make(
@@ -150,7 +183,34 @@ def expected_updates(model, algo, total_timesteps, n_envs):
     ]
 
 
-def print_startup_summary(args, model, track_pool, n_envs):
+def resolved_hyperparameters(model, algo):
+    """Every hyperparameter as the constructed model actually holds it."""
+    def num(v):
+        return v(1.0) if callable(v) else v
+
+    common = {"gamma": model.gamma, "learning_rate": num(model.learning_rate),
+              "batch_size": model.batch_size}
+    if algo == "PPO":
+        pol = model.policy
+        return {**common, "n_steps": model.n_steps, "n_epochs": model.n_epochs,
+                "gae_lambda": model.gae_lambda, "ent_coef": model.ent_coef,
+                "vf_coef": model.vf_coef, "max_grad_norm": model.max_grad_norm,
+                "clip_range": num(model.clip_range), "target_kl": model.target_kl,
+                "log_std_init": pol.log_std_init, "net_arch": str(pol.net_arch)}
+    ent = model.ent_coef
+    if not isinstance(ent, str):
+        ent = float(ent)
+    tf = model.train_freq
+    return {**common, "buffer_size": model.buffer_size, "ent_coef": ent,
+            "target_entropy": float(model.target_entropy), "tau": model.tau,
+            "learning_starts": model.learning_starts,
+            "train_freq": f"{tf.frequency} {getattr(tf.unit, 'value', tf.unit)}",
+            "gradient_steps": model.gradient_steps,
+            "target_update_interval": model.target_update_interval,
+            "net_arch": str(model.policy.net_arch)}
+
+
+def print_startup_summary(args, model, track_pool, n_envs, hparams=None):
     """Guard rail: these numbers must match across cells except for diversity."""
     w = _wrapper_module
     rows = [
@@ -158,8 +218,8 @@ def print_startup_summary(args, model, track_pool, n_envs):
         ("run tag", args.run_tag or "(none)"),
         ("diversity (pool size)", f"{args.diversity} tracks"),
         ("track prefix", args.track_prefix),
-        ("reward", f"PROGRESS_WEIGHT {w.PROGRESS_WEIGHT}, TIME_COST {w.TIME_COST}, "
-                   f"CRASH_PENALTY {w.CRASH_PENALTY}"),
+        ("reward (effective)", f"PROGRESS_WEIGHT {w.PROGRESS_WEIGHT}, TIME_COST {w.TIME_COST}, "
+                               f"CRASH_PENALTY {w.CRASH_PENALTY}"),
         ("n_envs", str(n_envs)),
         ("track seed", str(args.track_seed)),
         ("run seed", str(args.seed)),
@@ -167,6 +227,9 @@ def print_startup_summary(args, model, track_pool, n_envs):
         ("max episode steps", f"{args.max_episode_steps:,}"),
     ]
     rows += expected_updates(model, args.algo, args.total_timesteps, n_envs)
+    for key, value in (hparams or {}).items():
+        overridden = " (override)" if key in getattr(args, "_hp_overrides", {}) else ""
+        rows.append((f"hp {key}", f"{value}{overridden}"))
 
     width = max(len(k) for k, _ in rows)
     line = "=" * 62
@@ -340,12 +403,68 @@ def main():
                         help="Pool is <prefix>0..N-1. Must name tracks of a "
                              f"training split in tracks/manifest.json "
                              f"({', '.join(TRAINING_SPLITS)}).")
+    parser.add_argument("--checkpoint-freq", type=int, default=100000,
+                        help="Save a checkpoint every N env steps (default 100000).")
+
+    # --- Optional overrides (ported from Aolin's team/crash-penalty-flag) ----
+    # Every flag defaults to None = not set: the SB3 default, or the value in
+    # sb3_wrapper.py, applies, so a run without them is identical to before.
+    # Resolved values are recorded in run_config.json and printed at startup.
+    hp = parser.add_argument_group("hyperparameter overrides (unset = SB3 default)")
+    hp.add_argument("--gamma", type=float, default=None, help="Discount factor (SB3 default 0.99).")
+    hp.add_argument("--learning-rate", type=float, default=None)
+    hp.add_argument("--batch-size", type=int, default=None)
+    hp.add_argument("--ent-coef", type=str, default=None,
+                    help="Entropy coefficient. PPO: a number (default 0.0). SAC: a number "
+                         "fixes it; 'auto' or 'auto_<init>' tunes it. Unset keeps SAC's "
+                         "default 'auto'.")
+    hp.add_argument("--gae-lambda", type=float, default=None, help="PPO only (default 0.95).")
+    hp.add_argument("--n-steps", type=int, default=None, help="PPO only: rollout length (default 2048).")
+    hp.add_argument("--n-epochs", type=int, default=None, help="PPO only (default 10).")
+    hp.add_argument("--target-kl", type=float, default=None, help="PPO only (default None).")
+    hp.add_argument("--log-std-init", type=float, default=None, help="PPO only (default 0.0).")
+    hp.add_argument("--buffer-size", type=int, default=None, help="SAC only (default 1,000,000).")
+    rw = parser.add_argument_group("reward overrides (unset = value in sb3_wrapper.py)")
+    rw.add_argument("--crash-penalty", type=float, default=None,
+                    help="Override CRASH_PENALTY for this run (file value 40.0).")
+    rw.add_argument("--time-cost", type=float, default=None,
+                    help="Override TIME_COST per step for this run (file value 0.0).")
     args = parser.parse_args()
 
     if args.n_envs < 1:
         parser.error("--n-envs must be at least 1")
     if args.run_tag and not re.fullmatch(r"[A-Za-z0-9_-]+", args.run_tag):
         parser.error("--run-tag may contain only letters, digits, '_' and '-'")
+    if args.checkpoint_freq < 1:
+        parser.error("--checkpoint-freq must be at least 1")
+    only = {"PPO": ("gae_lambda", "n_steps", "n_epochs", "target_kl", "log_std_init"),
+            "SAC": ("buffer_size",)}
+    for algo, names in only.items():
+        stray = [f"--{n.replace('_', '-')}" for n in names
+                 if getattr(args, n) is not None and args.algo != algo]
+        if stray:
+            parser.error(f"{', '.join(stray)} apply to {algo} only (--algo {args.algo} given)")
+    if args.ent_coef is not None:
+        try:
+            args.ent_coef = float(args.ent_coef)
+        except ValueError:
+            if args.algo != "SAC" or not args.ent_coef.startswith("auto"):
+                parser.error("--ent-coef must be a number (or 'auto[_init]' for SAC)")
+
+    hp_names = ("gamma", "learning_rate", "batch_size", "ent_coef", "gae_lambda", "n_steps",
+                "n_epochs", "target_kl", "buffer_size")
+    model_kwargs = {n: getattr(args, n) for n in hp_names if getattr(args, n) is not None}
+    if args.log_std_init is not None:
+        model_kwargs["policy_kwargs"] = {"log_std_init": args.log_std_init}
+    args._hp_overrides = {**{k: v for k, v in model_kwargs.items() if k != "policy_kwargs"},
+                          **({"log_std_init": args.log_std_init}
+                             if args.log_std_init is not None else {})}
+    reward_overrides = {k: v for k, v in (("CRASH_PENALTY", args.crash_penalty),
+                                          ("TIME_COST", args.time_cost)) if v is not None}
+    # Applied here too (not only inside the env factory) so that the provenance
+    # block, run_config.json and the startup summary all show what the
+    # environment will use.
+    apply_reward_overrides(reward_overrides)
 
     if args.torch_threads:
         import torch
@@ -373,7 +492,11 @@ def main():
         "pid": os.getpid(),
         "host": platform.node(),
         **prov,
-        "args": vars(args),
+        "args": {k: v for k, v in vars(args).items() if not k.startswith("_")},
+        "hyperparameter_overrides": args._hp_overrides,
+        "reward_overrides": reward_overrides,
+        "effective_reward_constants": effective_reward(),
+        "reward_constants_in_file": dict(_FILE_REWARD),
         "run_tag": args.run_tag,
         "track_prefix": args.track_prefix,
         "track_pool": track_pool,
@@ -384,7 +507,7 @@ def main():
                         ("OMP_NUM_THREADS", "MKL_NUM_THREADS", "OPENBLAS_NUM_THREADS")},
         "versions": {"python": platform.python_version(), "torch": torch.__version__,
                      "stable_baselines3": stable_baselines3.__version__},
-        "outputs": {"checkpoints_every": 100000, "monitor_csv": "monitor_*.monitor.csv",
+        "outputs": {"checkpoints_every": args.checkpoint_freq, "monitor_csv": "monitor_*.monitor.csv",
                     "progress_csv": "progress.csv", "final_model": "final_model.zip"},
     }
     _write_json(config_path, run_config)
@@ -398,7 +521,8 @@ def main():
     print(f"  reward code sha256: {prov['reward_code_sha256']}")
     rc = prov["reward_constants"]
     print(f"  reward constants  : PROGRESS_WEIGHT {rc['PROGRESS_WEIGHT']}  "
-          f"TIME_COST {rc['TIME_COST']}  CRASH_PENALTY {rc['CRASH_PENALTY']}")
+          f"TIME_COST {rc['TIME_COST']}  CRASH_PENALTY {rc['CRASH_PENALTY']}"
+          + (f"  (overridden: {reward_overrides}; file: {_FILE_REWARD})" if reward_overrides else ""))
     print(f"  run tag           : {args.run_tag or '(none)'}")
     print(f"  track prefix      : {args.track_prefix} (manifest split "
           f"'{pool_info['track_split']}')")
@@ -420,6 +544,7 @@ def main():
             cache_size=args.track_cache_size,
             max_episode_steps=args.max_episode_steps,
             monitor_path=os.path.join(save_dir, f"monitor_{i}"),
+            reward_overrides=reward_overrides,
         )
         for i in range(n_envs)
     ]
@@ -445,19 +570,25 @@ def main():
     # Both pinned to CPU explicitly. SAC previously defaulted to device="auto",
     # so installing CUDA torch would have silently moved one algorithm, and
     # only one, onto the GPU.
-    if args.algo == "PPO":
-        model = PPO("MlpPolicy", vec_env, verbose=1, seed=args.seed, device="cpu")
-    else:
-        model = SAC("MlpPolicy", vec_env, verbose=1, seed=args.seed, device="cpu")
+    # Overrides are passed only when set, so an unflagged run makes exactly the
+    # same constructor call as before (and SAC keeps ent_coef="auto").
+    algo_cls = PPO if args.algo == "PPO" else SAC
+    model = algo_cls("MlpPolicy", vec_env, verbose=1, seed=args.seed, device="cpu",
+                     **model_kwargs)
+
+    hparams = resolved_hyperparameters(model, args.algo)
+    run_config["hyperparameters"] = hparams
+    run_config["effective_reward_constants"] = effective_reward()
+    _write_json(config_path, run_config)
 
     # Training statistics (ep_rew_mean, losses, fps, ...) to progress.csv as
     # well as stdout, so convergence curves survive the terminal.
     model.set_logger(configure(save_dir, ["stdout", "csv"]))
 
-    print_startup_summary(args, model, track_pool, n_envs)
+    print_startup_summary(args, model, track_pool, n_envs, hparams)
 
     checkpoint_callback = CheckpointCallback(
-        save_freq=max(1, 100000 // n_envs),
+        save_freq=max(1, args.checkpoint_freq // n_envs),
         save_path=save_dir,
         name_prefix=f"{args.algo}_checkpoint",
         save_vecnormalize=True,
