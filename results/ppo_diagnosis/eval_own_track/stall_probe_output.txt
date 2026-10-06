@@ -1,0 +1,21 @@
+Output of diagnostics/stall_probe.py, 2026-10-06 ~22:30 (verbatim). Raw observations captured on seed-2@2M's own
+deterministic trajectory (spawn 0) at 50/60/66/70 m of progress and after it stalled; each checkpoint evaluated on the
+same raw states using its own VecNormalize stats. Hairpin apex at 75.5 m (radius 2.4 m).
+
+speed action a1 -> commanded speed = (clip(a1,-1,1)+1)*10 m/s.  P(move) = P(sampled a1 > -0.9, i.e. >=1 m/s) under the policy's own Gaussian
+           model    state  v_now | mean a1 std a1  P(move) | mean steer |    V(s)
+     seed2 @1.6M       50   9.90 |    0.99  0.293    1.000 |       0.57 |    64.4
+     seed2 @1.6M       60   8.15 |   -0.14  0.293    0.995 |       0.76 |    70.3
+     seed2 @1.6M       66   9.63 |   -0.65  0.293    0.805 |      -0.32 |    69.7
+     seed2 @1.6M       70   4.02 |   -0.47  0.293    0.931 |      -0.23 |    69.2
+     seed2 @1.6M  stalled   0.00 |   -0.59  0.293    0.853 |      -0.29 |    72.8
+     seed2 @2.0M       50   9.90 |    0.75  0.220    1.000 |       0.49 |    36.1
+     seed2 @2.0M       60   8.15 |   -0.14  0.220    1.000 |       0.70 |    29.6
+     seed2 @2.0M       66   9.63 |   -0.43  0.220    0.984 |      -0.60 |    24.4
+     seed2 @2.0M       70   4.02 |   -1.08  0.220    0.203 |      -0.18 |    21.8
+     seed2 @2.0M  stalled   0.00 |   -1.01  0.220    0.313 |      -0.06 |    18.0
+     seed0 @2.0M       50   9.90 |    0.41  0.226    1.000 |       0.86 |    89.3
+     seed0 @2.0M       60   8.15 |    0.46  0.226    1.000 |       0.94 |    87.1
+     seed0 @2.0M       66   9.63 |    0.32  0.226    1.000 |      -0.08 |    87.2
+     seed0 @2.0M       70   4.02 |   -0.20  0.226    0.999 |      -0.21 |    88.4
+     seed0 @2.0M  stalled   0.00 |    0.08  0.226    1.000 |      -0.46 |    89.4

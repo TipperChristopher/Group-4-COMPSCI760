@@ -149,6 +149,18 @@ The "failures at ~72 m" figure counted every non-lap episode as a crash. Split b
 - **Lesson:** the training-log lap rate is a poor proxy for the policy that gets evaluated, in both directions. Score with deterministic evaluation (as `final-run-plan.md` already requires) and look at more than one checkpoint.
 Raw rollout traces: `results/ppo_diagnosis/eval_own_track/corner_trace_output.txt`.
 
+### Seed-2 stall: what the network itself says (`diagnostics/stall_probe.py`, 2026-10-06)
+Same raw states (seed 2's own approach to the 75.5 m hairpin), fed to each checkpoint:
+
+| | critic V at 50 m | V at the stall | speed-action mean at the stall | σ | P(moves ≥1 m/s) per step |
+|---|---|---|---|---|---|
+| seed 2 @ 1.6 M (laps 25/30) | 64.4 | 72.8 | −0.59 (≈4 m/s) | 0.29 | 0.85 |
+| seed 2 @ 2.0 M (laps 0/30) | **36.1** | **18.0** | **−1.01** (past the −1 clip → exactly 0 m/s) | 0.22 | **0.31** |
+| seed 0 @ 2.0 M (laps 30/30) | 89.3 | 89.4 | +0.08 (≈11 m/s) | 0.23 | 1.00 |
+
+Seed 2's critic has learned that the hairpin approach is worth far less (V 64 → 36), and its speed action has drifted past the lower action bound. PPO **clips** out-of-range actions (SB3 `np.clip`), so the deterministic policy outputs exactly 0 m/s and never leaves; with noise it only moves on ~31% of steps. Candidate loop (consistent with the numbers, **not proven**): noisy attempts crash at the hairpin → critic lowers V there → faster-than-mean samples get negative advantage → mean speed pushed down past the useful point to the clip bound → the policy stops attempting the hairpin, so on-policy data no longer contains successful passes to correct the critic. Seed 0's critic, by contrast, values the same states at ~88.
+Truncation handling was checked and is correct (SB3 bootstraps at `TimeLimit.truncated`; `sb3_wrapper.py` sets it), so it is not the cause.
+
 ## Why SAC copes at γ=0.99 — and is not immune
 
 SAC faces the same objective. From the basin table, SAC's lap-completing
