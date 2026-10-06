@@ -32,3 +32,9 @@ nohup "$PY" -u learning_curve.py --algo sac --vecnormalize --penalty 40 --steps 
 #     cp saved_models/sac_ckpts/vecnormalize_${s}.pkl saved_models/sac_ckpts/vecnormalize.pkl
 #     eval_vs_baseline.py --model saved_models/sac_ckpts --algo SAC --tracks synthetic_nar7_0 Spielberg --seeds 0 1 2 --tag sac_ck${s}
 #   done
+
+NOTE 2: overfitting-diagnostic run — SAC with --keep-checkpoints (saves ckpt_{steps}.zip every 100k).
+Resume: rerun "python learning_curve.py --algo sac --vecnormalize --penalty 40 --steps 2000000 --segments 20 --save-model saved_models/sac_ckpts --keep-checkpoints"
+Then eval each ckpt on unseen tracks: copy ckpt_{N}.zip -> final_model.zip (temp dir) + vecnormalize_{N}.pkl -> vecnormalize.pkl,
+run eval_vs_baseline.py --model <tempdir> --algo SAC --tracks ... --seeds 0 1 2 3 4 --tag sac_ck{N}.
+Question: does zero-shot laps PEAK at an intermediate checkpoint (=overfitting) or rise monotonically (=coverage)?
