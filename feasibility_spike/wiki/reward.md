@@ -1,7 +1,7 @@
 ---
 title: Reward function — history, incentive flaw, and the V2 redesign
 type: concept
-updated: 2025-09-20
+updated: 2026-10-06
 sources:
   - team_repo/feasibility_spike/reward_experiment/REWARD_ANALYSIS.md (mixed)
   - team_repo/feasibility_spike/reward_experiment/results/reward_scan2.json (high)
@@ -80,12 +80,38 @@ plateau story.** Stability comes from the algorithm (SAC's replay buffer),
 not the reward. So: the reward fix was necessary for the *right incentive*,
 but it is not what makes a policy stable.
 
+### Correction: it was the discount, not the algorithm alone (2026-10-06)
+The conclusion "stability comes from the algorithm, not the reward" missed a
+third ingredient: **the discount factor is part of the objective.** V2 pays metres
+and has no lap bonus, so at 100 Hz with γ 0.99 (≈1 s horizon) the crash penalty
+is nearly free when the crash is more than a second away. Under that objective,
+*drive fast and crash* outscores *drive slower and finish*: 13.87 vs 7.00 by
+arithmetic, and 7.72 vs 6.93 measured on trained PPO policies. V1, V2-p5 and V2-p40
+all share that discount, which is why all three plateau. At γ 0.999 (with n_steps 8192)
+PPO laps. Full trail and numbers: `ppo-diagnosis.md`.
+
 ## Dense-shaping experiment (negative result)
 
 `shaped_reward_wrapper.py` (`--shaping`) added a dense forward-progress
 shaping term. It got **gamed** (forward-only penalty → the policy crashed
 sideways instead), crashed more (7/10), and still oscillated. This confirms
 the fix is the algorithm, not more reward engineering.
+*(2026-10-06: "not more reward engineering" still holds, but the fix turned out to be
+the discount + rollout length — see the correction above.)*
+
+## How the discount changes the penalty (2026-10-06)
+
+A penalty paid *k* steps in the future is worth `P × γ^k` now. For a crash 500
+steps (5 s) ahead:
+
+| | penalty 5 | penalty 40 |
+|---|---|---|
+| γ 0.99 | 0.033 | 0.26 |
+| γ 0.999 | **3.03** | 24.2 |
+
+Raising the penalty to 40 is a crude way of making crashing matter at γ 0.99. It
+worked briefly for PPO (36% laps at 868 k) and then collapsed to 0% by 2 M.
+Raising γ makes the existing penalty matter (×90), and it was stable.
 
 ## The frozen-penalty decision (open)
 
@@ -108,3 +134,4 @@ See `decisions.md` and `open-questions.md`.
 - `decisions.md` — reward-as-design-decision, penalty freeze
 - `experiments.md` — the PPO variant curves in context
 - `methodology.md` — how the reward feeds the protocol
+- `ppo-diagnosis.md` — the discount-factor finding in full

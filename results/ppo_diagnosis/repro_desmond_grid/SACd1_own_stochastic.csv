@@ -1,0 +1,11 @@
+algo,diversity,run_seed,track,episode,eval_seed,laps,completed_lap,env_laps,target_laps,progress_m,return,length,outcome,collision
+SAC,?,,synthetic_track_0,0,0,0.1027,0,0,1,19.423,14.4227,341,crash,1
+SAC,?,,synthetic_track_0,1,1,0.5068,0,0,1,95.809,90.8088,936,crash,1
+SAC,?,,synthetic_track_0,2,2,0.5967,0,0,1,112.807,107.8070,1212,crash,1
+SAC,?,,synthetic_track_0,3,3,0.1030,0,0,1,19.475,14.4754,296,crash,1
+SAC,?,,synthetic_track_0,4,4,0.2788,0,0,1,52.697,47.6971,633,crash,1
+SAC,?,,synthetic_track_0,5,5,0.1083,0,0,1,20.481,15.4810,315,crash,1
+SAC,?,,synthetic_track_0,6,6,0.1096,0,0,1,20.722,15.7222,269,crash,1
+SAC,?,,synthetic_track_0,7,7,0.1175,0,0,1,22.207,17.2066,319,crash,1
+SAC,?,,synthetic_track_0,8,8,0.6015,0,0,1,113.717,108.7169,1283,crash,1
+SAC,?,,synthetic_track_0,9,9,0.1145,0,0,1,21.640,16.6402,349,crash,1

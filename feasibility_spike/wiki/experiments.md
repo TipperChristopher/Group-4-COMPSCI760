@@ -1,7 +1,7 @@
 ---
 title: Experiments — PPO vs SAC, generalization, and the coverage finding
 type: concept
-updated: 2025-09-20
+updated: 2026-10-06
 sources:
   - team_repo/feasibility_spike/reward_experiment/results/*.json (high)
   - team_repo/feasibility_spike/reward_experiment/RESULTS.md, REWARD_ANALYSIS.md (mixed)
@@ -23,6 +23,7 @@ data unless stated otherwise** — point estimates, not ranked results.
 - [The nar7 coverage finding](#the-nar7-coverage-finding)
 - [Track geometry](#track-geometry)
 - [Overfitting-timing probe (answered: no)](#overfitting-timing-probe-answered-no)
+- [Later work (2026-10) and corrections to this page](#later-work-2026-10-and-corrections-to-this-page)
 
 ## Stage 1 — capability check (one track)
 
@@ -56,7 +57,7 @@ Reproducible bit-identical across re-runs (seed 0).
 At 2M steps, three matched PPO variants (old reward, V2/p5, V2/p40) **all
 plateau at ~0.1 laps** — the reward choice does not rescue PPO (`reward.md`).
 SAC-2M reaches lap time **22.7 s at 1.2M**; the run was paused at 12/20
-segments (1.2M) by decision — 1M→2M only optimizes speed, not the
+segments (1.2M) by decision *(later superseded by `sac_overfit`, which finished 2 M; see the update below)* — 1M→2M only optimizes speed, not the
 conclusions (`decisions.md`). SAC results use this ~1.2M checkpoint.
 
 ## Unseen-track evaluation
@@ -177,9 +178,46 @@ from the first checkpoint — consistent with, and complementary to, the nar7
 A 2M `--keep-checkpoints` extension (`saved_models/sac_overfit`) is running to
 extend the curve past 1M; the verdict is not expected to change.
 
+*Update 2026-10-06:* `sac_overfit` finished (2 M, Oct 4). Its in-training curve showed
+crashes at 1.4 M / 1.7 M / 1.8 M, but each point is **one episode at one spawn**. Measured
+with 30 spawns, the 2 M policy completes **22/30** on its own track and the 1.2 M checkpoint
+**30/30**. A ~27% per-episode failure rate predicts ~5 crashes in 20 single-episode
+checkpoints, and 5 were observed. So the dips are sampling, not a late-training collapse.
+On real circuits it is 0/20 at both checkpoints.
+
+## Later work (2026-10) and corrections to this page
+
+The October work is on its own pages: `ppo-diagnosis.md`, `grid-verification.md`,
+`sim-to-real-width.md`, `final-run-plan.md`. Corrections to the sections above:
+
+### Correction: track geometry table uses non-canonical maps
+The geometry table above (synthetic_0 = 189 m) was measured on locally generated
+**seed-0** tracks. The canonical training pool is **seed 123** (synthetic_track_0 = 164.1 m),
+and 0/20 match by name (`incidents.md`). For canonical geometry use
+`results/track_geometry/summary.json` (`sim-to-real-width.md`).
+
+### Correction: "corner sharpness is a second ceiling" — refuted
+The max-curvature comparison (0.544 vs 1.273) compares single extreme points. Over the
+whole distribution, real circuits are sharper than anything in training at only **0.95%** of
+points, and are straighter at p90 (0.195 vs 0.408). Width is out of distribution at 100% of points
+(`sim-to-real-width.md`). The `TRACK_TURN_RATE` fix is withdrawn.
+
+### Correction: nar7 "clearance necessary but not sufficient"
+The nar7 tracks varied width *and* centreline together and were scored on 5 seeds
+(3 distinct spawns). The controlled narrowA/B ablation (same centrelines, only walls moved,
+40 tracks) shows width is **sufficient** to reproduce the real-circuit failure. The
+coverage conclusion stands, and the uncovered variable is now named: width.
+
+### Correction: "PPO peaks early then forgets — an on-policy instability"
+Accurate as a symptom. The cause is γ 0.99 at 100 Hz (the objective prefers crashing)
+together with 2048-step rollouts (exploration collapse). Fixed at d1 by γ 0.999 + n_steps 8192
+(`ppo-diagnosis.md`).
+
 ## See also
 
 - `results.md` — every number with its JSON source
 - `reward.md` — the PPO-variant curves and incentive analysis
 - `decisions.md` — budget, penalty, VecNormalize, best-checkpoint
 - `open-questions.md` — the grid, CIs, and the overfitting probe
+- `ppo-diagnosis.md`, `sim-to-real-width.md`, `grid-verification.md` — the October work that corrects parts of this page
+- `open-questions.md` — status of each open item

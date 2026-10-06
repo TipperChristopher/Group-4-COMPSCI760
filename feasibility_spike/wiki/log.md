@@ -3,7 +3,7 @@
 Append-only. Semantic entries (what knowledge changed and why), not
 file-level diffs — git records the diff.
 
-## [2025-09-20] create | project wiki initialized
+## [2026-09-20] create | project wiki initialized
 
 - Created the wiki under `feasibility_spike/wiki/` for hand-off, following the
   llm-wiki layout (SCHEMA, index, log, raw-sources registry + topic pages).
@@ -23,7 +23,7 @@ file-level diffs — git records the diff.
   overfitting-timing probe running; SAC-on-old-reward and narrow-in-pool
   tests unmeasured.
 
-## [2025-09-20] note | deck + tooling changes this session
+## [2026-09-20] note | deck + tooling changes this session
 
 - Fixed the zero-shot generalization chart (grouped-bar width/offset bug that
   made bars overlap across track slots) — `gen_gap_figure.py`.
@@ -34,13 +34,13 @@ file-level diffs — git records the diff.
 - Added `_gen_narrow.py` (narrow-track generator, patched temp copy) to probe
   the spawn input-shift hypothesis.
 
-## [2025-09-20] note | title-slide names aligned to roles slide
+## [2026-09-20] note | title-slide names aligned to roles slide
 - Title slide now uses Victory / Grant (were Yi Wei / Zihang Zhang) to match
   the roles slide. Mapping team-confirmed: Victory = Yi Wei, Grant = Zihang
   Zhang. Roles slide unchanged; no stray old-name occurrences remain.
 - Applied via fix_team_text() in the deck builder (reproducible).
 
-## [2025-09-20] update | overfitting probe answered; branch merged; tests green
+## [2026-09-20] update | overfitting probe answered; branch merged; tests green
 
 - **Q4 (overfitting timing) ANSWERED: no.** Evaluated SAC checkpoints
   100k/300k/600k/1M zero-shot through the standard protocol and the correct
@@ -76,3 +76,43 @@ file-level diffs — git records the diff.
 - Still open: diversity grid + CIs; crash-penalty freeze (5 vs 40); **training
   on a widened generator** (real-like corner sharpness) — never attempted, now
   the top-ranked next experiment; PPO n_envs=8 ablation.
+
+## [2026-10-06] ingest | October diagnosis session (Aolin + agent), 2026-10-04 → 06
+
+Source: pi session `01a10425-…` and run journal `2026-10-04-cs760-final-presentation-plan`
+(see `raw-sources/index.md`, bucket sessions). Evidence archived in-repo under
+`results/ppo_diagnosis/` (193 files) and `diagnostics/`.
+
+- **New pages:** `ppo-diagnosis.md` (why PPO never lapped: full hypothesis trail, the discount
+  arithmetic, measured basin table, γ×n_steps interaction, replication, corrections),
+  `grid-verification.md` (Desmond's seed-0 grid verified from raw files; bit-identical eval
+  reproduction; noise floor; transfer ratio 0.13→0.76; the track-identity mistake),
+  `sim-to-real-width.md` (narrowA/B ablation: 29–58% → 0% with centrelines fixed; training
+  width span 4 cm), `final-run-plan.md` (PROPOSED final-grid configuration and environment).
+- **Key knowledge changes:**
+  - PPO's failure = **objective × optimiser**: γ 0.99 at 100 Hz makes crashing optimal
+    (13.87 vs 7.00 by arithmetic; 7.72 vs 6.93 on trained policies) AND 2048-step rollouts
+    collapse exploration. γ 0.999 + n_steps 8192 → 65% training laps; 3 seeds 52–65% at 1 M.
+    Neither change alone laps by 1 M.
+  - The real-circuit failure is **width** (controlled ablation), not corner sharpness.
+  - Single checkpoints are not measurements (adjacent checkpoints swing 0 ↔ 10/25).
+- **Corrections recorded (with `### Correction:` headings):** reward.md ("stability comes
+  from the algorithm"), experiments.md (geometry on seed-0 maps; corner-sharpness ceiling
+  refuted; nar7 "not sufficient"; PPO "on-policy instability"), overview.md (headline pilot
+  claims), methodology.md (checkpoint rule never applied; 3 distinct spawns), ppo-diagnosis.md
+  (Oct-4 "worse than standing still" inference used undiscounted returns; "γ is the lever";
+  "finishing worth 0.001"; "one step outweighs the penalty"), grid-verification.md
+  ("SAC cannot lap its own tracks" — wrong maps).
+- **Decisions:** D3 amended (user-authorised `train.py` flags, defaults unchanged);
+  D6 evidence updated, recommend 5; D8 status; new D12 (canonical seed-123 tracks),
+  D13 (PPO γ 0.999 + n_steps 8192, PROPOSED), D14 (mean of last 5 checkpoints, PROPOSED),
+  D15 (claim-granularity checklist).
+- **open-questions.md rewritten** as a status table: Q4 answered, Q7 refuted, Q8 superseded,
+  Q6 reframed → Q13; new Q10–Q14.
+- **incidents.md:** four measurement pitfalls (track identity, training-log quoted as
+  performance, two-variable comparison, single-checkpoint trend) + killed-run status note +
+  training-not-bit-reproducible note.
+- **Housekeeping:** every page's `updated:` and this log's headings said **2025**; the repo's
+  first commit is 2026-08-30, so all were typos for 2026 and are corrected. The canonical
+  copy of this wiki is now on `team/crash-penalty-flag` (SCHEMA.md).
+- **Still open:** final grid not launched; `G999_SAC` running; presentation date unconfirmed.

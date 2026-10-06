@@ -1,7 +1,23 @@
 # CONTEXT — PPO failure diagnosis, and the two root causes
 
 **Branch:** `team/crash-penalty-flag` (off `desmond/heldout-tracks` @ `ce00721`)
-**Written:** 2026-10-07 · **Status:** two root causes identified and verified; replications in flight
+**Written:** 2026-10-06 (revised the same evening — see §0) · **Status:** two root causes identified and verified; replications in flight
+**Long-form record:** the wiki at `feasibility_spike/wiki/` (start at `index.md`); raw evidence in `results/ppo_diagnosis/`.
+
+## 0. Revisions since the first push (commit `ec8b784`)
+
+Three claims in the first version were wrong or overstated. Corrected below, recorded here so nobody quotes the old text:
+
+1. **"γ is the lever; `n_steps` only amplifies it" → WRONG.** At a matched 1 M steps, γ=0.999 with the default
+   `n_steps=2048` still has collapsed exploration (std 0.089) and **0% laps** — no better than baseline.
+   **Both changes are needed together** (§6.2a). γ changes *which strategy is optimal*; `n_steps=8192` keeps the
+   optimiser healthy enough to find it.
+2. **"800 k = 40%, 2 M = 0% → the final checkpoint is worse" → overstated.** The full checkpoint curve
+   (§6.4) is *volatile*, not declining: 0/0/10/0/6/5/4/0/0 out of 25 across nine checkpoints. The 2 M
+   checkpoint happens to sit in a trough. The lesson is "one checkpoint is not a measurement", not "train less".
+3. **Width table checkpoint was unlabelled** — it is the **1.2 M** checkpoint of `sac_overfit`. The 2 M final
+   gives 27/50 → 0/50 → 0/50 → 0/20: same conclusion (§7).
+
 
 This document records everything done outside Desmond's grid run, so the rest of the
 team can pick it up without re-reading a long chat log. Every claim below is tied to a
@@ -15,9 +31,9 @@ Three findings, in order of importance:
 
 | # | Finding | Evidence |
 |---|---|---|
-| **1** | **PPO never completed a lap because the reward, as configured, preferred crashing.** At 100 Hz control with γ=0.99 the agent cannot value anything more than ~1 s away, and the crash penalty discounts to ~0.03. Working the arithmetic, *"drive fast and crash"* scored **higher** (13.87) than *"drive slower and survive"* (7.00). Setting γ=0.999 flips the ordering and PPO laps for the first time. | §4, §6 |
+| **1** | **PPO never completed a lap because the reward, as configured, preferred crashing.** At 100 Hz control with γ=0.99 the agent cannot value anything more than ~1 s away, and the crash penalty discounts to ~0.03. Working the arithmetic, *"drive fast and crash"* scored **higher** (13.87) than *"drive slower and survive"* (7.00). Setting γ=0.999 flips the ordering — and **together with `n_steps=8192`** (neither works alone) PPO laps for the first time: 52–65% of training episodes across 3 seeds at 1 M steps. | §4, §6.2 |
 | **2** | **The real-circuit failure is a different problem: corridor width.** The generator emits a *constant* 1.47 m half-width, and 100% of real-circuit points are narrower than that. Narrowing **only the walls** of the exact test-track centrelines takes a policy from **58% lap completion to 0%**. | §7 |
-| **3** | **Checkpoint selection matters more than we assumed.** The final 2 M checkpoint is frequently *worse* than an earlier one — for the γ run, 800 k scores **40%** lap completion on held-out tracks and 2 M scores **0%**. | §6.4 |
+| **3** | **A single checkpoint is not a measurement.** Held-out lap completion of the γ run swings 0 → 10/25 → 0 → 6/25 between *adjacent* 200 k checkpoints; the final 2 M checkpoint scores 0/25. Every grid number so far is one checkpoint of one seed. | §6.4 |
 
 ---
 
@@ -26,13 +42,14 @@ Three findings, in order of importance:
 | What | Path |
 |---|---|
 | **This repo (grid + diagnostics)** | `COMPSCI 760/team_repo_heldout/` — branch `team/crash-penalty-flag` |
-| Trained models from the sweep | `team_repo_heldout/models/<ALGO>_<N>tracks_s<seed>_<tag>/` |
+| **Raw evidence, in git** (logs, configs, final weights, every eval CSV) | `results/ppo_diagnosis/` — see its `README.md` |
+| Trained models from the sweep (all checkpoints, gitignored) | `team_repo_heldout/models/<ALGO>_<N>tracks_s<seed>_<tag>/` |
 | Per-episode + per-update logs | `…/monitor_0.monitor.csv`, `…/progress.csv` |
 | Run configs (provenance) | `…/run_config.json` — commit, reward hash, all args |
 | Track manifest + splits | `team_repo_heldout/tracks/manifest.json` |
 | **Our earlier spike work** | `team_repo/` branch `experiments/feasibility-spike` |
 | Spike wiki (protocol, reward, incidents) | `team_repo/feasibility_spike/wiki/` |
-| **Evaluation scripts + raw analysis** | `COMPSCI 760/_verify/` (scratch, outside git) |
+| **Evaluation scripts** | `diagnostics/` (copies of the scratch scripts in `COMPSCI 760/_verify/`) |
 | Installed track maps | `COMPSCI 760/spike/f1tenth_gym_v1/maps/` |
 
 ---
@@ -112,7 +129,7 @@ and driving fast and surviving.
 
 ### Measured confirmation (not just arithmetic)
 
-Rolled out each trained policy, `_verify/basin_check.py`:
+Rolled out each trained policy, `diagnostics/basin_check.py`:
 
 | algo | policy | steps | distance | undiscounted | **discounted @0.99** | discounted @0.999 |
 |---|---|---|---|---|---|---|
@@ -144,7 +161,7 @@ plateaus at ~0.70 laps and gets 0% on real circuits. It just gets further.
 | exploration (measured policy σ) | **0.039** | **0.437** (11×) |
 
 The correlation figure is measured, not assumed: one 100 Hz step changes the 108-beam
-scan by ~1% of its own spread at 2–10 m/s (`_verify/obs_redundancy.py`), so a 2048-step
+scan by ~1% of its own spread at 2–10 m/s (`diagnostics/obs_redundancy.py`), so a 2048-step
 rollout holds far fewer than 2048 *distinct* situations, and PPO's 64-sample minibatch
 comes from one contiguous stretch. SAC's 256-sample batch is drawn uniformly from a
 million transitions.
@@ -187,8 +204,28 @@ problem lay elsewhere.
 | `G999L99_full` | + `gae_lambda` 0.95 → 0.99 | 156.8 | 59% | 1.49 |
 | `P40_penalty40` | crash penalty 40, `n_steps=8192` | 71.7 | 0% (was 36% at 868 k) | 0.97 |
 
-- **γ=0.999 is stable at 65%.** PPO had never completed a single lap in ~24,000 training
+- **γ=0.999 + `n_steps=8192` is stable at 65%.** PPO had never completed a single lap in ~24,000 training
   episodes across Desmond's four grid cells.
+
+### 6.2a Which of the two changes matters? Both — it is an interaction
+
+Matched window 0.8–1.0 M env steps; distance/lap rate from the training log (stochastic),
+optimiser diagnostics = median over updates in the window (`progress.csv`):
+
+| | `n_steps` 2048 (default) | `n_steps` 8192 |
+|---|---|---|
+| **γ 0.99** (default) | V0: 39.6 m, **0%** · std 0.061, KL 0.27, clip 0.54 | V4: 62.9 m, **0%** · std 0.261, KL 0.047, clip 0.28 |
+| **γ 0.999** | G999_ns2048: 44.9 m, **0%** · std 0.089, KL 0.12, clip 0.41 | G999: 217.7 m, **65%** · std 0.392, KL 0.029, clip 0.21 |
+
+- `n_steps` alone fixes the optimiser (std recovers, KL in range) but the objective still prefers crashing → no laps.
+- γ alone fixes the objective but the optimiser still collapses (std 0.089) → no laps.
+- Both → laps. `G999_ns2048` is still running (32.5 m, 0% at 1.16 M) and is n=1, so "γ alone never works"
+  is not established — "γ alone does not work by 1 M" is.
+- Hypothesis for *why* (unverified): at γ=0.999 the critic must regress ~1000-step returns; its
+  explained variance drops from 0.96 to 0.69, so it needs more data per update. Bigger rollouts supply it.
+- The λ result is informative: λ 0.95 → 0.99 widens the GAE credit window 5× (19.6 → 91 steps) and is
+  **slower**, not faster (59% vs 65%). So the earlier "0.168 s credit window" hypothesis was not the mechanism —
+  the change of *objective* is.
 - **γ+λ works too, just slower** (59% vs 65% at 2 M). At 800 k it looked worse (0% vs 40%),
   but that was a checkpoint artifact — see §6.4.
 - **Penalty 40 learns then forgets** (36% at 868 k → 0% at 2 M). A bigger penalty *can*
@@ -208,18 +245,36 @@ problem lay elsewhere.
 
 ### 6.4 Checkpoint selection — the trap
 
-γ run evaluated at matched checkpoints, held-out synthetic, deterministic
-(`_verify/g999_curve.py`, `_verify/lap_break.py`, `_verify/lap_break_final/`):
+`G999_gamma` at every 200 k checkpoint, deterministic, test_track_0..4 × 5 episodes (≈3 distinct spawns each)
++ Spielberg/Silverstone × 5 (`diagnostics/g999_ckpt_curve.py` → `results/ppo_diagnosis/eval_g999_curve/`):
 
-| checkpoint | lap completion (held-out synthetic) | mean m |
-|---|---|---|
-| 800 k | **40% (10/25 finished)** | 98.8 |
-| 2 M (final) | **0% (0/25)** | 67.1 |
+| checkpoint | held-out synth laps finished | mean laps | mean m | real finished | real m |
+|---|---|---|---|---|---|
+| 400 k | 0/25 | 0.446 | 80.6 | 0/10 | 42.5 |
+| 600 k | 0/25 | 0.290 | 52.8 | 0/10 | 3.8 |
+| 800 k | **10/25** | 0.540 | 98.8 | 0/10 | 43.8 |
+| 1.0 M | 0/25 | 0.257 | 46.7 | 0/10 | 33.7 |
+| 1.2 M | 6/25 | 0.498 | 90.5 | 0/10 | 77.6 |
+| 1.4 M | 5/25 | 0.603 | 109.6 | 0/10 | 41.2 |
+| 1.6 M | 4/25 | 0.563 | 101.7 | 0/10 | 23.1 |
+| 1.8 M | 0/25 | 0.264 | 48.4 | 0/10 | 35.3 |
+| 2.0 M (final) | 0/25 | 0.365 | 67.1 | 0/10 | 24.0 |
 
-The **final checkpoint is worse than 800 k.** Same pattern as our own SAC (1.2 M
-completed 30/30 spawns; 2 M completed 22/30) and as Desmond's grid (d20 > d100 on
-the final checkpoint only). The `val_track_*` split exists in the manifest precisely
-for checkpoint selection and **has not been used yet** — it should be.
+**Volatile, not declining.** Adjacent checkpoints swing 0 ↔ 10/25. Averaged over the last five
+checkpoints (1.2–2.0 M): 15/125 = **12%** held-out lap completion, 83.5 m — vs V4's final 0/25, 31.6 m.
+Real circuits: 0/10 at every checkpoint.
+
+This is the same phenomenon Desmond's noise-floor check showed for the γ=0.99 grid (within-cell
+checkpoint SD ≈ half the between-cell SD), and the same estimator problem as our SAC (1.2 M
+30/30 spawns vs 2 M 22/30). Consequences for any comparison:
+- never report one checkpoint of one seed;
+- average over the last k checkpoints and/or ≥3 seeds;
+- the `val_track_*` split exists for checkpoint selection and **has not been used yet**.
+
+Note also the gap between **training-log** lap rate (65%, stochastic policy, its own training track)
+and **held-out deterministic** lap rate (0–40%). On its own training track the deterministic 2 M policy
+drives 2 clean laps (§4 table). The held-out gap is expected at diversity 1 — it is the thing the
+diversity grid measures.
 
 ### 6.5 Budget — more steps does not help
 
@@ -232,16 +287,18 @@ Same plateau. Extrapolating the late slope (+0.8 m per Mstep) to a lap would nee
 | run | seed | steps reached | last-200k m | lap rate |
 |---|---|---|---|---|
 | `G999_gamma` | 0 | 2.0 M (done) | 234.8 | 65% |
-| `G999_s1` | 1 | 0.69 M | 114.6 | 18% |
-| `G999_s2` | 2 | 0.70 M | 197.6 | 58% |
+| `G999_s1` | 1 | 1.16 M | 237.6 | 72% |
+| `G999_s2` | 2 | 1.17 M | 144.7 | 38% |
 
-All three tracking together ⇒ **not a lucky seed**. This matters because training is
+At the matched 0.8–1.0 M window: **65% / 57% / 52%** for seeds 0 / 1 / 2 (186–218 m) ⇒ **not a lucky seed**
+(training-log metric; held-out evaluation of seeds 1–2 not yet run). Per-window rates swing ±15 points
+within a seed, so compare windows, not single numbers. This matters because training is
 *not* bit-reproducible across machines even at a fixed seed (evaluation is — it
 reproduced Desmond's numbers to the millimetre).
 
-`G999_ns2048` (γ=0.999 with SB3's default `n_steps=2048`): 42.5 m at 0.70 M — behind
-the `n_steps=8192` runs, so `n_steps` **amplifies** γ but does not replace it.
-`G999_SAC` (does γ help SAC too?) — just started.
+`G999_ns2048` (γ=0.999 with SB3's default `n_steps=2048`): 32.5 m, 0% at 1.16 M — see §6.2a.
+`G999_SAC` (does γ help SAC too?) — 114 k steps at archive time; ~47 env steps/s under
+current load ⇒ ~12 h to 2 M.
 
 ---
 
@@ -251,8 +308,9 @@ Desmond's `narrowA_track_k` / `narrowB_track_k` have the **exact centreline of
 `test_track_k`** — same shape, length and curvature — with only the walls moved.
 Half-width: test **1.473 m** · narrowA **1.072 m** (≈ real median) · narrowB **0.751 m**.
 
-Our best SAC (`sac_overfit`, penalty 40) on these, deterministic, 10 episodes × 5 tracks
-(`_verify/width_eval_oursac.py`):
+Our best SAC (`sac_overfit`, penalty 40, **1.2 M checkpoint**) on these, deterministic, 10 episodes × 5 tracks
+(`diagnostics/width_eval_oursac.py` → `results/ppo_diagnosis/eval_width_oursac/oursac1200k_*.csv`).
+The 2 M final checkpoint gives 141.8 m 27/50 → 35.1 m 0/50 → 11.3 m 0/50 → real 16.9 m 0/20 (`oursac2000k_*.csv`):
 
 | corridor half-width | mean distance | mean laps | **lap completion** |
 |---|---|---|---|
@@ -310,7 +368,7 @@ PY="<repo>/spike/venv/Scripts/python.exe"     # the venv this project uses
 # 1. Canonical tracks. train.py REFUSES to run on non-canonical maps, by design.
 #    Our installed maps were seed 0; his are seed 123. This regenerates his set
 #    byte-for-byte (verified 100/100, manifest byte-identical).
-"$PY" _verify/build_canonical_tracks.py
+"$PY" diagnostics/build_canonical_tracks.py
 cd team_repo_heldout && "$PY" tracks/make_heldout_tracks.py      # installs val/test
 "$PY" tracks/make_narrow_tracks.py                                # installs narrowA/B
 
@@ -332,9 +390,9 @@ Sweep launchers: `run_ppo_sweep.sh`, `run_repeat_sweep.sh`.
 
 **Highest value, in order:**
 
-1. **Use the `val_track_*` split for checkpoint selection.** The final checkpoint is
-   demonstrably not the best (§6.4), and every number in the grid was taken at 2 M.
-   Free — all checkpoints already exist.
+1. **Stop scoring single checkpoints.** Held-out scores swing 0 ↔ 10/25 between adjacent
+   checkpoints (§6.4), and every number in the grid was taken at one checkpoint of one seed.
+   Average the last 5 checkpoints and/or select on `val_track_*`. Free — all checkpoints exist.
 2. **Re-run the PPO diversity grid at γ=0.999.** The PPO diversity curve has never been
    measurable, because PPO sat at 0 laps for every level. This is what the final
    presentation needs.
@@ -348,8 +406,8 @@ Sweep launchers: `run_ppo_sweep.sh`, `run_repeat_sweep.sh`.
 
 **Unresolved:**
 
-- Does `n_steps=8192` matter once γ is fixed? `G999_ns2048` suggests it amplifies but
-  does not replace γ — still running.
+- Does γ=0.999 *ever* work with `n_steps=2048`? Not by 1.16 M (§6.2a); `G999_ns2048` still running.
+- Does γ=0.999 + `n_steps=8192` still work at diversity 5/20/100? Only diversity 1 has been tested.
 - SAC's real-circuit ceiling: after width, is anything else left? Untested.
 - All reported training-log lap rates use the **stochastic** policy; the deterministic
   evaluated rate is lower. Quote both, never just the training log.
@@ -364,7 +422,8 @@ Sweep launchers: `run_ppo_sweep.sh`, `run_repeat_sweep.sh`.
 | `action_repeat.py` | frame-skip wrapper (tested, refuted, kept for the record) |
 | `run_ppo_sweep.sh` | the 8-variant symptom sweep |
 | `run_repeat_sweep.sh` | the action-repeat batch |
-| `_verify/build_canonical_tracks.py` | install the seed-123 training pool on a fresh machine |
-| `_verify/{basin_check,obs_redundancy,did_it_brake2,g999_ckpt_curve,width_eval_oursac,lap_break}.py` | the analyses quoted above |
+| `diagnostics/build_canonical_tracks.py` | install the seed-123 training pool on a fresh machine |
+| `diagnostics/*.py` | every analysis quoted above — index in `diagnostics/README.md` |
+| `results/ppo_diagnosis/` | the raw outputs those scripts produced |
 
-`_verify/` sits outside git; ask if you want it moved in.
+The scripts carry absolute paths for the original machine; edit `ROOT`/`REPO` at the top.

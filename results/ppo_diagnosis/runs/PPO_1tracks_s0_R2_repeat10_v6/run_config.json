@@ -1,0 +1,67 @@
+{
+  "status": "running",
+  "started_at": "2026-10-06T18:28:02+1300",
+  "pid": 18844,
+  "host": "CM11700K",
+  "git_commit": "66b925715931964e214922c2b669886f7f391670",
+  "git_branch": "team/crash-penalty-flag",
+  "git_dirty_files": [
+    "tracks/manifest.json",
+    "train.py"
+  ],
+  "reward_code_file": "sb3_wrapper.py",
+  "reward_code_sha256": "1b952e7ce4825fb993e5504600a01d9cca220b1f2566bca2ad323e580cdf8b52",
+  "reward_constants": {
+    "PROGRESS_WEIGHT": 1.0,
+    "TIME_COST": 0.0,
+    "CRASH_PENALTY": 5.0,
+    "STEERING_LIMIT": 0.4189,
+    "SPEED_MIN": 0.0,
+    "SPEED_MAX": 20.0
+  },
+  "args": {
+    "algo": "PPO",
+    "diversity": 1,
+    "seed": 0,
+    "track_seed": 0,
+    "n_envs": 1,
+    "total_timesteps": 2000000,
+    "track_cache_size": 8,
+    "max_episode_steps": 3000,
+    "action_repeat": 10,
+    "torch_threads": 1,
+    "overwrite": false,
+    "run_tag": "R2_repeat10_v6",
+    "crash_penalty": null,
+    "learning_rate": null,
+    "batch_size": 256,
+    "n_steps": null,
+    "n_epochs": 4,
+    "ent_coef": null,
+    "target_kl": null,
+    "log_std_init": null
+  },
+  "track_pool": [
+    "synthetic_track_0"
+  ],
+  "manifest_sha256": "a4cb555cb20c57a191631088d414d634592ad90babcf662e2b8db11cd492e730",
+  "pool_verified_against_manifest": true,
+  "device": "cpu",
+  "torch_threads": 1,
+  "env_threads": {
+    "OMP_NUM_THREADS": "1",
+    "MKL_NUM_THREADS": "1",
+    "OPENBLAS_NUM_THREADS": "1"
+  },
+  "versions": {
+    "python": "3.11.2",
+    "torch": "2.13.0+cpu",
+    "stable_baselines3": "2.9.0"
+  },
+  "outputs": {
+    "checkpoints_every": 100000,
+    "monitor_csv": "monitor_*.monitor.csv",
+    "progress_csv": "progress.csv",
+    "final_model": "final_model.zip"
+  }
+}

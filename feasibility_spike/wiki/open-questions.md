@@ -1,83 +1,122 @@
 ---
 title: Open questions and unfinished work
 type: open-question
-updated: 2025-09-20
+updated: 2026-10-06
 sources:
   - team_repo/feasibility_spike/reward_experiment/RESUME.txt (high)
   - results/*.json (high)
+  - results/ppo_diagnosis/**, results/grid_s0/** (high, 2026-10)
+  - ppo-diagnosis.md, grid-verification.md, sim-to-real-width.md, final-run-plan.md (synthesis)
 ---
 
 # Open questions
 
-What is **not** answered yet. Nothing here is stated as a result.
+What is **not** answered yet, and what has since been answered or refuted.
+Nothing here is stated as a result unless it is marked ANSWERED and points to a source.
 
-## Q1 — The diversity grid (the actual experiment)
+| Q | question | status (2026-10-06) |
+|---|---|---|
+| Q1 | The diversity grid | **PARTLY RUN** — seed 0, γ 0.99 (Desmond); final grid proposed |
+| Q2 | Confidence intervals | **OPEN** — needs ≥3 seeds |
+| Q3 | Crash penalty 5 vs 40 | **RECOMMENDATION: 5** — team decision pending (D6) |
+| Q4 | Overfitting over time | **ANSWERED (no)** — extended to 2 M; volatility, not decline |
+| Q5 | Did the reward matter for SAC? | **OPEN**, low priority |
+| Q6 | Does adding narrow tracks fix real circuits? | **REFRAMED** → Q13 (width-randomised pool) |
+| Q7 | Corner-sharpness cap | **REFUTED** (`sim-to-real-width.md`) |
+| Q8 | Would PPO stabilise with more envs? | **SUPERSEDED** — PPO fixed by γ + n_steps, n_envs stays 1 |
+| Q9 | Merge and freeze before the grid | **OPEN** — branch state changed, see below |
+| Q10 | Does the PPO fix hold at d5/20/100? | **OPEN** — highest priority, ~1.3 h pilot |
+| Q11 | Does γ 0.999 help or hurt SAC? | **RUNNING** (`G999_SAC`, ~12 h) |
+| Q12 | Why do γ and n_steps interact? | **OPEN** (hypothesis only) |
+| Q13 | Does a width-randomised pool fix real circuits? | **OPEN** — needs a generator width flag |
+| Q14 | Final-presentation date and scope | **OPEN** — needed to size the SAC half |
 
-The 2 algorithms × 4 diversity levels (1/5/20/100) × ≥3 seeds at the 2M
-budget is **not run**. Everything in `results.md` is single-track,
-single-seed pilot data. Until the grid runs, we have no diversity curve and
-no PPO-vs-SAC ranking with confidence intervals.
+## Q1 — The diversity grid
+
+*Sept 2026:* not run. *2026-10-05:* Desmond ran seed 0 for both algorithms × 1/5/20/100 at
+2 M with γ 0.99, plus baselines and narrow sets, and it was verified (`grid-verification.md`).
+SAC shows the diversity effect on synthetic tracks; PPO is 0 laps in every cell, so PPO's diversity
+curve is unmeasurable under γ 0.99. **The final grid (≥3 seeds, fixed PPO, averaged
+checkpoints) is proposed in `final-run-plan.md` and not yet agreed.**
 
 ## Q2 — Confidence intervals / rankings
 
-**Every training run is n=1 seed.** Point estimates are samples, not
-rankings. Any "A beats B" claim needs ≥3 seeds and bootstrap CIs. Overlapping
-CIs or n ≤ 3 mean "not yet supported."
+Every training run is still n=1 seed per cell, except the PPO d1 fix (3 seeds,
+training log). Adjacent diversity levels are mostly not significantly different at seed 0.
+Any "A beats B" needs ≥3 seeds and a hierarchical bootstrap (seeds, then tracks).
 
 ## Q3 — Crash penalty freeze (5 vs 40)
 
-Pilots used ~40; team canonical is 5.0. PPO-p5 vs PPO-p40 both plateau at
-~0.1 laps (`results.md`), so the choice does not change PPO's story — but the
-team must freeze **one** value before the grid. Adopting 5.0 is the
-low-friction option. (`decisions.md` D6.)
+Evidence updated in `decisions.md` D6. Recommendation: **5**. Penalty 40 made PPO lap at
+γ 0.99, but then it collapsed. γ 0.999 makes penalty 5 matter by a factor of 90. The SAC p40
+advantage is confounded with code path.
 
 ## Q4 — Overfitting timing — ANSWERED (no)
 
-Does 1M steps on one track make generalization **worse over time**? **No.**
-Checkpoints at 100k/300k/600k/1M evaluated zero-shot show unseen-synthetic laps
-rising monotonically (0.42 → 1.00, finishes 0 → 5/5), while real circuits stay
-flat-low (0.02–0.17) at every checkpoint — see `results.md` (overfitting-timing
-probe) and `experiments.md`. So "train less" is not a fix; the real-circuit gap
-is **coverage**, present from the first checkpoint (nar7 conclusion stands).
-A 2M extension run is in progress; the verdict is not expected to change.
-Caveat: one training seed.
+Checkpoints 100k–1M rose monotonically (Sept 2026). `sac_overfit` finished 2 M: its in-training
+"dips" were single-episode samples of a ~27% failure rate (30-spawn eval: 1.2 M 30/30, 2 M 22/30).
+For the fixed PPO, held-out performance is **volatile** across checkpoints rather than declining
+(`ppo-diagnosis.md`). Desmond's SAC **d1** does decline after 1 M in training (38% → 22%), the
+one overfitting-like signal, and it occurs only at diversity 1.
 
 ## Q5 — Did the reward matter for SAC?
 
-SAC was only ever trained on V2. A SAC-on-old-reward run (~7–8 h) would tell
-us whether the reward mattered for SAC or only for PPO. **Unmeasured.**
+SAC was only ever trained on V2. Unmeasured, and no longer on the critical path.
 
-## Q6 — Does adding narrow tracks to the pool fix the creep/crash?
+## Q6 — Adding narrow tracks → see Q13
 
-The natural coverage test: retrain SAC with a few narrow tracks in the pool
-(e.g. 5 normal + 3 narrow). If the creep/crash on `synthetic_nar7_0`
-disappears **without** ever seeing real circuits, it is a coverage problem
-(memorization) and the diversity sweep is on the right track. If not, the
-problem is deeper. ~3.5 h, resumable.
+The idea is right, and the variable is now confirmed to be width (`sim-to-real-width.md`).
+Rather than add a few narrow tracks, randomise width across the whole pool.
 
-## Q7 — Corner-sharpness cap
+## Q7 — Corner-sharpness cap — REFUTED
 
-The synthetic generator caps curvature at ~0.544 (`TRACK_TURN_RATE = 0.31`).
-Real circuits reach 1.273 (Spielberg) / 0.938 (Silverstone). This is a second
-ceiling that only bites **after** the spawn input-shift is fixed. Untested:
-does raising `TRACK_TURN_RATE` (or adding sharper tracks) help transfer once
-spawn geometry is covered?
+Real circuits are sharper than training at only 0.95% of points and are straighter at p90.
+Width is out of distribution at 100% of points (`sim-to-real-width.md`).
 
-## Q8 — Would PPO stabilize with more envs?
+## Q8 — More envs for PPO — SUPERSEDED
 
-Deliberately **not** tested — `n_envs` is a pinned protocol constant (a fixed
-budget with more envs means fewer updates). We claim PPO is unstable *under
-this protocol*, not that PPO is broken in general.
+PPO's failure was the objective (γ) plus rollout length, not a lack of parallel envs. `n_envs` stays 1
+(Bug 1 in `incidents.md`).
 
 ## Q9 — Merge and freeze before the grid
 
-`desmond/reward-and-episode-fix` must merge into `main` (expect a conflict
-with main's interim low-speed-penalty reward + the 5M-steps commit — that
-interim junk is not merged). Then freeze one canonical setup: penalty (Q3),
-budget (2M), spawn (`cl_grid_static`). Only then run the grid.
+Branch state (2026-10-06): `experiments/feasibility-spike` (September-2026 work) →
+`desmond/heldout-tracks` (canonical tracks, grid tooling, 23 real circuits, narrow sets) →
+`team/crash-penalty-flag` (train.py flags, diagnosis, this wiki update; pushed). None of
+these are merged to `main`. Freeze the final configuration (`final-run-plan.md`) on one branch
+before launching.
+
+## Q10 — Does γ 0.999 + n_steps 8192 work at higher diversity?
+
+Only d1 has been tested. At d100 each track gets 20 k steps instead of 2 M. Pilot one d100 seed
+(~1.3 h) before committing 12 PPO runs.
+
+## Q11 — γ 0.999 for SAC
+
+`G999_SAC` was running at the time of writing (114 k / 2 M at 20:30 on 2026-10-06). The decision rule
+is in `final-run-plan.md`.
+
+## Q12 — Mechanism of the γ × n_steps interaction
+
+Hypothesis: the γ 0.999 critic regresses ~1000-step returns, and its explained variance falls
+from 0.96 to 0.69, so it needs more data per update. Test: γ 0.999 with n_steps 2048 and more value
+epochs or a separate value learning rate. It matters for the write-up, not for the grid.
+
+## Q13 — Width-randomised training pool
+
+Add a half-width parameter to the generator, sample 0.7–1.5 m per track, retrain SAC (and PPO)
+at d100, then evaluate on narrowA/B and the 23 real circuits. Prediction if width binds:
+a large real-circuit jump. Cost: generator change plus about 6 runs.
+
+## Q14 — Presentation date and scope
+
+Never confirmed in the logs. It decides whether SAC runs the full 4 × 3 grid
+(~65–140 CPU-hours, so it must be split across machines) or d1 + d100 only.
 
 ## See also
 
-- `experiments.md` — the pilots these questions extend
-- `decisions.md` — the frozen choices; D6 is Q3
-- `handoff.md` — how to resume the queued runs
+- `final-run-plan.md` — Q1, Q3, Q10, Q11, Q14 resolved into one plan
+- `ppo-diagnosis.md` — Q8, Q10, Q12
+- `sim-to-real-width.md` — Q6, Q7, Q13
+- `decisions.md` — D6 (Q3), D13, D14
+- `overview.md`, `experiments.md`, `handoff.md` — context and commands

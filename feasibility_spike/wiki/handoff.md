@@ -1,8 +1,10 @@
 ---
 title: Handoff — file map, commands, and how to resume
 type: reference
-updated: 2025-09-20
+updated: 2026-10-06
 sources:
+  - git log of origin/team/crash-penalty-flag (high)
+  - CONTEXT.md, results/ppo_diagnosis/README.md, diagnostics/README.md (high)
   - team_repo/feasibility_spike/reward_experiment/RESUME.txt (high)
   - team_repo/feasibility_spike/reward_experiment/_insert_our_slides.py (high)
 ---
@@ -11,7 +13,45 @@ sources:
 
 Everything a teammate (or a future session) needs to pick up the work.
 
-## Git state
+## Current state (2026-10-06) — read this first
+
+**Branches** (each descends from the one before; none merged to `main`):
+
+| branch | what it adds | pushed |
+|---|---|---|
+| `experiments/feasibility-spike` | September-2026 pilots, this wiki, deck tooling | yes |
+| `desmond/heldout-tracks` | canonical tracks + manifest, `val`/`test`/`narrowA`/`narrowB`/`real` splits, grid provenance, 23 real circuits, `results/grid_s0`, `results/track_geometry` | yes |
+| **`team/crash-penalty-flag`** | `train.py` flags (D3), `action_repeat.py`, `CONTEXT.md`, `diagnostics/`, `results/ppo_diagnosis/`, **this wiki update** | **yes** |
+
+On Aolin's machine, `team/crash-penalty-flag` is checked out as a **worktree** at
+`COMPSCI 760/team_repo_heldout/`; `team_repo/` stays on `experiments/feasibility-spike`.
+
+**Fresh machine, from zero to a training run:**
+
+```bash
+git checkout team/crash-penalty-flag
+python diagnostics/build_canonical_tracks.py   # seed-123 pool, checked against the manifest (or generate_track_pool.py)
+python tracks/make_heldout_tracks.py           # val + test
+python tracks/make_narrow_tracks.py            # narrowA + narrowB
+python tracks/install_real_tracks.py           # 23 real circuits (downloads)
+python train.py --algo PPO --diversity 1 --seed 0 --gamma 0.999 --n-steps 8192 --run-tag mytest
+python evaluate.py --algo PPO --model-path models/PPO_1tracks_s0_mytest --track-set test \
+    --episodes 10 --eval-seed 0 --target-laps 1 --reset-type cl_grid_static --no-plot --out out.csv
+```
+
+**Where the evidence lives:** `results/ppo_diagnosis/` (logs, configs, final weights, every
+evaluation CSV; see its README for which runs were killed vs completed), `results/grid_s0/` (Desmond).
+Scripts: `diagnostics/` (absolute paths, so edit `ROOT` at the top). Scratch copies on Aolin's machine:
+`COMPSCI 760/_verify/` (not in git; holds the 343 MB grid bundle and the seed-0 map backup).
+
+**Runs still going on Aolin's PC at 20:30 on 2026-10-06:** `G999_SAC`, `G999_s1`, `G999_s2`,
+`G999_ns2048`, `R1_repeat10_alone` (refuted and can be stopped). When they finish, archive them with
+`diagnostics/archive_to_repo.py`.
+
+**Run journal** (agent working memory, outside the repo):
+`~/.pi/runs/2026-10-04-cs760-final-presentation-plan/journal.md`.
+
+## Git state (2026-09-20, historical)
 
 - **Branch:** `experiments/feasibility-spike`, **merged with `origin/main`**
   (0 behind, ~37 ahead), all additive, pushed to origin. Author: `aolin yang`.
@@ -41,7 +81,11 @@ Everything a teammate (or a future session) needs to pick up the work.
 - **Repo covers `team_repo/` only.** The decks and `_v2_build_src.pptx` live
   at the COMPSCI 760 root, **outside** git.
 
-## Directory map
+## Directory map (spike branch, Sept 2026 snapshot)
+
+*Structure is re-derivable with `ls`/`git ls-files` and goes stale; kept for orientation only.
+On `team/crash-penalty-flag` also see `diagnostics/`, `results/ppo_diagnosis/`, `tracks/`.
+"TEAM code — do not modify" was amended for `train.py` (decisions.md D3).*
 
 ```
 team_repo/
@@ -80,8 +124,10 @@ team_repo/
 See `RESUME.txt`. Each command auto-detects its checkpoint
 (`saved_models/<name>/state.json`) and continues from the last segment.
 
-- **SAC-2M** was paused at 12/20 (1.2M). Rerun command #3 to finish
-  (~4 h). Then run its unseen-track eval (command in RESUME.txt).
+- ~~**SAC-2M** was paused at 12/20 (1.2M). Rerun command #3 to finish
+  (~4 h). Then run its unseen-track eval (command in RESUME.txt).~~
+  **Stale (2026-10-04): do not run command #3.** `sac_vn_cp40` is superseded by
+  `sac_overfit` (identical seed and config, finished 2 M on Oct 4, and evaluated: see `experiments.md`).
 - **Overfitting probe: ANSWERED (no overfitting)** — checkpoints 100k–1M
   evaluated zero-shot; see `results.md`. A 2M extension (`sac_overfit`, was at
   7/20) is resumable with the same command.
@@ -126,3 +172,5 @@ rubric" pack.
 - `results.md` — what each JSON contains
 - `open-questions.md` — what to run next
 - `methodology.md` — the protocol the tools implement
+- `final-run-plan.md` — what to run next
+- `glossary.md` — terms

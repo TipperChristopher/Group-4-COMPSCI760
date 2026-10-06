@@ -1,7 +1,7 @@
 ---
 title: Glossary — domain terms
 type: reference
-updated: 2025-09-20
+updated: 2026-10-06
 sources:
   - project usage (mixed)
 ---
@@ -19,7 +19,8 @@ sources:
   training (fails at any checkpoint). *Overfitting*: the policy got worse at
   generalizing as training went on (early checkpoint would do better). The
   nar7 finding proves coverage; the checkpoint probe **ruled out** overfitting
-  (generalization rises monotonically — see `results.md`).
+  (generalization rises monotonically — see `results.md`). *(2026-10: the uncovered
+  variable is width; checkpoint scores are volatile rather than declining.)*
 - **Memorization vs competence** — whether the policy learned the training
   *distribution* (brittle outside it) or a general driving *rule* (transfers).
   The project's framing question.
@@ -48,12 +49,50 @@ sources:
   ~1 m/s instead of driving, before an early crash.
 - **Curvature (max)** — sharpest corner on a track. Synthetic capped at
   ~0.544 (`TRACK_TURN_RATE = 0.31`); Spielberg 1.273, Silverstone 0.938.
+  *(2026-10: the max is misleading. Real circuits exceed training curvature at only 0.95% of
+  points; width, not sharpness, is the out-of-distribution axis — `sim-to-real-width.md`.)*
 - **Step budget** — total environment steps per training run. Fixed at 2M
   (grid) / 1M (pilots); a controlled variable, never tuned per algorithm.
 - **Crash penalty** — the collision-gated reward penalty. Pilots ~40; team
-  canonical 5.0. Frozen identically across cells.
+  canonical 5.0. Frozen identically across cells. *(2026-10: recommendation is 5;
+  what it is worth depends on γ — see `reward.md`.)*
+
+### Terms added 2026-10-06
+
+- **γ (gamma, discount factor)** — how much a reward one step later counts:
+  reward *k* steps ahead is worth γ^k now. SB3 default 0.99.
+- **Value horizon** — roughly 1/(1−γ) steps: γ 0.99 → 100 steps = **1 s** at 100 Hz;
+  γ 0.999 → 1000 steps = 10 s. At 1 s, a crash more than a second ahead barely registers.
+- **GAE λ / credit window** — PPO's advantage estimate looks ~1/(1−γλ) steps ahead
+  (≈17–20 steps at λ 0.95). Widening it (λ 0.99) did **not** help, so it was not the bottleneck.
+- **Basin** — the strategy a learner settles into. At γ 0.99, "fast and crash" and
+  "fast and survive" are nearly tied; PPO landed in the first and SAC in the second.
+- **n_steps vs batch_size (PPO)** — `n_steps` = how many env steps are collected
+  before each update (rollout length; 2048 by default, **8192 in the fix**). `batch_size` =
+  minibatch size for each gradient step (64, **never changed** in the fix). `n_epochs` =
+  passes over the rollout (10). Updates per rollout = n_steps / batch_size × n_epochs.
+- **Exploration collapse** — PPO's state-independent action std shrinking to ~0.04–0.06
+  (on a [−1, 1] action range): the policy stops trying different actions. Measured from
+  `train/std` in `progress.csv`.
+- **approx_kl / clip_fraction** — how far one PPO update moved the policy, and the share of samples
+  where the trust-region clip was active. Healthy ≈ 0.01–0.03 / 0.1–0.2; collapsed PPO 0.25–0.38 / 0.5+.
+- **Action repeat (frame skip)** — hold each action for N physics steps. Tested and refuted.
+- **Training-log lap rate vs evaluated lap rate** — the first is the stochastic policy on its own
+  training tracks (`monitor_0.monitor.csv`); the second is deterministic on held-out tracks.
+  They differ by 2–5×. Always label which one.
+- **Transfer ratio** — held-out evaluated lap rate ÷ late-training lap rate. SAC seed 0:
+  0.13 / 0.47 / 0.57 / 0.76 for d1/5/20/100.
+- **Canonical pool / manifest** — seed-123 `synthetic_track_0..99` + val/test/narrow/real
+  splits with checksums in `tracks/manifest.json`. Same names ≠ same tracks; verify.
+- **narrowA / narrowB** — test-track centrelines with half-width 1.07 m / 0.75 m (test 1.47 m).
+- **Half-width** — distance from centreline to wall. Training 1.430–1.474 m everywhere; real median 1.075 m.
+- **Noise floor (checkpoint)** — how much a score moves between checkpoints of one run with
+  nothing changed. About half the between-cell differences in the seed-0 grid.
+- **Distinct spawns** — `cl_grid_static` maps eval seeds onto a few start poses: 5 seeds →
+  3 distinct, 30 seeds → ~9.
 
 ## See also
 
 - `overview.md` — how these terms fit the project
 - `methodology.md` — protocol terms in context
+- `ppo-diagnosis.md`, `sim-to-real-width.md` — where the 2026-10 terms are used

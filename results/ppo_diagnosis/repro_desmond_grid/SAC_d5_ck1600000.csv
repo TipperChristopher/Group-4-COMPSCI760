@@ -1,0 +1,11 @@
+algo,diversity,run_seed,track,episode,eval_seed,laps,completed_lap,env_laps,target_laps,progress_m,return,length,outcome,collision
+SAC,?,,Spielberg,0,0,0.0140,0,0,1,4.823,-0.1771,105,crash,1
+SAC,?,,Spielberg,1,1,0.0140,0,0,1,4.823,-0.1771,105,crash,1
+SAC,?,,Spielberg,2,2,0.0137,0,0,1,4.700,-0.2998,104,crash,1
+SAC,?,,Spielberg,3,3,0.0137,0,0,1,4.700,-0.2998,104,crash,1
+SAC,?,,Spielberg,4,4,0.0155,0,0,1,5.312,0.3119,112,crash,1
+SAC,?,,Silverstone,0,0,0.0080,0,0,1,3.666,-1.3339,92,crash,1
+SAC,?,,Silverstone,1,1,0.0080,0,0,1,3.666,-1.3339,92,crash,1
+SAC,?,,Silverstone,2,2,0.0081,0,0,1,3.711,-1.2891,92,crash,1
+SAC,?,,Silverstone,3,3,0.0081,0,0,1,3.711,-1.2891,92,crash,1
+SAC,?,,Silverstone,4,4,0.0084,0,0,1,3.824,-1.1762,94,crash,1

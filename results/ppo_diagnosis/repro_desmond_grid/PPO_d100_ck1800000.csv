@@ -1,0 +1,11 @@
+algo,diversity,run_seed,track,episode,eval_seed,laps,completed_lap,env_laps,target_laps,progress_m,return,length,outcome,collision
+PPO,?,,Spielberg,0,0,0.0999,0,0,1,34.299,29.2987,301,crash,1
+PPO,?,,Spielberg,1,1,0.0999,0,0,1,34.299,29.2987,301,crash,1
+PPO,?,,Spielberg,2,2,0.0984,0,0,1,33.781,28.7807,298,crash,1
+PPO,?,,Spielberg,3,3,0.0984,0,0,1,33.781,28.7807,298,crash,1
+PPO,?,,Spielberg,4,4,0.0979,0,0,1,33.605,28.6047,297,crash,1
+PPO,?,,Silverstone,0,0,0.0652,0,0,1,29.838,24.8382,278,crash,1
+PPO,?,,Silverstone,1,1,0.0652,0,0,1,29.838,24.8382,278,crash,1
+PPO,?,,Silverstone,2,2,0.0645,0,0,1,29.538,24.5382,276,crash,1
+PPO,?,,Silverstone,3,3,0.0645,0,0,1,29.538,24.5382,276,crash,1
+PPO,?,,Silverstone,4,4,0.0646,0,0,1,29.595,24.5951,276,crash,1

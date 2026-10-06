@@ -1,7 +1,7 @@
 ---
 title: Evaluation methodology and protocol
 type: reference
-updated: 2025-09-20
+updated: 2026-10-06
 sources:
   - team_repo/feasibility_spike/reward_experiment/METHODOLOGY_PLAN.md (mixed)
   - team_repo/feasibility_spike/reward_experiment/SPAWN_FIX_RESULTS.md (mixed)
@@ -17,6 +17,13 @@ levels, and both baselines. Divergence between train and eval would confound
 the diversity comparison, so the spawn, termination, and metric are pinned.
 
 ## Train / eval split
+
+*Current splits (2026-10, `tracks/manifest.json`, all checksummed):* `train`
+`synthetic_track_0..99` (seed 123), `val` `val_track_0..9` (checkpoint selection),
+`test` `test_track_0..19` (reporting), `real` (23 circuits, install with
+`tracks/install_real_tracks.py`), `narrowA`/`narrowB` (test centrelines at 1.07 m / 0.75 m
+half-width). `evaluate.py --track-set <name>` resolves them. **Track identity must match
+the manifest** — see `incidents.md` (seed 0 vs 123).
 
 - **Training pool:** N distinct tracks (N = 1 / 5 / 20 / 100), sampled by a
   stratified track-pool sampler on `reset()` (team's `src/track_pool.py`),
@@ -44,6 +51,10 @@ the diversity comparison, so the spawn, termination, and metric are pinned.
 - **5 evaluation seeds.** Over the ~1 m start line these ~5 seeds resolve to
   **3–4 distinct spawn points** (weighted), not 5 fully independent ones —
   documented so "5 seeds" is not over-claimed.
+  *Measured 2026-10-06:* exactly **3** distinct spawns per track in the seed-0 grid
+  (seeds 0≡1, 2≡3; Desmond's own `spawn_check` agrees), and 30 seeds give only ~9.
+  A marginal policy is badly under-sampled: our SAC d1 scored 0/5 on 5 seeds but
+  3/30 on 30. The proposed final protocol uses 10 seeds per track (`final-run-plan.md`).
 
 ## Episode termination (pinned)
 
@@ -64,6 +75,24 @@ the diversity comparison, so the spawn, termination, and metric are pinned.
 - **Best-checkpoint-on-validation** is the frozen selection rule: report the
   checkpoint that generalizes best, not necessarily the final one. (Motivated
   by PPO peaking early then degrading — see `experiments.md`.)
+
+### Correction: the rule was never applied, and one checkpoint is not enough (2026-10-06)
+The seed-0 grid reports the **final** checkpoint only. The `val_track_0..9` split
+exists for selection but has not been used. Two measurements show why it matters:
+- **Noise floor** (`grid-verification.md`): within-cell checkpoint SD is about half the
+  between-cell SD. Averaging the last 5 checkpoints makes both algorithms monotone
+  in diversity, while the final checkpoint alone does not.
+- **Volatility** (`ppo-diagnosis.md`): the fixed PPO's held-out lap completion goes
+  0 → 10/25 → 0 → 6/25 across adjacent 200 k checkpoints.
+Proposed rule for the final grid: **primary = mean over the last 5 checkpoints**,
+secondary = best on `val` (D14).
+
+## Training-log vs evaluation (2026-10-06)
+
+`monitor_0.monitor.csv` lap rates come from the **stochastic** training policy on
+**its own training tracks**. Evaluation is **deterministic** on held-out tracks.
+They differ a lot (fixed PPO d1: 65% training vs 0–40% held-out; Desmond's SAC d1:
+15.9% vs 2%). Never quote a training-log rate as performance without the label.
 
 ## Baselines (pinned)
 
@@ -91,3 +120,6 @@ team-side for us to run; our additive tools carry their own checks.)
 - `reward.md` — the reward the protocol uses
 - `results.md` — protocol applied, numbers
 - `incidents.md` — the n_envs and ray-caster bugs the protocol depends on
+- `final-run-plan.md` — the evaluation protocol proposed for the final grid
+- `grid-verification.md` — the spawn and checkpoint measurements behind the 2026-10 notes
+- `glossary.md`, `handoff.md`, `overview.md` — terms, commands, context

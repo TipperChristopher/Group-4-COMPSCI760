@@ -34,8 +34,12 @@ wiki/
 ├── decisions.md      # key decisions: choice, alternative, rationale (decision)
 ├── incidents.md      # the two real bugs + the loader pitfall (bug)
 ├── open-questions.md  # what is not yet answered / not yet run (open-question)
-├── handoff.md        # how to resume: file map, commands, RESUME.txt (reference)
-└── glossary.md       # domain terms (reference)
+├── handoff.md        # how to resume: branches, file map, commands (reference)
+├── glossary.md       # domain terms (reference)
+├── ppo-diagnosis.md  # why PPO never lapped: hypothesis trail + fix (synthesis, 2026-10)
+├── grid-verification.md  # Desmond's seed-0 grid verified from raw files (synthesis, 2026-10)
+├── sim-to-real-width.md  # width ablation: the real-circuit failure (concept, 2026-10)
+└── final-run-plan.md # PROPOSED final-grid config + env (decision, 2026-10)
 ```
 
 ## Frontmatter (mandatory on every page)
@@ -57,12 +61,18 @@ wiki/
 - **Reference, don't copy.** Source code, JSON results, and the deck are
   referenced by path. Only genuinely ad-hoc external material would be
   copied into `raw-sources/<bucket>/` (none so far).
+- **Corrections** use a `### Correction: <what was wrong>` heading and keep the
+  original text or a summary of it; never silently rewrite a retracted claim.
 - **Reliability tiers** on sources: `high` (source code, deterministic
   JSON results), `mixed` (our narrative writeups), `unverified` (external,
   until cross-referenced).
 
 ## Paths (this machine)
 
+- **Canonical copy of this wiki (since 2026-10-06):** branch `team/crash-penalty-flag`,
+  worktree `team_repo_heldout/feasibility_spike/wiki/`. The copy on
+  `experiments/feasibility-spike` stops at 2026-10-04 (an ancestor of this branch).
+- October evidence: `team_repo_heldout/results/ppo_diagnosis/`; scripts: `team_repo_heldout/diagnostics/`.
 - Team repo: `team_repo/` (git; branch `experiments/feasibility-spike`).
 - Our work: `team_repo/feasibility_spike/reward_experiment/`.
 - Results: `.../reward_experiment/results/*.json`.
