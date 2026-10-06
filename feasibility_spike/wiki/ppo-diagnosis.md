@@ -114,6 +114,8 @@ matters because training is **not bit-reproducible** even at a fixed seed (our
 re-run of Desmond's PPO d1 differs from iteration 0), whereas deterministic
 evaluation is.
 
+*Update 21:00, 2026-10-06 (runs still going):* at ~1.73 M, seed 1 = **85%** (263 m), but seed 2 has **dropped to 18%** (101 m, from 52%). Seed 0 held at 64–65% from 1 M to 2 M. So the fix produces laps on all 3 seeds, but **one of three has destabilised late** — "stable" is supported for 2/3 seeds, not all. `G999_ns2048` is still **0%** at 1.73 M. Re-archive when the runs finish.
+
 ## Why SAC copes at γ=0.99 — and is not immune
 
 SAC faces the same objective. From the basin table, SAC's lap-completing

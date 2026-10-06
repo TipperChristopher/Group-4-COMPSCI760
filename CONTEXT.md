@@ -204,7 +204,7 @@ problem lay elsewhere.
 | `G999L99_full` | + `gae_lambda` 0.95 → 0.99 | 156.8 | 59% | 1.49 |
 | `P40_penalty40` | crash penalty 40, `n_steps=8192` | 71.7 | 0% (was 36% at 868 k) | 0.97 |
 
-- **γ=0.999 + `n_steps=8192` is stable at 65%.** PPO had never completed a single lap in ~24,000 training
+- **γ=0.999 + `n_steps=8192` reaches 65% (seed 0, held 1–2 M).** Seed 2 later dropped to 18% (§6.6). PPO had never completed a single lap in ~24,000 training
   episodes across Desmond's four grid cells.
 
 ### 6.2a Which of the two changes matters? Both — it is an interaction
@@ -292,7 +292,9 @@ Same plateau. Extrapolating the late slope (+0.8 m per Mstep) to a lap would nee
 
 At the matched 0.8–1.0 M window: **65% / 57% / 52%** for seeds 0 / 1 / 2 (186–218 m) ⇒ **not a lucky seed**
 (training-log metric; held-out evaluation of seeds 1–2 not yet run). Per-window rates swing ±15 points
-within a seed, so compare windows, not single numbers. This matters because training is
+within a seed, so compare windows, not single numbers.
+
+*Update 21:00, 2026-10-06 (runs still going):* at ~1.73 M, seed 1 = **85%** (263 m), but seed 2 has **dropped to 18%** (101 m, from 52%). Seed 0 held at 64–65% from 1 M to 2 M. So the fix produces laps on all 3 seeds, but **one of three has destabilised late** — "stable" is supported for 2/3 seeds, not all. `G999_ns2048` is still **0%** at 1.73 M. Re-archive when the runs finish. This matters because training is
 *not* bit-reproducible across machines even at a fixed seed (evaluation is — it
 reproduced Desmond's numbers to the millimetre).
 
