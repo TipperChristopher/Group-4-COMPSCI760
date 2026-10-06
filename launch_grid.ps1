@@ -88,8 +88,8 @@ param(
 $ErrorActionPreference = "Stop"
 Set-Location $PSScriptRoot
 
-if ($RunTag -and $RunTag -notmatch '^[A-Za-z0-9-]+$') {
-    throw "-RunTag may contain only letters, digits and '-' (got '$RunTag')"
+if ($RunTag -and $RunTag -notmatch '^[A-Za-z0-9_-]+$') {
+    throw "-RunTag may contain only letters, digits, '_' and '-' (got '$RunTag')"
 }
 $Suffix   = if ($RunTag) { "_$RunTag" } else { "" }
 

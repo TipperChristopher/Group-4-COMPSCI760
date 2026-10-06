@@ -86,6 +86,23 @@ rerunning it: a different WIDTH can change which attempts the generator
 retries (shifting the whole RNG stream), and its tight_layout() call can
 rescale the track. make_narrow_tracks.py avoids both.
 
+2e. Varied-Width Tracks (vw_train / vw_val / vw_test)
+All 130 synthetic shapes again, each with one constant half-width in
+0.60-1.50 m, assigned in track order by a van der Corput sequence so every
+nested training pool (first 1, 5, 20, 100) spans the range evenly:
+
+  vw_train  vw_synthetic_track_0..99   shapes of synthetic_track_0..99
+  vw_val    vw_val_track_0..9          shapes of val_track_0..9
+  vw_test   vw_test_track_0..19        shapes of test_track_0..19
+
+vw_train is a training split; val/test stay held out:
+
+Bash
+python tracks/make_vw_tracks.py                  # build, verify vs originals, record in manifest
+python analysis/track_geometry.py --twin-check vw_train vw_val vw_test
+python train.py --algo SAC --diversity 20 --seed 0 --track-prefix vw_synthetic_track_ --run-tag vw
+python evaluate.py --algo SAC --diversity 20 --seed 0 --run-tag vw --track-set vw_test
+
 3. Train the Agents
 Launch the Stable-Baselines3 training grid. You can specify the algorithm, track diversity, and random seed:
 

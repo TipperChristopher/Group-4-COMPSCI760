@@ -344,8 +344,8 @@ def main():
 
     if args.n_envs < 1:
         parser.error("--n-envs must be at least 1")
-    if args.run_tag and not re.fullmatch(r"[A-Za-z0-9-]+", args.run_tag):
-        parser.error("--run-tag may contain only letters, digits and '-'")
+    if args.run_tag and not re.fullmatch(r"[A-Za-z0-9_-]+", args.run_tag):
+        parser.error("--run-tag may contain only letters, digits, '_' and '-'")
 
     if args.torch_threads:
         import torch

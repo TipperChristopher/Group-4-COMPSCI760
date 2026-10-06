@@ -300,6 +300,193 @@
         "measured_with": "analysis/track_geometry.py"
       },
       "regenerate_with": "python tracks/make_narrow_tracks.py"
+    },
+    "vw_train": {
+      "names": [
+        "vw_synthetic_track_0",
+        "vw_synthetic_track_1",
+        "vw_synthetic_track_2",
+        "vw_synthetic_track_3",
+        "vw_synthetic_track_4",
+        "vw_synthetic_track_5",
+        "vw_synthetic_track_6",
+        "vw_synthetic_track_7",
+        "vw_synthetic_track_8",
+        "vw_synthetic_track_9",
+        "vw_synthetic_track_10",
+        "vw_synthetic_track_11",
+        "vw_synthetic_track_12",
+        "vw_synthetic_track_13",
+        "vw_synthetic_track_14",
+        "vw_synthetic_track_15",
+        "vw_synthetic_track_16",
+        "vw_synthetic_track_17",
+        "vw_synthetic_track_18",
+        "vw_synthetic_track_19",
+        "vw_synthetic_track_20",
+        "vw_synthetic_track_21",
+        "vw_synthetic_track_22",
+        "vw_synthetic_track_23",
+        "vw_synthetic_track_24",
+        "vw_synthetic_track_25",
+        "vw_synthetic_track_26",
+        "vw_synthetic_track_27",
+        "vw_synthetic_track_28",
+        "vw_synthetic_track_29",
+        "vw_synthetic_track_30",
+        "vw_synthetic_track_31",
+        "vw_synthetic_track_32",
+        "vw_synthetic_track_33",
+        "vw_synthetic_track_34",
+        "vw_synthetic_track_35",
+        "vw_synthetic_track_36",
+        "vw_synthetic_track_37",
+        "vw_synthetic_track_38",
+        "vw_synthetic_track_39",
+        "vw_synthetic_track_40",
+        "vw_synthetic_track_41",
+        "vw_synthetic_track_42",
+        "vw_synthetic_track_43",
+        "vw_synthetic_track_44",
+        "vw_synthetic_track_45",
+        "vw_synthetic_track_46",
+        "vw_synthetic_track_47",
+        "vw_synthetic_track_48",
+        "vw_synthetic_track_49",
+        "vw_synthetic_track_50",
+        "vw_synthetic_track_51",
+        "vw_synthetic_track_52",
+        "vw_synthetic_track_53",
+        "vw_synthetic_track_54",
+        "vw_synthetic_track_55",
+        "vw_synthetic_track_56",
+        "vw_synthetic_track_57",
+        "vw_synthetic_track_58",
+        "vw_synthetic_track_59",
+        "vw_synthetic_track_60",
+        "vw_synthetic_track_61",
+        "vw_synthetic_track_62",
+        "vw_synthetic_track_63",
+        "vw_synthetic_track_64",
+        "vw_synthetic_track_65",
+        "vw_synthetic_track_66",
+        "vw_synthetic_track_67",
+        "vw_synthetic_track_68",
+        "vw_synthetic_track_69",
+        "vw_synthetic_track_70",
+        "vw_synthetic_track_71",
+        "vw_synthetic_track_72",
+        "vw_synthetic_track_73",
+        "vw_synthetic_track_74",
+        "vw_synthetic_track_75",
+        "vw_synthetic_track_76",
+        "vw_synthetic_track_77",
+        "vw_synthetic_track_78",
+        "vw_synthetic_track_79",
+        "vw_synthetic_track_80",
+        "vw_synthetic_track_81",
+        "vw_synthetic_track_82",
+        "vw_synthetic_track_83",
+        "vw_synthetic_track_84",
+        "vw_synthetic_track_85",
+        "vw_synthetic_track_86",
+        "vw_synthetic_track_87",
+        "vw_synthetic_track_88",
+        "vw_synthetic_track_89",
+        "vw_synthetic_track_90",
+        "vw_synthetic_track_91",
+        "vw_synthetic_track_92",
+        "vw_synthetic_track_93",
+        "vw_synthetic_track_94",
+        "vw_synthetic_track_95",
+        "vw_synthetic_track_96",
+        "vw_synthetic_track_97",
+        "vw_synthetic_track_98",
+        "vw_synthetic_track_99"
+      ],
+      "raw_indices": [
+        0,
+        99
+      ],
+      "same_shapes_as": "train",
+      "half_width_range_m": [
+        0.6,
+        1.5
+      ],
+      "width_assignment": "track k: half_width = 0.60 + 0.90 * vdc2(k + 1), van der Corput base 2, deterministic, in track order",
+      "width_calibration": {
+        "half_width_m": "0.16163 * WIDTH + -0.14201",
+        "measured_with": "analysis/track_geometry.py"
+      },
+      "regenerate_with": "python tracks/make_vw_tracks.py"
+    },
+    "vw_val": {
+      "names": [
+        "vw_val_track_0",
+        "vw_val_track_1",
+        "vw_val_track_2",
+        "vw_val_track_3",
+        "vw_val_track_4",
+        "vw_val_track_5",
+        "vw_val_track_6",
+        "vw_val_track_7",
+        "vw_val_track_8",
+        "vw_val_track_9"
+      ],
+      "raw_indices": [
+        100,
+        109
+      ],
+      "same_shapes_as": "val",
+      "half_width_range_m": [
+        0.6,
+        1.5
+      ],
+      "width_assignment": "track k: half_width = 0.60 + 0.90 * vdc2(k + 1), van der Corput base 2, deterministic, in track order",
+      "width_calibration": {
+        "half_width_m": "0.16163 * WIDTH + -0.14201",
+        "measured_with": "analysis/track_geometry.py"
+      },
+      "regenerate_with": "python tracks/make_vw_tracks.py"
+    },
+    "vw_test": {
+      "names": [
+        "vw_test_track_0",
+        "vw_test_track_1",
+        "vw_test_track_2",
+        "vw_test_track_3",
+        "vw_test_track_4",
+        "vw_test_track_5",
+        "vw_test_track_6",
+        "vw_test_track_7",
+        "vw_test_track_8",
+        "vw_test_track_9",
+        "vw_test_track_10",
+        "vw_test_track_11",
+        "vw_test_track_12",
+        "vw_test_track_13",
+        "vw_test_track_14",
+        "vw_test_track_15",
+        "vw_test_track_16",
+        "vw_test_track_17",
+        "vw_test_track_18",
+        "vw_test_track_19"
+      ],
+      "raw_indices": [
+        110,
+        129
+      ],
+      "same_shapes_as": "test",
+      "half_width_range_m": [
+        0.6,
+        1.5
+      ],
+      "width_assignment": "track k: half_width = 0.60 + 0.90 * vdc2(k + 1), van der Corput base 2, deterministic, in track order",
+      "width_calibration": {
+        "half_width_m": "0.16163 * WIDTH + -0.14201",
+        "measured_with": "analysis/track_geometry.py"
+      },
+      "regenerate_with": "python tracks/make_vw_tracks.py"
     }
   },
   "tracks": {
@@ -3833,6 +4020,2866 @@
           "sha256_lf": "f277b3a5cbd0594cd4ba369bd934df4227c0accb009895e3ccdcab0706344488"
         },
         "narrowB_track_19_centerline.csv": {
+          "sha256": "dc6dca54983b815d0194b9594036081ac5fdbc27b217780183221a7176aa3cb0",
+          "sha256_lf": "133ddbf095c3a8af3ceb004d83eeff11d3700fbf5b5b7c5d74fc9b0d20405dc5"
+        }
+      }
+    },
+    "vw_synthetic_track_0": {
+      "split": "vw_train",
+      "raw_index": 0,
+      "same_shape_as": "synthetic_track_0",
+      "target_half_width_m": 1.05,
+      "generator_width": 7.37493,
+      "measured_half_width_m": 1.0505,
+      "files": {
+        "vw_synthetic_track_0_map.yaml": {
+          "sha256": "d71575601064fa9f53ba600cb5d731534f0aa4f1cb94ce8de2ee3ffd076fb9e1",
+          "sha256_lf": "da07d0b2294f48f9dfa82663926b574cf22794743c8afcbc43fabf60ee9de74f"
+        },
+        "vw_synthetic_track_0_map.pgm": {
+          "sha256": "5d4a078d6bc59739151aaf27b7be2bcf230bfa8cbd4f01aca2be5577f524a2ba",
+          "sha256_lf": "5d4a078d6bc59739151aaf27b7be2bcf230bfa8cbd4f01aca2be5577f524a2ba"
+        },
+        "vw_synthetic_track_0_centerline.csv": {
+          "sha256": "3768acebe44a39cca7a9b4f586eb13cdcc8f0f79f4cbabb21efd488c6985f554",
+          "sha256_lf": "ccbfbbd9e72f379b50e5e3fd39c1cdcab587c0555bf4aa4e42cb47d9045c6380"
+        }
+      }
+    },
+    "vw_synthetic_track_1": {
+      "split": "vw_train",
+      "raw_index": 1,
+      "same_shape_as": "synthetic_track_1",
+      "target_half_width_m": 0.825,
+      "generator_width": 5.982862,
+      "measured_half_width_m": 0.8279,
+      "files": {
+        "vw_synthetic_track_1_map.yaml": {
+          "sha256": "e94ceee516b45eb6ef24f5f9e1babec3727158e0c107aa962dcf27c462530690",
+          "sha256_lf": "67b1eb2879edbc0ee1478292adddc110e15b6f972453926829add618316afd6f"
+        },
+        "vw_synthetic_track_1_map.pgm": {
+          "sha256": "7fe8b999279415526aad244af84284c6365136e1fc49a262e7365cdf47984879",
+          "sha256_lf": "7fe8b999279415526aad244af84284c6365136e1fc49a262e7365cdf47984879"
+        },
+        "vw_synthetic_track_1_centerline.csv": {
+          "sha256": "7533ec1bfe66371d36e4a97098964eec639bd79696052d04f382de89a51dadb1",
+          "sha256_lf": "4e9e911a7b661eabd3377647815275e45992c78c50b23fe984f0fb09da2c9d10"
+        }
+      }
+    },
+    "vw_synthetic_track_2": {
+      "split": "vw_train",
+      "raw_index": 2,
+      "same_shape_as": "synthetic_track_2",
+      "target_half_width_m": 1.275,
+      "generator_width": 8.766999,
+      "measured_half_width_m": 1.2774,
+      "files": {
+        "vw_synthetic_track_2_map.yaml": {
+          "sha256": "8485ee81975463ef883bc8278c5637d8f783fc26b19ef92cbf5fd6e5ff1218c6",
+          "sha256_lf": "bdd49243b25c999239e3e900f331610beee7e1c149e2910573dcef892a77ced0"
+        },
+        "vw_synthetic_track_2_map.pgm": {
+          "sha256": "1dc09fc39f8154253a002857bb7e98bdde21dccb89f9e5f12076974e6857da0e",
+          "sha256_lf": "1dc09fc39f8154253a002857bb7e98bdde21dccb89f9e5f12076974e6857da0e"
+        },
+        "vw_synthetic_track_2_centerline.csv": {
+          "sha256": "6cdcf4ddee651b3fcb6c5d00b4ac03444c4d7ca7d98c568b49f89918fd2fdf19",
+          "sha256_lf": "3dc386c76b9fbc2b4fc321015dc1d359b4ebc160ec5f18aef1fdba0d9e2cf838"
+        }
+      }
+    },
+    "vw_synthetic_track_3": {
+      "split": "vw_train",
+      "raw_index": 3,
+      "same_shape_as": "synthetic_track_3",
+      "target_half_width_m": 0.7125,
+      "generator_width": 5.286828,
+      "measured_half_width_m": 0.7164,
+      "files": {
+        "vw_synthetic_track_3_map.yaml": {
+          "sha256": "f9e50a328c5b61c34313ee841164e14fe6793ee73acac3faf705d6eb4bc1bc9d",
+          "sha256_lf": "22168828fc5e2d1c0756226c62a1edb63946ec0adb05ad4e96c345ff172de911"
+        },
+        "vw_synthetic_track_3_map.pgm": {
+          "sha256": "7f21ccebeda43a3157b9c277a21ca752446174606ed286f366372b33d1191bc1",
+          "sha256_lf": "7f21ccebeda43a3157b9c277a21ca752446174606ed286f366372b33d1191bc1"
+        },
+        "vw_synthetic_track_3_centerline.csv": {
+          "sha256": "1351f618982fa6bc93c8ebc2320bb7f5b9408aa5acac9b9361b78533cb6d663e",
+          "sha256_lf": "bdccd5f2e214f5a9b6fa82f2dccc539d2ad30a4ea7ec402f3e883d3781abf125"
+        }
+      }
+    },
+    "vw_synthetic_track_4": {
+      "split": "vw_train",
+      "raw_index": 4,
+      "same_shape_as": "synthetic_track_4",
+      "target_half_width_m": 1.1625,
+      "generator_width": 8.070965,
+      "measured_half_width_m": 1.1612,
+      "files": {
+        "vw_synthetic_track_4_map.yaml": {
+          "sha256": "00c413515b1af1c56de60cf3112db5d92d2bb5156f3379c2dc247d47a4cfc73d",
+          "sha256_lf": "162c5b14f35a7f982d5d054716af69f38bad6d3e1c065f66839b910ebafadf23"
+        },
+        "vw_synthetic_track_4_map.pgm": {
+          "sha256": "e1f10ab143c6fa33e0b0617c2b2f7990fd1ebefba7a5a2de8f61ccc24e006138",
+          "sha256_lf": "e1f10ab143c6fa33e0b0617c2b2f7990fd1ebefba7a5a2de8f61ccc24e006138"
+        },
+        "vw_synthetic_track_4_centerline.csv": {
+          "sha256": "7b61e104e5ee72ea45b8f35ecb91bda9d01537fecaf02c647d789a0ba3e8b35b",
+          "sha256_lf": "5e566e9ef0758cf6ee0c0757731be41c206467ffc7f2941e2b7306c303253315"
+        }
+      }
+    },
+    "vw_synthetic_track_5": {
+      "split": "vw_train",
+      "raw_index": 5,
+      "same_shape_as": "synthetic_track_5",
+      "target_half_width_m": 0.9375,
+      "generator_width": 6.678896,
+      "measured_half_width_m": 0.9384,
+      "files": {
+        "vw_synthetic_track_5_map.yaml": {
+          "sha256": "6fd51a5e9a69bd1017b8c83aa8b69a1808a419b7358b7ba2e3e73685411f58bc",
+          "sha256_lf": "b2af1700f01e5e79ba8edd69d84aa65d19495e51e113735404ba5936eba28207"
+        },
+        "vw_synthetic_track_5_map.pgm": {
+          "sha256": "9ab3091683ef546add1d256e9c3f84b39e88479c05eb6885138a93eb3bc8ca5d",
+          "sha256_lf": "9ab3091683ef546add1d256e9c3f84b39e88479c05eb6885138a93eb3bc8ca5d"
+        },
+        "vw_synthetic_track_5_centerline.csv": {
+          "sha256": "54c5376f102f0d87a7e2e3200f9bfab7080de9c918cb9d31a948a4fe098bc95a",
+          "sha256_lf": "de3684d1c600a0e8f2a7cb543daf4dfab523b918ce2f85db0536ea46efc4ec38"
+        }
+      }
+    },
+    "vw_synthetic_track_6": {
+      "split": "vw_train",
+      "raw_index": 6,
+      "same_shape_as": "synthetic_track_6",
+      "target_half_width_m": 1.3875,
+      "generator_width": 9.463033,
+      "measured_half_width_m": 1.3891,
+      "files": {
+        "vw_synthetic_track_6_map.yaml": {
+          "sha256": "72ac2ce94cd7ab1f3302854e80e1d98956ab35d950f5d1411c268d1e6d0da459",
+          "sha256_lf": "f9b9ad57970dc2a2c02c465d40a711a38aa35eef01355954cdb646292d629ece"
+        },
+        "vw_synthetic_track_6_map.pgm": {
+          "sha256": "681cca85958ca4ea34f58b9eec49ea6a978ca37973e2aa22c2d868d8e28802fe",
+          "sha256_lf": "681cca85958ca4ea34f58b9eec49ea6a978ca37973e2aa22c2d868d8e28802fe"
+        },
+        "vw_synthetic_track_6_centerline.csv": {
+          "sha256": "340d15a8b7fc77a34bff6d3167f154f17972b6b59ecff37e369b943800b6f394",
+          "sha256_lf": "dba073de67ee5d69103525a58d7b5bb76a6c4c212ba890875b0b1a7e6dde3961"
+        }
+      }
+    },
+    "vw_synthetic_track_7": {
+      "split": "vw_train",
+      "raw_index": 7,
+      "same_shape_as": "synthetic_track_7",
+      "target_half_width_m": 0.65625,
+      "generator_width": 4.938811,
+      "measured_half_width_m": 0.6562,
+      "files": {
+        "vw_synthetic_track_7_map.yaml": {
+          "sha256": "da217e249687fbb04050c55a0ec3eaabaf046887730877f169044e672340a51b",
+          "sha256_lf": "f8bb395a9e16cc6c28fb5af034aec29fd7f2b14c9742f2e78b59c1e187a45826"
+        },
+        "vw_synthetic_track_7_map.pgm": {
+          "sha256": "b46f7ec9d22820502e57efe68a681ab5b80f8982acd1b01e31738eec4f7947c0",
+          "sha256_lf": "b46f7ec9d22820502e57efe68a681ab5b80f8982acd1b01e31738eec4f7947c0"
+        },
+        "vw_synthetic_track_7_centerline.csv": {
+          "sha256": "263a8040aa0f6d99a1b642df4b385cfb355067c27e9f4c0b6189074e7f95622c",
+          "sha256_lf": "49a34ee4eb67a8b1b7da33ae1ca5170b3b0cc9470edc16d40ba30eee03dd8041"
+        }
+      }
+    },
+    "vw_synthetic_track_8": {
+      "split": "vw_train",
+      "raw_index": 8,
+      "same_shape_as": "synthetic_track_8",
+      "target_half_width_m": 1.10625,
+      "generator_width": 7.722947,
+      "measured_half_width_m": 1.1065,
+      "files": {
+        "vw_synthetic_track_8_map.yaml": {
+          "sha256": "e80a756d78e976d6a40a1868dcd2a81611a66b5cce77f073e2cd0e3b19fc632c",
+          "sha256_lf": "43606c9744ec8946a553a85f08d2fc129d72b50644885f29a758b2bd28dec54f"
+        },
+        "vw_synthetic_track_8_map.pgm": {
+          "sha256": "5ec41649737b189077eadd5fc0cf91876fd50393da021f882e1fe6fe1924e5bc",
+          "sha256_lf": "5ec41649737b189077eadd5fc0cf91876fd50393da021f882e1fe6fe1924e5bc"
+        },
+        "vw_synthetic_track_8_centerline.csv": {
+          "sha256": "69b00d4d5427b018e081809870e8fdefed6ae1bb3bc2a6125a7c4204a12d5c6c",
+          "sha256_lf": "bb9637f68ffc4c85752c6eda90f891ee49c50fb60bfaa71a44fed198f69eb433"
+        }
+      }
+    },
+    "vw_synthetic_track_9": {
+      "split": "vw_train",
+      "raw_index": 9,
+      "same_shape_as": "synthetic_track_9",
+      "target_half_width_m": 0.88125,
+      "generator_width": 6.330879,
+      "measured_half_width_m": 0.8829,
+      "files": {
+        "vw_synthetic_track_9_map.yaml": {
+          "sha256": "072d809987fe10aff287e57a68c53c097bf7b7240c69e1528bf24a20e1f14ae7",
+          "sha256_lf": "f2f04b969c63bee805e88ad61941d16c57782e134ebcfc25636850a09a065ad7"
+        },
+        "vw_synthetic_track_9_map.pgm": {
+          "sha256": "7e0dbb2c8ec796867c0f14e4171587858b24e2a5b28a1d1c9dd4842a697be971",
+          "sha256_lf": "7e0dbb2c8ec796867c0f14e4171587858b24e2a5b28a1d1c9dd4842a697be971"
+        },
+        "vw_synthetic_track_9_centerline.csv": {
+          "sha256": "7535b9f979758c679d0923774e60b0c89a78c802c91a701c48e41383b3c2a063",
+          "sha256_lf": "3fbb78859a59660e14065c9896dceb308cf79737620746db9c4ad5da654e7afb"
+        }
+      }
+    },
+    "vw_synthetic_track_10": {
+      "split": "vw_train",
+      "raw_index": 10,
+      "same_shape_as": "synthetic_track_10",
+      "target_half_width_m": 1.33125,
+      "generator_width": 9.115016,
+      "measured_half_width_m": 1.3359,
+      "files": {
+        "vw_synthetic_track_10_map.yaml": {
+          "sha256": "be211fbe62d4ae2700c7e4dace606390124d485494ed29e5ce235c5ac749c763",
+          "sha256_lf": "21239e77c06a53fed612ab519aa4f0de2085bf6def8b12bbabcd130a36fd3ea6"
+        },
+        "vw_synthetic_track_10_map.pgm": {
+          "sha256": "6696f42e5aae537a2e5ff5ff8d448f9f3e49a3eca7ed4f2d41f61965c27dc17f",
+          "sha256_lf": "6696f42e5aae537a2e5ff5ff8d448f9f3e49a3eca7ed4f2d41f61965c27dc17f"
+        },
+        "vw_synthetic_track_10_centerline.csv": {
+          "sha256": "d036aa321422931b670f77eaa002ab5230f5e3f6936d4b06b33d8e0405fef4d7",
+          "sha256_lf": "0eee36fa6a95d51de2786c440bd4ddf05c6a34ae16c297636803089378b13ce7"
+        }
+      }
+    },
+    "vw_synthetic_track_11": {
+      "split": "vw_train",
+      "raw_index": 11,
+      "same_shape_as": "synthetic_track_11",
+      "target_half_width_m": 0.76875,
+      "generator_width": 5.634845,
+      "measured_half_width_m": 0.7721,
+      "files": {
+        "vw_synthetic_track_11_map.yaml": {
+          "sha256": "c0c486ae9596c0839a7489901ab7a0ba78a57199233429331fbaa35977a64a88",
+          "sha256_lf": "d6a15971673f59154ab32e11e7fef9a2101373ac460306f255235272ce76d9a4"
+        },
+        "vw_synthetic_track_11_map.pgm": {
+          "sha256": "985bf43256e46c93da2275cad376cd8167584119bb290f9f0ee081dd5dcee88d",
+          "sha256_lf": "985bf43256e46c93da2275cad376cd8167584119bb290f9f0ee081dd5dcee88d"
+        },
+        "vw_synthetic_track_11_centerline.csv": {
+          "sha256": "f4dd59d2c00f762c642fbead15a16670c07d512459372c8f93095a63f56a68ef",
+          "sha256_lf": "2caa68f5551f5c0ddce46da3bc0dbf2782fa0affeafee8292c93078fc1526c10"
+        }
+      }
+    },
+    "vw_synthetic_track_12": {
+      "split": "vw_train",
+      "raw_index": 12,
+      "same_shape_as": "synthetic_track_12",
+      "target_half_width_m": 1.21875,
+      "generator_width": 8.418982,
+      "measured_half_width_m": 1.2188,
+      "files": {
+        "vw_synthetic_track_12_map.yaml": {
+          "sha256": "e6b05942d060da3a47aaaf1947ab60dd05b102dfccb417a0b8b8d471897368d9",
+          "sha256_lf": "51c8408edbdf485385712ac01d48136a3c62c3280ed36c5177e840c67378c6d4"
+        },
+        "vw_synthetic_track_12_map.pgm": {
+          "sha256": "cf2dab65a9a7e3530cffb4c311a8decdbd09cd2dc29dbe34e59e46ab8fb5baf6",
+          "sha256_lf": "cf2dab65a9a7e3530cffb4c311a8decdbd09cd2dc29dbe34e59e46ab8fb5baf6"
+        },
+        "vw_synthetic_track_12_centerline.csv": {
+          "sha256": "8c999445183f00981f647254244d0e4da6f1530104cfcb18dea445192f3a39d5",
+          "sha256_lf": "ecb2caec47ad37def004800642177f181eacde1cc24f082027640472d79cda62"
+        }
+      }
+    },
+    "vw_synthetic_track_13": {
+      "split": "vw_train",
+      "raw_index": 13,
+      "same_shape_as": "synthetic_track_13",
+      "target_half_width_m": 0.99375,
+      "generator_width": 7.026913,
+      "measured_half_width_m": 0.9933,
+      "files": {
+        "vw_synthetic_track_13_map.yaml": {
+          "sha256": "188fa650b8ab277201cd8a7f54115a85de14c878e7aec95be71c40a0f2268d70",
+          "sha256_lf": "e2d385bda66381bc99c85165c291adf85606050027edaa09a6f57594620163c6"
+        },
+        "vw_synthetic_track_13_map.pgm": {
+          "sha256": "03b73ee38a70d2acbb5dd8bc066ebd66269bbbab508cc3ba43f9556035d39b89",
+          "sha256_lf": "03b73ee38a70d2acbb5dd8bc066ebd66269bbbab508cc3ba43f9556035d39b89"
+        },
+        "vw_synthetic_track_13_centerline.csv": {
+          "sha256": "95c2542f2e82c970f05221fd5b37864b2b38faeab3592644cd80ab3685694e1b",
+          "sha256_lf": "2266128aa09557a5244bfdcb9f617e646d753c0c53444f78156074a045255bbd"
+        }
+      }
+    },
+    "vw_synthetic_track_14": {
+      "split": "vw_train",
+      "raw_index": 14,
+      "same_shape_as": "synthetic_track_14",
+      "target_half_width_m": 1.44375,
+      "generator_width": 9.81105,
+      "measured_half_width_m": 1.4453,
+      "files": {
+        "vw_synthetic_track_14_map.yaml": {
+          "sha256": "16ffbe95e92ece452b409af9849c08ae01cce68d0c1c799fabd453e6b6291608",
+          "sha256_lf": "f8d91f4e18d8611200ec90b479bf5a103dc2648230994ab512e5be02ee7645e3"
+        },
+        "vw_synthetic_track_14_map.pgm": {
+          "sha256": "0f4ff0429c8714df94b6d6e5c9b5f9000ed594d489c8d4df7d988b0c555e70ce",
+          "sha256_lf": "0f4ff0429c8714df94b6d6e5c9b5f9000ed594d489c8d4df7d988b0c555e70ce"
+        },
+        "vw_synthetic_track_14_centerline.csv": {
+          "sha256": "ff3893055e25df349f448747193aa999b5e07cf176a896d3c9e9ecac9217c198",
+          "sha256_lf": "cc7f3cef0ae98313ecc81446802265d43ebcc3da33b7f9a9a715553e50c9341f"
+        }
+      }
+    },
+    "vw_synthetic_track_15": {
+      "split": "vw_train",
+      "raw_index": 15,
+      "same_shape_as": "synthetic_track_15",
+      "target_half_width_m": 0.628125,
+      "generator_width": 4.764802,
+      "measured_half_width_m": 0.6298,
+      "files": {
+        "vw_synthetic_track_15_map.yaml": {
+          "sha256": "a5e396ce311c18e37af3df109e352db3fce4183aa00169bae033f077e21704d6",
+          "sha256_lf": "6f666ba98c45e85bc6a59e98c34c19542c60998206337676fc836d0482bf6b6f"
+        },
+        "vw_synthetic_track_15_map.pgm": {
+          "sha256": "4f3f2a76664354586d2ebaa4c4f16a0a90db3fa2ada7686fa3ddb3aa66357994",
+          "sha256_lf": "4f3f2a76664354586d2ebaa4c4f16a0a90db3fa2ada7686fa3ddb3aa66357994"
+        },
+        "vw_synthetic_track_15_centerline.csv": {
+          "sha256": "3b4d0c997c9c4205157f026a78af1770f62bb9747ab034ed9a08dedf1da1f1c0",
+          "sha256_lf": "947313ab3f6ec49ebebe7f57251ae97b5b177fc5d61afd81620c08d8bdf0542c"
+        }
+      }
+    },
+    "vw_synthetic_track_16": {
+      "split": "vw_train",
+      "raw_index": 16,
+      "same_shape_as": "synthetic_track_16",
+      "target_half_width_m": 1.078125,
+      "generator_width": 7.548939,
+      "measured_half_width_m": 1.079,
+      "files": {
+        "vw_synthetic_track_16_map.yaml": {
+          "sha256": "f416f438604199530f3463b2df92a69c1ecc81455dca426d96138ee216063d3a",
+          "sha256_lf": "bddbf2592f5de85b14b56f81376717ab3149794d0f31a40d861b3b8cfcf8a382"
+        },
+        "vw_synthetic_track_16_map.pgm": {
+          "sha256": "4d75b15ca03088b86f11c5a4942f915866465324bfd81be3bf31d2bcb0f8b1fe",
+          "sha256_lf": "4d75b15ca03088b86f11c5a4942f915866465324bfd81be3bf31d2bcb0f8b1fe"
+        },
+        "vw_synthetic_track_16_centerline.csv": {
+          "sha256": "3ebdef5ed167e8c711db56cc31ae9ca394820c13dd62d24a868c756a8ad9b727",
+          "sha256_lf": "a8517211c3fad96b7ddfe05d20b2dfc68e3b6b14b5777718b2fad89f67d9aaf4"
+        }
+      }
+    },
+    "vw_synthetic_track_17": {
+      "split": "vw_train",
+      "raw_index": 17,
+      "same_shape_as": "synthetic_track_17",
+      "target_half_width_m": 0.853125,
+      "generator_width": 6.156871,
+      "measured_half_width_m": 0.8503,
+      "files": {
+        "vw_synthetic_track_17_map.yaml": {
+          "sha256": "c0df1c21ee09ab1d2e8f93abe82cf168a0790308c81cad0e018712ef774cecf5",
+          "sha256_lf": "b21920eec5c19eb654ac07e40f3b0474fda6afff3ddf3cbc050e782415784dca"
+        },
+        "vw_synthetic_track_17_map.pgm": {
+          "sha256": "32bf7104f1f3247c9e689362f1f9015b971796336ac3045982bfb4be6d85fa84",
+          "sha256_lf": "32bf7104f1f3247c9e689362f1f9015b971796336ac3045982bfb4be6d85fa84"
+        },
+        "vw_synthetic_track_17_centerline.csv": {
+          "sha256": "7ac10eb422197e97a4860089d4a1691b0f385beae5b9530ca1041367242b33f7",
+          "sha256_lf": "989d20dc5c5ae7df25632cd864d4d82fea896f2f6febd51e52bd1b6529d2c308"
+        }
+      }
+    },
+    "vw_synthetic_track_18": {
+      "split": "vw_train",
+      "raw_index": 18,
+      "same_shape_as": "synthetic_track_18",
+      "target_half_width_m": 1.303125,
+      "generator_width": 8.941007,
+      "measured_half_width_m": 1.3027,
+      "files": {
+        "vw_synthetic_track_18_map.yaml": {
+          "sha256": "7cfb5d8d788608a6ac67914205c8e0863d26ca471d5cbc1713914d28c4f07b78",
+          "sha256_lf": "56f427686a08e1de61423533216f2ac9bfc8a6d99469dc35c940e3b5f3666638"
+        },
+        "vw_synthetic_track_18_map.pgm": {
+          "sha256": "7849bd8bf4088c3ae454bb8a31617c095c962b02af8c875b60c3f92661cd267b",
+          "sha256_lf": "7849bd8bf4088c3ae454bb8a31617c095c962b02af8c875b60c3f92661cd267b"
+        },
+        "vw_synthetic_track_18_centerline.csv": {
+          "sha256": "aebb9e278d983df9801d7d3c6b84682ad74c798a5bc64ba35be3f692d7a345a0",
+          "sha256_lf": "cd3ba5da0370fc6dfd97f229eb989af92052783d679ee2e7c5ae0b193736a95f"
+        }
+      }
+    },
+    "vw_synthetic_track_19": {
+      "split": "vw_train",
+      "raw_index": 19,
+      "same_shape_as": "synthetic_track_19",
+      "target_half_width_m": 0.740625,
+      "generator_width": 5.460836,
+      "measured_half_width_m": 0.742,
+      "files": {
+        "vw_synthetic_track_19_map.yaml": {
+          "sha256": "8cde9a7c05d3c55585a8ed8b735a1b9a664741a29392dd05fd19c3851c62e1f4",
+          "sha256_lf": "1bc36ee1053de9f08080908f7e065f3dd602dfacaca59c2fcc13c3d5c3ade6f0"
+        },
+        "vw_synthetic_track_19_map.pgm": {
+          "sha256": "ba89bac88945329f2023a5fa36251fe17bc9d625dae9cb9d30bf86e45d1d92af",
+          "sha256_lf": "ba89bac88945329f2023a5fa36251fe17bc9d625dae9cb9d30bf86e45d1d92af"
+        },
+        "vw_synthetic_track_19_centerline.csv": {
+          "sha256": "46bef26952de0989620948b9aabe08bc1a2540ed84e936ca6e9c696bfa881e8b",
+          "sha256_lf": "84355a792f4a76b8f2b2d512881e336d99c3b6b8f1e53daceeb153d950606ac1"
+        }
+      }
+    },
+    "vw_synthetic_track_20": {
+      "split": "vw_train",
+      "raw_index": 20,
+      "same_shape_as": "synthetic_track_20",
+      "target_half_width_m": 1.190625,
+      "generator_width": 8.244973,
+      "measured_half_width_m": 1.1916,
+      "files": {
+        "vw_synthetic_track_20_map.yaml": {
+          "sha256": "874a2cc748dbd52517ecb25e95bb2c0fd26f67cc8eb7a59c63b74de147f73efe",
+          "sha256_lf": "2fd1666da599319b64fd4c4f0f8d308fe6ac6de7ba0aff71376915cdf7e38503"
+        },
+        "vw_synthetic_track_20_map.pgm": {
+          "sha256": "b899e6504ae1e0f6357c0ba62f63d246186b3fdc24745e1fde252e416c3448e7",
+          "sha256_lf": "b899e6504ae1e0f6357c0ba62f63d246186b3fdc24745e1fde252e416c3448e7"
+        },
+        "vw_synthetic_track_20_centerline.csv": {
+          "sha256": "ff22d7d6a4dfd3ad1f5ed401256714d860139a03c0c0e7fca14f0c126668a876",
+          "sha256_lf": "9f6481a3f87e81e88cc2c47dd8f2c2c118376156ed5741b777b0354fe7195ee6"
+        }
+      }
+    },
+    "vw_synthetic_track_21": {
+      "split": "vw_train",
+      "raw_index": 21,
+      "same_shape_as": "synthetic_track_21",
+      "target_half_width_m": 0.965625,
+      "generator_width": 6.852905,
+      "measured_half_width_m": 0.9669,
+      "files": {
+        "vw_synthetic_track_21_map.yaml": {
+          "sha256": "85d1cfe1995725030108f5c70a7638da2f9be899da2bb5c0b1d962df850a1225",
+          "sha256_lf": "80a993d3b3dbe5f50512bf1c3675fb9524cef9c2831e53d6e71d333c31385821"
+        },
+        "vw_synthetic_track_21_map.pgm": {
+          "sha256": "235c44ec7c738f36d7db12a2bd01bdc449593daf3257f354986c61ad7933bdcb",
+          "sha256_lf": "235c44ec7c738f36d7db12a2bd01bdc449593daf3257f354986c61ad7933bdcb"
+        },
+        "vw_synthetic_track_21_centerline.csv": {
+          "sha256": "af234256dd716dad3e4f15f34cdf87c9c137f6291cb1c609e008b082588998ba",
+          "sha256_lf": "0440788f86b7dd4ed9d10dd4b5e64be1fb7c4dd47afc55311bc50aff2ded4221"
+        }
+      }
+    },
+    "vw_synthetic_track_22": {
+      "split": "vw_train",
+      "raw_index": 22,
+      "same_shape_as": "synthetic_track_22",
+      "target_half_width_m": 1.415625,
+      "generator_width": 9.637041,
+      "measured_half_width_m": 1.4152,
+      "files": {
+        "vw_synthetic_track_22_map.yaml": {
+          "sha256": "ed3e95c0b2ecc4eb4d1f030f9f766cf8dfa07ed4b4efd2b0e114f917a22138b8",
+          "sha256_lf": "b40579da0d8793f6a980bc92c927450269d83a3d52c0d5d26b711001dcea35c4"
+        },
+        "vw_synthetic_track_22_map.pgm": {
+          "sha256": "6ed2d5da02d64320ec0c3e9d1242635ac42f3f88d8aa72efa726a4fabb75c07a",
+          "sha256_lf": "6ed2d5da02d64320ec0c3e9d1242635ac42f3f88d8aa72efa726a4fabb75c07a"
+        },
+        "vw_synthetic_track_22_centerline.csv": {
+          "sha256": "9d6baa9eec680c51e0807a13c75bed2c2cc046f34e22057312002b364144ae2c",
+          "sha256_lf": "3f8602625b5c2fcd218b284ffb2e7acbf3e286a24038330093a8a38a004fde3f"
+        }
+      }
+    },
+    "vw_synthetic_track_23": {
+      "split": "vw_train",
+      "raw_index": 23,
+      "same_shape_as": "synthetic_track_23",
+      "target_half_width_m": 0.684375,
+      "generator_width": 5.112819,
+      "measured_half_width_m": 0.6856,
+      "files": {
+        "vw_synthetic_track_23_map.yaml": {
+          "sha256": "0c287bdd2c712708ca3a490ee7f6962f6ab239d978b6cfdaa72ca1b8407265cb",
+          "sha256_lf": "108a1d4a225cc36c1facbeca70561e115a9110fb226c900d661d05847e8e8c6c"
+        },
+        "vw_synthetic_track_23_map.pgm": {
+          "sha256": "132eac986e1b206f2c805ae412ea46761af59c6bc2b02f8ace6966b905219c39",
+          "sha256_lf": "132eac986e1b206f2c805ae412ea46761af59c6bc2b02f8ace6966b905219c39"
+        },
+        "vw_synthetic_track_23_centerline.csv": {
+          "sha256": "803f4af6c3fb3ab92ba2b6b03bea99e22bef415f01aba5b62e2efeb0f31e0897",
+          "sha256_lf": "26f337e1c6d0060be017fdb22c9e8f9eeb1a8ec4fb13a5b52147da530e0d737f"
+        }
+      }
+    },
+    "vw_synthetic_track_24": {
+      "split": "vw_train",
+      "raw_index": 24,
+      "same_shape_as": "synthetic_track_24",
+      "target_half_width_m": 1.134375,
+      "generator_width": 7.896956,
+      "measured_half_width_m": 1.1361,
+      "files": {
+        "vw_synthetic_track_24_map.yaml": {
+          "sha256": "6e71d1341fc8a5d193650b0da4b01b0eb94444ff524a20e5866778b42781e937",
+          "sha256_lf": "efdfbaac2ca67bd16f709adb4494e6a9b1d629ba7fab96d990772a23b4a0201c"
+        },
+        "vw_synthetic_track_24_map.pgm": {
+          "sha256": "01c85e202a96f02737e5df38f4d54a03a7be79923e991b8379609b34e0668e6f",
+          "sha256_lf": "01c85e202a96f02737e5df38f4d54a03a7be79923e991b8379609b34e0668e6f"
+        },
+        "vw_synthetic_track_24_centerline.csv": {
+          "sha256": "33651699780532f96984c7e796b1a8ca7fff2f757f25d9b98730e0737fc0552a",
+          "sha256_lf": "6151a82297eb1063a9870084312aa129f89aaebc25a9e39a234500de6cbf94c5"
+        }
+      }
+    },
+    "vw_synthetic_track_25": {
+      "split": "vw_train",
+      "raw_index": 25,
+      "same_shape_as": "synthetic_track_25",
+      "target_half_width_m": 0.909375,
+      "generator_width": 6.504888,
+      "measured_half_width_m": 0.908,
+      "files": {
+        "vw_synthetic_track_25_map.yaml": {
+          "sha256": "8f69814aafaaf5665a9be21afa6b76e82555948a28b3c32a7ac66ad3f055d8ac",
+          "sha256_lf": "8e3e1ac2f5b47de84585aacdf6732dd7e8ddc5a18b3ad211e644cfd5439a5594"
+        },
+        "vw_synthetic_track_25_map.pgm": {
+          "sha256": "d78b379888c375653db5147f51d732d69f78e4cd10f9b00845047423a28ec782",
+          "sha256_lf": "d78b379888c375653db5147f51d732d69f78e4cd10f9b00845047423a28ec782"
+        },
+        "vw_synthetic_track_25_centerline.csv": {
+          "sha256": "cf3c1f434ac800ae14e57a83a8891ba2c17958df82b6bb5c0a8f9bfdc13eff2f",
+          "sha256_lf": "fb641e89dd28f97290147ae8434b9cc3841f7ba37a65747c2050da3d943d1a84"
+        }
+      }
+    },
+    "vw_synthetic_track_26": {
+      "split": "vw_train",
+      "raw_index": 26,
+      "same_shape_as": "synthetic_track_26",
+      "target_half_width_m": 1.359375,
+      "generator_width": 9.289024,
+      "measured_half_width_m": 1.3588,
+      "files": {
+        "vw_synthetic_track_26_map.yaml": {
+          "sha256": "ac75b90cc8d572b01f2a8ba0abe3bc64ab34fb98e89dc8269a897a901298e353",
+          "sha256_lf": "022b68161c058a5cecbdcdc75929622a2f3ed4567dcee780783d4f8e3543dad7"
+        },
+        "vw_synthetic_track_26_map.pgm": {
+          "sha256": "304ea9677aa8075b65535b4804337afc32c8e780fcd3a96bec26ead6e20032be",
+          "sha256_lf": "304ea9677aa8075b65535b4804337afc32c8e780fcd3a96bec26ead6e20032be"
+        },
+        "vw_synthetic_track_26_centerline.csv": {
+          "sha256": "8a0554e3ccec6c066945b9b5abbf876e66c6d62a50c50cbe8a6924f05f5c37b1",
+          "sha256_lf": "992be863eaab07e3a508febf4d10148eed4127a01f78040024f33add6c999a21"
+        }
+      }
+    },
+    "vw_synthetic_track_27": {
+      "split": "vw_train",
+      "raw_index": 27,
+      "same_shape_as": "synthetic_track_27",
+      "target_half_width_m": 0.796875,
+      "generator_width": 5.808854,
+      "measured_half_width_m": 0.797,
+      "files": {
+        "vw_synthetic_track_27_map.yaml": {
+          "sha256": "acc99c86861f390490b8f8326eca971350e45c6d273c93fd3363dc10dc4d37d8",
+          "sha256_lf": "fc10461878ce25c884660c6ee3b8b32a4cfdb4237553317424a9eba9048a926f"
+        },
+        "vw_synthetic_track_27_map.pgm": {
+          "sha256": "49d6da291d8b9ba015b902b0cc73c55e12fb13a1217ba5e4a0bd2b52f922375d",
+          "sha256_lf": "49d6da291d8b9ba015b902b0cc73c55e12fb13a1217ba5e4a0bd2b52f922375d"
+        },
+        "vw_synthetic_track_27_centerline.csv": {
+          "sha256": "d4d4e4180e2f10c0d91cbe31a21852685c633efe60ecb2a9a8dc312bbdf67862",
+          "sha256_lf": "15d3fd7926c3f343af068151a5297dfb9ce32aa32f53cf445f70a036d17e90fd"
+        }
+      }
+    },
+    "vw_synthetic_track_28": {
+      "split": "vw_train",
+      "raw_index": 28,
+      "same_shape_as": "synthetic_track_28",
+      "target_half_width_m": 1.246875,
+      "generator_width": 8.59299,
+      "measured_half_width_m": 1.2486,
+      "files": {
+        "vw_synthetic_track_28_map.yaml": {
+          "sha256": "a50c00c52051b98bda2fa2d2424ff32a4544aaedc1a87dc0dfd5addd97ebe7c3",
+          "sha256_lf": "3bf5cb1d9bc2b316e78176bf15f19c53fd8f2368b50ec44f9296e74360bfee1f"
+        },
+        "vw_synthetic_track_28_map.pgm": {
+          "sha256": "8c373fa819fb84948ed6db4ced96eb17525edb3a3073197097af0deebd30c88e",
+          "sha256_lf": "8c373fa819fb84948ed6db4ced96eb17525edb3a3073197097af0deebd30c88e"
+        },
+        "vw_synthetic_track_28_centerline.csv": {
+          "sha256": "39e6a5389fe6748ff9074764179a1ebfdae501dcf0a27899d97a0e8da01edc8b",
+          "sha256_lf": "0f62131d37df3d4f0ad5a70482c3cb0e5b119566af347414eb1349f314a4f14b"
+        }
+      }
+    },
+    "vw_synthetic_track_29": {
+      "split": "vw_train",
+      "raw_index": 29,
+      "same_shape_as": "synthetic_track_29",
+      "target_half_width_m": 1.021875,
+      "generator_width": 7.200922,
+      "measured_half_width_m": 1.024,
+      "files": {
+        "vw_synthetic_track_29_map.yaml": {
+          "sha256": "bda1aff7df5e83c47c8692812f6c3edcd6124806f514f348a8646dd04798629f",
+          "sha256_lf": "8164c4868458a980b21a6a8a70481efc5e07257996066cab678e9e1133a85442"
+        },
+        "vw_synthetic_track_29_map.pgm": {
+          "sha256": "0106d22c78b7b9fa90038ebbecc61eb53952e006c41222797c7b81c1f0d7b967",
+          "sha256_lf": "0106d22c78b7b9fa90038ebbecc61eb53952e006c41222797c7b81c1f0d7b967"
+        },
+        "vw_synthetic_track_29_centerline.csv": {
+          "sha256": "1cd05442085b3ad771577b2bd513677e5bd7295fb6e38a74029f43b392082372",
+          "sha256_lf": "088bbc01b4d4cbfa02f7daa198e9818d60da59da624de1159ad54fce5ee29345"
+        }
+      }
+    },
+    "vw_synthetic_track_30": {
+      "split": "vw_train",
+      "raw_index": 30,
+      "same_shape_as": "synthetic_track_30",
+      "target_half_width_m": 1.471875,
+      "generator_width": 9.985058,
+      "measured_half_width_m": 1.4708,
+      "files": {
+        "vw_synthetic_track_30_map.yaml": {
+          "sha256": "8836bfae8f848ca2382a0d84cb16e16f51760daa132dc099e5a3d0f1a6713f26",
+          "sha256_lf": "2f18c41d058860b458c4a2a7019503ce22a501c4f4841326dcbebde197fafafb"
+        },
+        "vw_synthetic_track_30_map.pgm": {
+          "sha256": "755523b69443a18438bb79a8b32d27c751ebb17b7617515dba807bec1c1d50b5",
+          "sha256_lf": "755523b69443a18438bb79a8b32d27c751ebb17b7617515dba807bec1c1d50b5"
+        },
+        "vw_synthetic_track_30_centerline.csv": {
+          "sha256": "4bdea7bad5e6ee81fdf35239aad4ff3875b4c079c82dc2fbf7f5c82a135d063b",
+          "sha256_lf": "8a7176411ce15af01b300a67fa5c99cc7d240dafb0c7fd0c0a7352afca62a110"
+        }
+      }
+    },
+    "vw_synthetic_track_31": {
+      "split": "vw_train",
+      "raw_index": 31,
+      "same_shape_as": "synthetic_track_31",
+      "target_half_width_m": 0.614062,
+      "generator_width": 4.677795,
+      "measured_half_width_m": 0.6136,
+      "files": {
+        "vw_synthetic_track_31_map.yaml": {
+          "sha256": "f20418546fffc505e873a0119f0eeb4250f6a1165c9bc96945fda543ba137439",
+          "sha256_lf": "6372f26e086b2a3c689e7125a2bb3ceaf29e43b5a9bc080be844f653ad4ae132"
+        },
+        "vw_synthetic_track_31_map.pgm": {
+          "sha256": "5909b579ffdf1ba904eb82f0146dca36d7a2740248c87b67444f562e081b7171",
+          "sha256_lf": "5909b579ffdf1ba904eb82f0146dca36d7a2740248c87b67444f562e081b7171"
+        },
+        "vw_synthetic_track_31_centerline.csv": {
+          "sha256": "4be4441a06472050039972a58286ceff4588fe76ed7c227bafd0e3604153dc4d",
+          "sha256_lf": "8e90ef7c597996c21708cf5e4684e5fd8563c2557564e7bcb22070ceb32cc644"
+        }
+      }
+    },
+    "vw_synthetic_track_32": {
+      "split": "vw_train",
+      "raw_index": 32,
+      "same_shape_as": "synthetic_track_32",
+      "target_half_width_m": 1.064062,
+      "generator_width": 7.461932,
+      "measured_half_width_m": 1.0658,
+      "files": {
+        "vw_synthetic_track_32_map.yaml": {
+          "sha256": "8aa8a88f746fe9c64edbac91ba0edf4bae7b85aaff3e3972b1f0b4be9206b91c",
+          "sha256_lf": "8d8cad5c91566a3b688be8c0aed223bc8ad86d1bf9f6b09cba42c371f578818d"
+        },
+        "vw_synthetic_track_32_map.pgm": {
+          "sha256": "bda57a4387867ab5891ff3c3b1a97d1f1c42e7e10b49c49fda24a475e3556649",
+          "sha256_lf": "bda57a4387867ab5891ff3c3b1a97d1f1c42e7e10b49c49fda24a475e3556649"
+        },
+        "vw_synthetic_track_32_centerline.csv": {
+          "sha256": "a016c8356992629f9b6a1e57b79504d08ed312d41c8a7ea24991b81082c90778",
+          "sha256_lf": "b1f1e639f04c2ea3e9d2561173f309e592b9cf0f5567e994f5c9e97baf97aa59"
+        }
+      }
+    },
+    "vw_synthetic_track_33": {
+      "split": "vw_train",
+      "raw_index": 33,
+      "same_shape_as": "synthetic_track_33",
+      "target_half_width_m": 0.839063,
+      "generator_width": 6.069869,
+      "measured_half_width_m": 0.8424,
+      "files": {
+        "vw_synthetic_track_33_map.yaml": {
+          "sha256": "d3ba16bed556bc5081463c66801cd787b1fe8ddf71e93cf2d013f1a0030df794",
+          "sha256_lf": "b31c34541095d3451520b4bc4deddaccd5764ba638c3a741afff82477c91e80b"
+        },
+        "vw_synthetic_track_33_map.pgm": {
+          "sha256": "00dc9197f2b3687f87e9c6b5932a9107300daa123be950079829713a5d381096",
+          "sha256_lf": "00dc9197f2b3687f87e9c6b5932a9107300daa123be950079829713a5d381096"
+        },
+        "vw_synthetic_track_33_centerline.csv": {
+          "sha256": "c53fffee78fc6522e536a526bf1283a8471f11f86ec15dd39e6a29858c300504",
+          "sha256_lf": "ebba1dfaccbf6e99fd9b11f22ba42a365880b6e7570e21ce235cd411c7c76a08"
+        }
+      }
+    },
+    "vw_synthetic_track_34": {
+      "split": "vw_train",
+      "raw_index": 34,
+      "same_shape_as": "synthetic_track_34",
+      "target_half_width_m": 1.289062,
+      "generator_width": 8.854,
+      "measured_half_width_m": 1.2884,
+      "files": {
+        "vw_synthetic_track_34_map.yaml": {
+          "sha256": "332bf0d9861cb71933fe92a962d67635f96cfbe26eddd8b2e9b0bf0274ab83e6",
+          "sha256_lf": "3341bba8e5b0dac59dc8b7db4f73dc00eda9b742d8fecd4adc3fd57da85ac913"
+        },
+        "vw_synthetic_track_34_map.pgm": {
+          "sha256": "0bec6f87127f57ef3b50718cd3102c891f1b1a514f98225dc4851432657e7d16",
+          "sha256_lf": "0bec6f87127f57ef3b50718cd3102c891f1b1a514f98225dc4851432657e7d16"
+        },
+        "vw_synthetic_track_34_centerline.csv": {
+          "sha256": "1a831b18327f664bbf6af86f98ead53906bb364c42e611fc263c7757b5d2534a",
+          "sha256_lf": "f063a982258bca12d37457e8ee0a30427f9fe61950ceeb99d545e3d4e4aba6e3"
+        }
+      }
+    },
+    "vw_synthetic_track_35": {
+      "split": "vw_train",
+      "raw_index": 35,
+      "same_shape_as": "synthetic_track_35",
+      "target_half_width_m": 0.726562,
+      "generator_width": 5.373829,
+      "measured_half_width_m": 0.7247,
+      "files": {
+        "vw_synthetic_track_35_map.yaml": {
+          "sha256": "46223220e3d9d307621a0b92becaa3a4d529ca1a801db8aaa5138b67f29fa222",
+          "sha256_lf": "e884c1972ab0f987b86b8f25f7796d0d000fa39ede4648f9bb53e844f2a1a74d"
+        },
+        "vw_synthetic_track_35_map.pgm": {
+          "sha256": "ccbc7098ee9d7995f4732d46bd2daea5efbddd7885d46b1c116c8f0352ee6843",
+          "sha256_lf": "ccbc7098ee9d7995f4732d46bd2daea5efbddd7885d46b1c116c8f0352ee6843"
+        },
+        "vw_synthetic_track_35_centerline.csv": {
+          "sha256": "7856e17610fc565e2bf0da1deca409c81a349f8e19f60a5c9ddea8e668a9c69a",
+          "sha256_lf": "2a44358f7b08c4e61d7b421b2c3646880a4a4cdf364c6ec8a97c1a0c369b1e53"
+        }
+      }
+    },
+    "vw_synthetic_track_36": {
+      "split": "vw_train",
+      "raw_index": 36,
+      "same_shape_as": "synthetic_track_36",
+      "target_half_width_m": 1.176562,
+      "generator_width": 8.157966,
+      "measured_half_width_m": 1.178,
+      "files": {
+        "vw_synthetic_track_36_map.yaml": {
+          "sha256": "0daba7cca3b2eee2978e23d8b9a2fef8b9477452b81e239fa1096c063e8d5fb4",
+          "sha256_lf": "dd07e10a459df61d1ba9bb2921243bb756725419e3f168ca6ef026412b2b0b25"
+        },
+        "vw_synthetic_track_36_map.pgm": {
+          "sha256": "64230c5f4728bfc00c88f06f64921ac08135ae7a2025a56a76c3d53d0e5c7582",
+          "sha256_lf": "64230c5f4728bfc00c88f06f64921ac08135ae7a2025a56a76c3d53d0e5c7582"
+        },
+        "vw_synthetic_track_36_centerline.csv": {
+          "sha256": "66eb41315ec41670485ecbab0f49450257f688ded53af01c87da3695d8bb6527",
+          "sha256_lf": "defc795353acb2418482de7c026190696dbbbb94e2c6b610792c165c5eaa71a0"
+        }
+      }
+    },
+    "vw_synthetic_track_37": {
+      "split": "vw_train",
+      "raw_index": 37,
+      "same_shape_as": "synthetic_track_37",
+      "target_half_width_m": 0.951562,
+      "generator_width": 6.765897,
+      "measured_half_width_m": 0.9548,
+      "files": {
+        "vw_synthetic_track_37_map.yaml": {
+          "sha256": "4b30e27318d424140aeebd4986741282c281122bf9de1d8be23a92f418ecb14c",
+          "sha256_lf": "a72782b45c4fd8c7c824f45e2e6b2f533c3a6e20b71e11c75df6ec4bd08710d3"
+        },
+        "vw_synthetic_track_37_map.pgm": {
+          "sha256": "26fc0b4849f500ff84b2e1fdf612025b6381ddc5fe96fdb9935ebccea69fa6e1",
+          "sha256_lf": "26fc0b4849f500ff84b2e1fdf612025b6381ddc5fe96fdb9935ebccea69fa6e1"
+        },
+        "vw_synthetic_track_37_centerline.csv": {
+          "sha256": "6935a023672a5a129874087fba882f113f1beffe1ac2b64934168bde4d52a70e",
+          "sha256_lf": "b26bafaec1e62bb45e3aaf6605cf399929515de6aa4c8c7446e9cc962c15af78"
+        }
+      }
+    },
+    "vw_synthetic_track_38": {
+      "split": "vw_train",
+      "raw_index": 38,
+      "same_shape_as": "synthetic_track_38",
+      "target_half_width_m": 1.401563,
+      "generator_width": 9.55004,
+      "measured_half_width_m": 1.4042,
+      "files": {
+        "vw_synthetic_track_38_map.yaml": {
+          "sha256": "94050b98e5a65c757d6c9ee660606a866369c1be1eb60866ed5145cbdc531837",
+          "sha256_lf": "6bc1ba3a5f9f23946bba1ed86d030474f9793174a14f514ec50896b98f9399f5"
+        },
+        "vw_synthetic_track_38_map.pgm": {
+          "sha256": "d5e8688f8a792f833c5482b46248e03d1462af99923dd786025d5d400f68f9bb",
+          "sha256_lf": "d5e8688f8a792f833c5482b46248e03d1462af99923dd786025d5d400f68f9bb"
+        },
+        "vw_synthetic_track_38_centerline.csv": {
+          "sha256": "3396e7d706778f7eb1cad7eccd8665ba4ece13f63ae0bf5b2c96dbe472748c37",
+          "sha256_lf": "1114fa3fce985573abdb85dbc07e00c55721d667796477618a204ce3cb19db5d"
+        }
+      }
+    },
+    "vw_synthetic_track_39": {
+      "split": "vw_train",
+      "raw_index": 39,
+      "same_shape_as": "synthetic_track_39",
+      "target_half_width_m": 0.670312,
+      "generator_width": 5.025812,
+      "measured_half_width_m": 0.6699,
+      "files": {
+        "vw_synthetic_track_39_map.yaml": {
+          "sha256": "4e8e46a86b9f779e7bb6e08a6501a8dc57fee0990f99e25cde68a50a0da7d0af",
+          "sha256_lf": "9a0aa3a7f24bb099ceac8555f5d3803d88038038557db0b9f73ba524765bf3b7"
+        },
+        "vw_synthetic_track_39_map.pgm": {
+          "sha256": "f3cd875a07cfed77838148bb56f21c8bd07a4f3d4fb47f4b6bfc0a9df726f74a",
+          "sha256_lf": "f3cd875a07cfed77838148bb56f21c8bd07a4f3d4fb47f4b6bfc0a9df726f74a"
+        },
+        "vw_synthetic_track_39_centerline.csv": {
+          "sha256": "e664d717a1f14c058430417683ac51e13ed5980a48edcb6cc407b8d5c2ef5424",
+          "sha256_lf": "ff36294832e7304c59e87744f8ef0876b20edc955513efe4b8af6a906d0ba378"
+        }
+      }
+    },
+    "vw_synthetic_track_40": {
+      "split": "vw_train",
+      "raw_index": 40,
+      "same_shape_as": "synthetic_track_40",
+      "target_half_width_m": 1.120313,
+      "generator_width": 7.809955,
+      "measured_half_width_m": 1.1245,
+      "files": {
+        "vw_synthetic_track_40_map.yaml": {
+          "sha256": "6952603f45e5e9b29f0edfc7b84c1a4ef04b2b6e734137461a6c2d79c7508391",
+          "sha256_lf": "a95750f6e64bcaf30e9ca89836cc8dec4f9e000d0274abf154809bb5ada61115"
+        },
+        "vw_synthetic_track_40_map.pgm": {
+          "sha256": "792b6324c5213c6d44da63578e468c23208c79ecc22ccc5c79152f095c9ddaab",
+          "sha256_lf": "792b6324c5213c6d44da63578e468c23208c79ecc22ccc5c79152f095c9ddaab"
+        },
+        "vw_synthetic_track_40_centerline.csv": {
+          "sha256": "bc5ec1f8b903221015ac03176547a89a39dc828f2906a422a137b2247ff3170f",
+          "sha256_lf": "3d959f4c415a6a218e916b747a3a3fe61cee6bfa1b5adc3245af97879488da95"
+        }
+      }
+    },
+    "vw_synthetic_track_41": {
+      "split": "vw_train",
+      "raw_index": 41,
+      "same_shape_as": "synthetic_track_41",
+      "target_half_width_m": 0.895312,
+      "generator_width": 6.41788,
+      "measured_half_width_m": 0.8964,
+      "files": {
+        "vw_synthetic_track_41_map.yaml": {
+          "sha256": "c9709c4aed3e9cbe6b78cceccac97bdc363e5cefdd9cb5473ed245183320ffde",
+          "sha256_lf": "f05420857b8ae28d8ebb7ccc53aae8bd27d2b0878e820c54242ebc4714fd12f1"
+        },
+        "vw_synthetic_track_41_map.pgm": {
+          "sha256": "ae667d436cdce35108a41deefa0562a5220475ed0177b2685615e5c4ab546ae0",
+          "sha256_lf": "ae667d436cdce35108a41deefa0562a5220475ed0177b2685615e5c4ab546ae0"
+        },
+        "vw_synthetic_track_41_centerline.csv": {
+          "sha256": "949b2be737e2927972d4da2969a7c0ba1c118d28b11c8a04b7b830e3eb27a6fb",
+          "sha256_lf": "d18457d9f53f6960796dadf8ad30a651735e02cc9ed6763417fa3178c22a7fa1"
+        }
+      }
+    },
+    "vw_synthetic_track_42": {
+      "split": "vw_train",
+      "raw_index": 42,
+      "same_shape_as": "synthetic_track_42",
+      "target_half_width_m": 1.345312,
+      "generator_width": 9.202017,
+      "measured_half_width_m": 1.3439,
+      "files": {
+        "vw_synthetic_track_42_map.yaml": {
+          "sha256": "b3fb60462a7717ea3cc086fbaae3d1bd44513b9d2c9b340008853bccb9bffbe5",
+          "sha256_lf": "cbec9064196353e315dff87b67e01bd68b9df58e13d36ec428697892540e44d5"
+        },
+        "vw_synthetic_track_42_map.pgm": {
+          "sha256": "cf32547806d687f122a7eaf147b6ca7d80bd11f172f1b3a0a1e98072a912d4c1",
+          "sha256_lf": "cf32547806d687f122a7eaf147b6ca7d80bd11f172f1b3a0a1e98072a912d4c1"
+        },
+        "vw_synthetic_track_42_centerline.csv": {
+          "sha256": "058d8f43b93c6b0a84f2f2fe9612f02507d6d7e5374bd48368bae2a9f6aff371",
+          "sha256_lf": "b04f6bfa895ab0edd08fd9c8c0c0ea32b426e1feac91b0a142661f4443d8ea95"
+        }
+      }
+    },
+    "vw_synthetic_track_43": {
+      "split": "vw_train",
+      "raw_index": 43,
+      "same_shape_as": "synthetic_track_43",
+      "target_half_width_m": 0.782813,
+      "generator_width": 5.721852,
+      "measured_half_width_m": 0.782,
+      "files": {
+        "vw_synthetic_track_43_map.yaml": {
+          "sha256": "c17b951d1ae2776adfe37557f0d3d54c1be551c11992b5d6bd2dcdb76cad5e6d",
+          "sha256_lf": "11934dac056db03e208de643afded23be2c4dc7e0e97e766c0518ecc8c7a0b04"
+        },
+        "vw_synthetic_track_43_map.pgm": {
+          "sha256": "3c4ccea4b30bf65acbce09f3d7fd3cc5293f2546dc456f3479a899f9e38acaf1",
+          "sha256_lf": "3c4ccea4b30bf65acbce09f3d7fd3cc5293f2546dc456f3479a899f9e38acaf1"
+        },
+        "vw_synthetic_track_43_centerline.csv": {
+          "sha256": "8f2185661ee4a8483a4c6d52ed6a6939d948c795ae145af8a16bd7a8619f6b12",
+          "sha256_lf": "1ecf6545dd8f1263f321824ae8bed8d21885cecef426be57c56ca9fa115516b5"
+        }
+      }
+    },
+    "vw_synthetic_track_44": {
+      "split": "vw_train",
+      "raw_index": 44,
+      "same_shape_as": "synthetic_track_44",
+      "target_half_width_m": 1.232813,
+      "generator_width": 8.505989,
+      "measured_half_width_m": 1.2326,
+      "files": {
+        "vw_synthetic_track_44_map.yaml": {
+          "sha256": "ad830a8f2277a8e6dee5c0b6ea2e11e5e2adbed944fcbf507ccf3197b84e9104",
+          "sha256_lf": "e12afec7b623dd18d29ed7dbd77c23b8c949d9b0d655a37ae4e86eca21f73b9b"
+        },
+        "vw_synthetic_track_44_map.pgm": {
+          "sha256": "6f5b9a49bf588de1617a28587fc9184bf87eca3c7427f02f56e87b9b8144646f",
+          "sha256_lf": "6f5b9a49bf588de1617a28587fc9184bf87eca3c7427f02f56e87b9b8144646f"
+        },
+        "vw_synthetic_track_44_centerline.csv": {
+          "sha256": "6bd4b47fa05e3672dfcc72fea5e576fc77887c86e43fee86a824b0fc21d4e755",
+          "sha256_lf": "6aa2ecf1010f7e7367904c905a6f0638ef2b79e5aef378ce9db2688a38f5a300"
+        }
+      }
+    },
+    "vw_synthetic_track_45": {
+      "split": "vw_train",
+      "raw_index": 45,
+      "same_shape_as": "synthetic_track_45",
+      "target_half_width_m": 1.007812,
+      "generator_width": 7.113914,
+      "measured_half_width_m": 1.0102,
+      "files": {
+        "vw_synthetic_track_45_map.yaml": {
+          "sha256": "b2bba0b11c6b7aae5b7ed30840525015871387694f1f10753ad78bf650c59eb7",
+          "sha256_lf": "843b4298a3f28bac002e79afa666a9ada78713807a94595000e2bc9d5c9688cc"
+        },
+        "vw_synthetic_track_45_map.pgm": {
+          "sha256": "3986bc7e6c91c23784c6e24c2dde13003bc93ab0ba0d69ef8bb757ae35e94210",
+          "sha256_lf": "3986bc7e6c91c23784c6e24c2dde13003bc93ab0ba0d69ef8bb757ae35e94210"
+        },
+        "vw_synthetic_track_45_centerline.csv": {
+          "sha256": "05d035c054d0d33a04a56426712aa8ccd8f08ed9556f9470d4c8d0ca9160a328",
+          "sha256_lf": "3bf208b79f91dfefdf4a34f3a59d82b1c93d3fc583365b39f39e2c04d189b527"
+        }
+      }
+    },
+    "vw_synthetic_track_46": {
+      "split": "vw_train",
+      "raw_index": 46,
+      "same_shape_as": "synthetic_track_46",
+      "target_half_width_m": 1.457812,
+      "generator_width": 9.898051,
+      "measured_half_width_m": 1.4604,
+      "files": {
+        "vw_synthetic_track_46_map.yaml": {
+          "sha256": "664a548edc5160e780744a8c75b6cd20eae86fbcbae04a1b1ec4936d75064141",
+          "sha256_lf": "b3a69b7dcc7b7f2ff896d16b10dc39f0816b1b07960a154100affc7689ef2c93"
+        },
+        "vw_synthetic_track_46_map.pgm": {
+          "sha256": "5611967ffc1e8736e3c663305474389c59ac700bece9b113c36358d973eeebb7",
+          "sha256_lf": "5611967ffc1e8736e3c663305474389c59ac700bece9b113c36358d973eeebb7"
+        },
+        "vw_synthetic_track_46_centerline.csv": {
+          "sha256": "107b6a5a3b1c7b52f3deaf1d8cb24e0ba137f08cbd16f8198729cbb685fe50f1",
+          "sha256_lf": "3bd7acc3fbc3d347984f79c340cecaee03886d0ee4012f014d9fdc46b7302aed"
+        }
+      }
+    },
+    "vw_synthetic_track_47": {
+      "split": "vw_train",
+      "raw_index": 47,
+      "same_shape_as": "synthetic_track_47",
+      "target_half_width_m": 0.642188,
+      "generator_width": 4.85181,
+      "measured_half_width_m": 0.6469,
+      "files": {
+        "vw_synthetic_track_47_map.yaml": {
+          "sha256": "1bd86511520bdcc398b1f61f74baffbc02fe9c86f8a1385f9682278a4faf48b4",
+          "sha256_lf": "e697e1fe3a9c9da6520ead4c51a96a553033717b1d14f42545217a3bab1cba0e"
+        },
+        "vw_synthetic_track_47_map.pgm": {
+          "sha256": "da4ed65609412bffe5748c73b49318e8c832dfea3695b9dde71f83aad707e537",
+          "sha256_lf": "da4ed65609412bffe5748c73b49318e8c832dfea3695b9dde71f83aad707e537"
+        },
+        "vw_synthetic_track_47_centerline.csv": {
+          "sha256": "e0a72a028e482745bad969658d8cedb3722b8ef2df65dd1fc819111f93c15011",
+          "sha256_lf": "624711840798b0ae84ac92c4c26938038aa42fc767722587d93fdb385263ff97"
+        }
+      }
+    },
+    "vw_synthetic_track_48": {
+      "split": "vw_train",
+      "raw_index": 48,
+      "same_shape_as": "synthetic_track_48",
+      "target_half_width_m": 1.092188,
+      "generator_width": 7.635946,
+      "measured_half_width_m": 1.0934,
+      "files": {
+        "vw_synthetic_track_48_map.yaml": {
+          "sha256": "8aa0eec8a2470cdff08c763756d645324dbfd03cbfc8758cd981560ae114a049",
+          "sha256_lf": "2b0c5bd5eb8f2a0e208c919f6f30bb56e1b9683e3cb0da0c74a247293b140c96"
+        },
+        "vw_synthetic_track_48_map.pgm": {
+          "sha256": "bd7d44c9af18f2b65c88274cf0420b2ca899e37878653af7bf329ab44b214d90",
+          "sha256_lf": "bd7d44c9af18f2b65c88274cf0420b2ca899e37878653af7bf329ab44b214d90"
+        },
+        "vw_synthetic_track_48_centerline.csv": {
+          "sha256": "c9649668e68522cf53b7fc72f9ab92f1f1264064dd201ca68592d3b08dc0eb25",
+          "sha256_lf": "b765c9dd06cf9c17348e3ff3b275c8656952add6d294cd79fc445f2ce4fe07ff"
+        }
+      }
+    },
+    "vw_synthetic_track_49": {
+      "split": "vw_train",
+      "raw_index": 49,
+      "same_shape_as": "synthetic_track_49",
+      "target_half_width_m": 0.867188,
+      "generator_width": 6.243878,
+      "measured_half_width_m": 0.8676,
+      "files": {
+        "vw_synthetic_track_49_map.yaml": {
+          "sha256": "0f54512e6d3ffc0ee3a921a69439ea8b2a5e9943506c295d7ff893a1c99c505e",
+          "sha256_lf": "2768f91e7a0fa725ec4af5a30af5e759ec8b0429835dc74feebf47a495955960"
+        },
+        "vw_synthetic_track_49_map.pgm": {
+          "sha256": "d22507f9cf1edb75312f4aac9fb29a15bfae26ca3d509583a353da215a761b99",
+          "sha256_lf": "d22507f9cf1edb75312f4aac9fb29a15bfae26ca3d509583a353da215a761b99"
+        },
+        "vw_synthetic_track_49_centerline.csv": {
+          "sha256": "90c2ac7cc97fd644942e286ceaf5e2548a5af253517fe95feb687ae4eb209505",
+          "sha256_lf": "47c09ee24db35fcb064afc4cf0b9718d978bdc80639c2588aab12ff128758859"
+        }
+      }
+    },
+    "vw_synthetic_track_50": {
+      "split": "vw_train",
+      "raw_index": 50,
+      "same_shape_as": "synthetic_track_50",
+      "target_half_width_m": 1.317187,
+      "generator_width": 9.028008,
+      "measured_half_width_m": 1.3229,
+      "files": {
+        "vw_synthetic_track_50_map.yaml": {
+          "sha256": "b2ceb6d691bd26ca378c80fbaad2cc5f0dd0d3b32c1ee8cdeaaedfe2c6bd1b6b",
+          "sha256_lf": "7c187b309684dc769a22121bbf4063a345600785bc9dfa417af2c6e90b39e796"
+        },
+        "vw_synthetic_track_50_map.pgm": {
+          "sha256": "bd7aa68b349769dd0743dd9a5d0dcb22e54b09dc717ab1ad4795ec40c8879158",
+          "sha256_lf": "bd7aa68b349769dd0743dd9a5d0dcb22e54b09dc717ab1ad4795ec40c8879158"
+        },
+        "vw_synthetic_track_50_centerline.csv": {
+          "sha256": "5be0e10ea1fba3f8beaf8130e3b5fbcd7c43db4c8df6d20fad83a68a9d04efef",
+          "sha256_lf": "5bba64f77d999e8e2dbb9f95dba31b85937e5cabff963ce03736d6d941d3ea56"
+        }
+      }
+    },
+    "vw_synthetic_track_51": {
+      "split": "vw_train",
+      "raw_index": 51,
+      "same_shape_as": "synthetic_track_51",
+      "target_half_width_m": 0.754687,
+      "generator_width": 5.547838,
+      "measured_half_width_m": 0.758,
+      "files": {
+        "vw_synthetic_track_51_map.yaml": {
+          "sha256": "3aed0b39643010ca25a91bfb49be75b43c34fc2aa8ca8614327d72d364381477",
+          "sha256_lf": "282d1991e4a67178c3ab690aadab0965e47cb855b911b1baadf4a6ab1a5ea9ac"
+        },
+        "vw_synthetic_track_51_map.pgm": {
+          "sha256": "66d70781e4f90c0391160ea5aed4cb3609ba048c1496363ed4c2a31369bbf580",
+          "sha256_lf": "66d70781e4f90c0391160ea5aed4cb3609ba048c1496363ed4c2a31369bbf580"
+        },
+        "vw_synthetic_track_51_centerline.csv": {
+          "sha256": "87432642604dcd98f328253262610291743d565d7fcd399334d7ddd9ecd493b4",
+          "sha256_lf": "0339354e138a4a5577eaae93da357491d8239bdbbc1423774a964705776f52cd"
+        }
+      }
+    },
+    "vw_synthetic_track_52": {
+      "split": "vw_train",
+      "raw_index": 52,
+      "same_shape_as": "synthetic_track_52",
+      "target_half_width_m": 1.204687,
+      "generator_width": 8.331974,
+      "measured_half_width_m": 1.206,
+      "files": {
+        "vw_synthetic_track_52_map.yaml": {
+          "sha256": "7de18aed849884ff8414701e20129c9511e53746dd231b93814933bb658f7d81",
+          "sha256_lf": "78cd797cf21b455f6d14dbdd8f82e4674a497ffc507bc9d40643f0c3797e8144"
+        },
+        "vw_synthetic_track_52_map.pgm": {
+          "sha256": "1141b369a4523e9b3078b2aa5ce8152cc56e05c2e9643b72e13b5ce5a5283748",
+          "sha256_lf": "1141b369a4523e9b3078b2aa5ce8152cc56e05c2e9643b72e13b5ce5a5283748"
+        },
+        "vw_synthetic_track_52_centerline.csv": {
+          "sha256": "9503a6b238a195ed570e88937ca8b65712fbbf3a8f835c7a0e257497684d1e4e",
+          "sha256_lf": "d02c13949e66f55baf518c92ef169ca65152971afac6e0768e67ef79bf2b45a1"
+        }
+      }
+    },
+    "vw_synthetic_track_53": {
+      "split": "vw_train",
+      "raw_index": 53,
+      "same_shape_as": "synthetic_track_53",
+      "target_half_width_m": 0.979688,
+      "generator_width": 6.939912,
+      "measured_half_width_m": 0.9773,
+      "files": {
+        "vw_synthetic_track_53_map.yaml": {
+          "sha256": "e7d968d7cbb35b7ed1b52fa7b75844a178ea161ef10dfdf12a769ad7f0ff540c",
+          "sha256_lf": "47d4c0696dbb23fc561a3247318526809596a03fdf95a214003fd3b1648a8e34"
+        },
+        "vw_synthetic_track_53_map.pgm": {
+          "sha256": "216488753d84f815e65f6b3aa56616974f71f337576bec6bb62db4fda2bfcbd0",
+          "sha256_lf": "216488753d84f815e65f6b3aa56616974f71f337576bec6bb62db4fda2bfcbd0"
+        },
+        "vw_synthetic_track_53_centerline.csv": {
+          "sha256": "704b662d5ab02c0cd1d078f75b971bb28dedb2ba91fc5b6619d47e7b1ebb349f",
+          "sha256_lf": "acb668f9f160a63f74ef744a648af86a67c4575a90f385822e51d754713c0f09"
+        }
+      }
+    },
+    "vw_synthetic_track_54": {
+      "split": "vw_train",
+      "raw_index": 54,
+      "same_shape_as": "synthetic_track_54",
+      "target_half_width_m": 1.429688,
+      "generator_width": 9.724049,
+      "measured_half_width_m": 1.429,
+      "files": {
+        "vw_synthetic_track_54_map.yaml": {
+          "sha256": "329da877419f3bee78319df472b05dd2b5b29e965a90fe46fff9bbed064f9501",
+          "sha256_lf": "c23728775f6aa7a806345107f6d8146d63430a7a2973e454cf9ce272eee1049e"
+        },
+        "vw_synthetic_track_54_map.pgm": {
+          "sha256": "b5207e709f8eca37d74671d70a7eac5524a0f52044e1483162dc4d565c1844d3",
+          "sha256_lf": "b5207e709f8eca37d74671d70a7eac5524a0f52044e1483162dc4d565c1844d3"
+        },
+        "vw_synthetic_track_54_centerline.csv": {
+          "sha256": "3380fb0ae4ce3080623322c242f9a219ffe59998e84441fd6fc96179686b9f0c",
+          "sha256_lf": "4767762a338f97e1a0951bce139990545065cc03a464e42103b74065bb1d0a0c"
+        }
+      }
+    },
+    "vw_synthetic_track_55": {
+      "split": "vw_train",
+      "raw_index": 55,
+      "same_shape_as": "synthetic_track_55",
+      "target_half_width_m": 0.698437,
+      "generator_width": 5.199821,
+      "measured_half_width_m": 0.702,
+      "files": {
+        "vw_synthetic_track_55_map.yaml": {
+          "sha256": "f359d4f464cabc524f5f1533594127dfbe4d0054c9cc502d4bc9277d43d409e5",
+          "sha256_lf": "f2e142075f8814db22a85f4df1a57290ee5202336d36be924bd5f0c75d9c54ef"
+        },
+        "vw_synthetic_track_55_map.pgm": {
+          "sha256": "a6d3b26a0a490c1a01de9586cfb9c7f6d45544a8a42b1b2a035e595a0a24e0cd",
+          "sha256_lf": "a6d3b26a0a490c1a01de9586cfb9c7f6d45544a8a42b1b2a035e595a0a24e0cd"
+        },
+        "vw_synthetic_track_55_centerline.csv": {
+          "sha256": "63e54e93aa6f7613771fe33eda5e4948ec15fee89398a27b8e90089c412b4dea",
+          "sha256_lf": "fdb15e355b194cd59841e56e8e7d4165bb6b222871fffb8080036ca1275ca088"
+        }
+      }
+    },
+    "vw_synthetic_track_56": {
+      "split": "vw_train",
+      "raw_index": 56,
+      "same_shape_as": "synthetic_track_56",
+      "target_half_width_m": 1.148438,
+      "generator_width": 7.983963,
+      "measured_half_width_m": 1.1518,
+      "files": {
+        "vw_synthetic_track_56_map.yaml": {
+          "sha256": "157b418016ba4fb3651ee1327170e75fe645d61ebc33bc52f456b7d693da543a",
+          "sha256_lf": "56dbd6fe3a40f34acf7e45b04129f9c89303e11f3a9daf9235d79d9652300776"
+        },
+        "vw_synthetic_track_56_map.pgm": {
+          "sha256": "b5a9aca5df3124e045462667d1f6f1e8339a8da7159709b9c5793f8905c3a3c1",
+          "sha256_lf": "b5a9aca5df3124e045462667d1f6f1e8339a8da7159709b9c5793f8905c3a3c1"
+        },
+        "vw_synthetic_track_56_centerline.csv": {
+          "sha256": "28878e2bfce99b0d4ddcdd2a79a963b040483bb3705885e8112756e89b31abae",
+          "sha256_lf": "a8ac8f6fbe859197c831400569b26d0e52074a4f6c9adf523712fbd0d4ab3394"
+        }
+      }
+    },
+    "vw_synthetic_track_57": {
+      "split": "vw_train",
+      "raw_index": 57,
+      "same_shape_as": "synthetic_track_57",
+      "target_half_width_m": 0.923437,
+      "generator_width": 6.591889,
+      "measured_half_width_m": 0.9244,
+      "files": {
+        "vw_synthetic_track_57_map.yaml": {
+          "sha256": "53f0f053f964f57aa73f1ed23736bbd83fe29a8fbfb410744a36af54b7a788ce",
+          "sha256_lf": "4634a22fc832657e69ab195a7a92d1b06a7c9182e8d48badffdc4b54db770b1c"
+        },
+        "vw_synthetic_track_57_map.pgm": {
+          "sha256": "6d74e031136801fb296e6005aafc2bcb07ee8f6969d9720111aafcc39a2ebd5d",
+          "sha256_lf": "6d74e031136801fb296e6005aafc2bcb07ee8f6969d9720111aafcc39a2ebd5d"
+        },
+        "vw_synthetic_track_57_centerline.csv": {
+          "sha256": "06a32efb935b83340159c41eea63cb7db534a1d18ca690d2baa88ce82331595e",
+          "sha256_lf": "0ebddce949736b43e912d2256459b41ce018dba2a71f2892c28bc1ba9bc41197"
+        }
+      }
+    },
+    "vw_synthetic_track_58": {
+      "split": "vw_train",
+      "raw_index": 58,
+      "same_shape_as": "synthetic_track_58",
+      "target_half_width_m": 1.373438,
+      "generator_width": 9.376032,
+      "measured_half_width_m": 1.3778,
+      "files": {
+        "vw_synthetic_track_58_map.yaml": {
+          "sha256": "b6fcfcce630e60b50ae2f807c03c7f944b02eac6e120e1741015408e00b4c2f8",
+          "sha256_lf": "5abc3bba850c409082f5b8177e7dc44273c007deb025b3e791c9fb2f647d26eb"
+        },
+        "vw_synthetic_track_58_map.pgm": {
+          "sha256": "7e9ccf3d01616f8ffb94b9f5a3724ce5fe3df726a0975050c8aaf267ac6b80d7",
+          "sha256_lf": "7e9ccf3d01616f8ffb94b9f5a3724ce5fe3df726a0975050c8aaf267ac6b80d7"
+        },
+        "vw_synthetic_track_58_centerline.csv": {
+          "sha256": "2ec5d49e1e9cd70a9c81c8ecb61798bd12ad536808383ff1b0ce886418a5ec37",
+          "sha256_lf": "e56e0d579671fa8762dc89c5e88ae6e1d6f7a6bd2ae8f25d93d9f8622c0a22ba"
+        }
+      }
+    },
+    "vw_synthetic_track_59": {
+      "split": "vw_train",
+      "raw_index": 59,
+      "same_shape_as": "synthetic_track_59",
+      "target_half_width_m": 0.810937,
+      "generator_width": 5.895855,
+      "measured_half_width_m": 0.8114,
+      "files": {
+        "vw_synthetic_track_59_map.yaml": {
+          "sha256": "c23d816a82d7a3d1ca4e7149561bdc544cb3559048e50f70d1d1b69ab046216b",
+          "sha256_lf": "7c40c0b7b071e3136aa954f705ea28443d341fcb1c88d9e5ef8feebcd9d41a38"
+        },
+        "vw_synthetic_track_59_map.pgm": {
+          "sha256": "19d634f9de7e36362e7da007aba71a0e4f1964a2c2c1b07a9a197c02fbc2f2ff",
+          "sha256_lf": "19d634f9de7e36362e7da007aba71a0e4f1964a2c2c1b07a9a197c02fbc2f2ff"
+        },
+        "vw_synthetic_track_59_centerline.csv": {
+          "sha256": "0793b28f284fa8edae438601ca4901d31cbbccf51760c3429a16fb9df6fefdb1",
+          "sha256_lf": "f21dba39876999312e31ef649ae30c72badbdde11b4cedb890e49eac3227508d"
+        }
+      }
+    },
+    "vw_synthetic_track_60": {
+      "split": "vw_train",
+      "raw_index": 60,
+      "same_shape_as": "synthetic_track_60",
+      "target_half_width_m": 1.260938,
+      "generator_width": 8.679998,
+      "measured_half_width_m": 1.262,
+      "files": {
+        "vw_synthetic_track_60_map.yaml": {
+          "sha256": "7e882f94bb1670a92b5e083e3b5419fc101335e8d23d676bb420deaa3fe0c757",
+          "sha256_lf": "49a26c6e3409c23e84fdc8360146d54288339e8aa0d3eb3f1abb4e2ed4290178"
+        },
+        "vw_synthetic_track_60_map.pgm": {
+          "sha256": "162a08c22f24da4dc6aa56a6b381530e450f522e16e205ab54ae1ec4057b55ab",
+          "sha256_lf": "162a08c22f24da4dc6aa56a6b381530e450f522e16e205ab54ae1ec4057b55ab"
+        },
+        "vw_synthetic_track_60_centerline.csv": {
+          "sha256": "6c76b2c4e5df06bf84a36265a40dff64260e07a93c9947a1e20da439e9bcadc5",
+          "sha256_lf": "9b2da3a7f2fc96b60e6802a6ebbb89f3ffba8e35d965c7acde49bb43f7faf009"
+        }
+      }
+    },
+    "vw_synthetic_track_61": {
+      "split": "vw_train",
+      "raw_index": 61,
+      "same_shape_as": "synthetic_track_61",
+      "target_half_width_m": 1.035937,
+      "generator_width": 7.287923,
+      "measured_half_width_m": 1.0342,
+      "files": {
+        "vw_synthetic_track_61_map.yaml": {
+          "sha256": "6459fe04b87d2039eacfc25ebeb3fbbe843f4bc577e15ec9c05d217fd715c7cf",
+          "sha256_lf": "421a892679cea4322c525fe85af2c199efefcce2f17a8c9cc72e2b250f0d0b29"
+        },
+        "vw_synthetic_track_61_map.pgm": {
+          "sha256": "c01d255bddd8bebfc108ba76278cc4419c5918355fad63fede1c42a50f2963b0",
+          "sha256_lf": "c01d255bddd8bebfc108ba76278cc4419c5918355fad63fede1c42a50f2963b0"
+        },
+        "vw_synthetic_track_61_centerline.csv": {
+          "sha256": "0b4489643f64b537a90f1466017f854bb535dc39a47d167ab2d453b8dd88665b",
+          "sha256_lf": "4d27408d41eb8b2dcfec9a328be8659f0ee71c84c44c976b91bc7fd02129d004"
+        }
+      }
+    },
+    "vw_synthetic_track_62": {
+      "split": "vw_train",
+      "raw_index": 62,
+      "same_shape_as": "synthetic_track_62",
+      "target_half_width_m": 1.485937,
+      "generator_width": 10.07206,
+      "measured_half_width_m": 1.4866,
+      "files": {
+        "vw_synthetic_track_62_map.yaml": {
+          "sha256": "470a6dc6a7d83bd927a1145e0864dc41d1f27071eb18d762e341521bbcc0681d",
+          "sha256_lf": "e4278e6b5fc182d499a9120d15eaf7105f6cd52a3d1c0bf5a77aff4e3d99ba26"
+        },
+        "vw_synthetic_track_62_map.pgm": {
+          "sha256": "3631eb8ad9a6431afdd10d4d9c47af8c1532189e321bbed74f0542eb34bff58c",
+          "sha256_lf": "3631eb8ad9a6431afdd10d4d9c47af8c1532189e321bbed74f0542eb34bff58c"
+        },
+        "vw_synthetic_track_62_centerline.csv": {
+          "sha256": "2c02efa6f7b34412f335442c2cab0333a533f46bf8bc0322720e8efa47bba6f2",
+          "sha256_lf": "fb434a2776d363a9097dead795438df8afd95f599f331b9cdd7ec1e963bbdea3"
+        }
+      }
+    },
+    "vw_synthetic_track_63": {
+      "split": "vw_train",
+      "raw_index": 63,
+      "same_shape_as": "synthetic_track_63",
+      "target_half_width_m": 0.607031,
+      "generator_width": 4.634294,
+      "measured_half_width_m": 0.6066,
+      "files": {
+        "vw_synthetic_track_63_map.yaml": {
+          "sha256": "0339798c625fdd23f05ba792dac4d1f88aaf1bd523d56254eb977709b33a651a",
+          "sha256_lf": "1ddae2488a0f222528b84f0f3b18540e6258a42092a91fd04f0311d7d71c288a"
+        },
+        "vw_synthetic_track_63_map.pgm": {
+          "sha256": "3a6973e8586af6e929d18cf6c5e42595c34923b7c226d3c2a0c4bfe77b3932a0",
+          "sha256_lf": "3a6973e8586af6e929d18cf6c5e42595c34923b7c226d3c2a0c4bfe77b3932a0"
+        },
+        "vw_synthetic_track_63_centerline.csv": {
+          "sha256": "fe4d41843d0df0d103a08d1824f966eb6e09d69a865ac5f7a426b5af18cadcb9",
+          "sha256_lf": "4f06c0cbeff9c4e21ac57e5f348dc83769633e4d78f5a19a6bfd587abc0bf025"
+        }
+      }
+    },
+    "vw_synthetic_track_64": {
+      "split": "vw_train",
+      "raw_index": 64,
+      "same_shape_as": "synthetic_track_64",
+      "target_half_width_m": 1.057031,
+      "generator_width": 7.418431,
+      "measured_half_width_m": 1.0615,
+      "files": {
+        "vw_synthetic_track_64_map.yaml": {
+          "sha256": "cc72578613e986e482d71842ec4c4cb77b5db73add6b4a075f8e247d794245f8",
+          "sha256_lf": "9dadc1d1c2b6593632de9d162e106ba50923bc6ee3c6b4055a245c65d76513eb"
+        },
+        "vw_synthetic_track_64_map.pgm": {
+          "sha256": "8e8550e46e2daeea9a22ad163ef2636bad8779617b61c8b4c712c76db420bf33",
+          "sha256_lf": "8e8550e46e2daeea9a22ad163ef2636bad8779617b61c8b4c712c76db420bf33"
+        },
+        "vw_synthetic_track_64_centerline.csv": {
+          "sha256": "e5031d105b2f0e9ecd44e2393c9a4f9d16428417c58b4bb4d2dc4b65d8d3c313",
+          "sha256_lf": "b6765cf6ee3d77cf75b07c02d47fcda917403553d253734652ed7df51c497deb"
+        }
+      }
+    },
+    "vw_synthetic_track_65": {
+      "split": "vw_train",
+      "raw_index": 65,
+      "same_shape_as": "synthetic_track_65",
+      "target_half_width_m": 0.832031,
+      "generator_width": 6.026363,
+      "measured_half_width_m": 0.8335,
+      "files": {
+        "vw_synthetic_track_65_map.yaml": {
+          "sha256": "b78fe21aad9a047632270999ba9057ca3606cc9d0f9e5897df725afa61f6b8ee",
+          "sha256_lf": "538d16d19fc1afa459640cc3a7638a0c5f6d45fa8fa39daea4b22659dc5b967f"
+        },
+        "vw_synthetic_track_65_map.pgm": {
+          "sha256": "642194a961f4d263fdbb813a597cb0aeb8256e8cdc507ff82f8d63778d62662d",
+          "sha256_lf": "642194a961f4d263fdbb813a597cb0aeb8256e8cdc507ff82f8d63778d62662d"
+        },
+        "vw_synthetic_track_65_centerline.csv": {
+          "sha256": "4072ad13bf208e4cc30418b4c690b0fd566b4e0a9cda9aab05df2cf3869aafe1",
+          "sha256_lf": "fe3413c26f73d7fec078cc52cf52fdc53b3acd7daf89d4264dfa1ff6ac761658"
+        }
+      }
+    },
+    "vw_synthetic_track_66": {
+      "split": "vw_train",
+      "raw_index": 66,
+      "same_shape_as": "synthetic_track_66",
+      "target_half_width_m": 1.282031,
+      "generator_width": 8.810499,
+      "measured_half_width_m": 1.2812,
+      "files": {
+        "vw_synthetic_track_66_map.yaml": {
+          "sha256": "ca4716aea482cfa61e7c49c94e4d31d09548a28e94465e15ebe76555d8cad1e2",
+          "sha256_lf": "f7629433067848a358c1f39852cba21a307c67bc73fab8be6518ff93923c6a71"
+        },
+        "vw_synthetic_track_66_map.pgm": {
+          "sha256": "59393d353e38848cdd5fe5a6deed555863f6ec3ee36a98c92d9a19f3c365642e",
+          "sha256_lf": "59393d353e38848cdd5fe5a6deed555863f6ec3ee36a98c92d9a19f3c365642e"
+        },
+        "vw_synthetic_track_66_centerline.csv": {
+          "sha256": "c9075fe3a123365da82cd451080cbf82f4c5dabfe5c1a898e993f040863ba4ce",
+          "sha256_lf": "b1cc9be8418084dc0773c1fc527f0966272611dbde5844bfd887c93a441eae9d"
+        }
+      }
+    },
+    "vw_synthetic_track_67": {
+      "split": "vw_train",
+      "raw_index": 67,
+      "same_shape_as": "synthetic_track_67",
+      "target_half_width_m": 0.719531,
+      "generator_width": 5.330329,
+      "measured_half_width_m": 0.7188,
+      "files": {
+        "vw_synthetic_track_67_map.yaml": {
+          "sha256": "15bc7ac68bf88260cf6b504954c58bc8666b4d205a254f5d921bb773516f84ac",
+          "sha256_lf": "637db548525fb8af4a91fd46596a5a22931b47a4323c404453ba656f8960cc9a"
+        },
+        "vw_synthetic_track_67_map.pgm": {
+          "sha256": "40f3caff78ecdcb62693c4e6e2706a00fe124a8ae5fa8abe8bc3e3ac5081cc42",
+          "sha256_lf": "40f3caff78ecdcb62693c4e6e2706a00fe124a8ae5fa8abe8bc3e3ac5081cc42"
+        },
+        "vw_synthetic_track_67_centerline.csv": {
+          "sha256": "7673dcbb12d3b7908af846250fc194802cd2644366c7fbe1edff7f933ff2f46f",
+          "sha256_lf": "4bb4593a3a394bca3da2c125213adc4cd9200bf45abf4ceaa75bc8b7a507f13b"
+        }
+      }
+    },
+    "vw_synthetic_track_68": {
+      "split": "vw_train",
+      "raw_index": 68,
+      "same_shape_as": "synthetic_track_68",
+      "target_half_width_m": 1.169531,
+      "generator_width": 8.114465,
+      "measured_half_width_m": 1.169,
+      "files": {
+        "vw_synthetic_track_68_map.yaml": {
+          "sha256": "751ce0b642dc0b5cde9334419e1ca7903be18d0dfb3b8c140942ae928d851aa7",
+          "sha256_lf": "d7a74ca34844293f8a9ea6fbf338fbccd8ddcf0a72b60e7c1cfd4dca3e4a916e"
+        },
+        "vw_synthetic_track_68_map.pgm": {
+          "sha256": "0f42ff9e545de5639b890f93b48ee0dbad24ad80255f69da4a7fc939189b6a6c",
+          "sha256_lf": "0f42ff9e545de5639b890f93b48ee0dbad24ad80255f69da4a7fc939189b6a6c"
+        },
+        "vw_synthetic_track_68_centerline.csv": {
+          "sha256": "4d8c711087bf2af0f59c1b16185742c9d32a97d688422b13dfd4706cce43d66d",
+          "sha256_lf": "79bd26195405c1fb454c1dea14127e96ca2af26a56f2d543c6d49a0c49aef8f6"
+        }
+      }
+    },
+    "vw_synthetic_track_69": {
+      "split": "vw_train",
+      "raw_index": 69,
+      "same_shape_as": "synthetic_track_69",
+      "target_half_width_m": 0.944531,
+      "generator_width": 6.722397,
+      "measured_half_width_m": 0.9452,
+      "files": {
+        "vw_synthetic_track_69_map.yaml": {
+          "sha256": "0114654c70532a2ffb46db093969af17f5afddf2420224f188654ecc5ecd5393",
+          "sha256_lf": "62824df0f5ae6a9784f3e1d12623f2dd3fa727a04fadb2f3c0aafdad1ad5676b"
+        },
+        "vw_synthetic_track_69_map.pgm": {
+          "sha256": "b8219b2feb1e3dcad3a58a62a5d9d288919d39915ab8424193ecc472ee79ac12",
+          "sha256_lf": "b8219b2feb1e3dcad3a58a62a5d9d288919d39915ab8424193ecc472ee79ac12"
+        },
+        "vw_synthetic_track_69_centerline.csv": {
+          "sha256": "7da18bf5c016c825928af0cf73ec4f0714844c0281afe716ba1ced6d813d8bb8",
+          "sha256_lf": "921cdb10ecfb85281cbe78e2b1100c4a980be01ece27b61aa6e92fb68ef8f6a4"
+        }
+      }
+    },
+    "vw_synthetic_track_70": {
+      "split": "vw_train",
+      "raw_index": 70,
+      "same_shape_as": "synthetic_track_70",
+      "target_half_width_m": 1.394531,
+      "generator_width": 9.506533,
+      "measured_half_width_m": 1.3963,
+      "files": {
+        "vw_synthetic_track_70_map.yaml": {
+          "sha256": "ac186f01e086ba49d54538fddb7719585c3756b3450836111abcd627b7ff0a82",
+          "sha256_lf": "8a9913a3eed7b2ce0851591b4bd160e74bef0b7faba33fc4c40039c555de52c8"
+        },
+        "vw_synthetic_track_70_map.pgm": {
+          "sha256": "ca1e289515d7a88a6f12a81640ffa9eec094e67d761f5e1c018bfcae411ed6cc",
+          "sha256_lf": "ca1e289515d7a88a6f12a81640ffa9eec094e67d761f5e1c018bfcae411ed6cc"
+        },
+        "vw_synthetic_track_70_centerline.csv": {
+          "sha256": "00f3ca1557a495f73131831ff29a8ed29e624dcbbe9c7462d9140db8d448bfc8",
+          "sha256_lf": "73ca0fc6d6e9619d93c329cd8c7009648e21425cafe4cb2ba04e3f560f339872"
+        }
+      }
+    },
+    "vw_synthetic_track_71": {
+      "split": "vw_train",
+      "raw_index": 71,
+      "same_shape_as": "synthetic_track_71",
+      "target_half_width_m": 0.663281,
+      "generator_width": 4.982311,
+      "measured_half_width_m": 0.6611,
+      "files": {
+        "vw_synthetic_track_71_map.yaml": {
+          "sha256": "4b57249abceb634014e9bb21f0c034a112bec132ed4a381a321609b9f019a171",
+          "sha256_lf": "5d12348a050711af2e41a4010d23957af3d730a49c44552c1897bf442f77f631"
+        },
+        "vw_synthetic_track_71_map.pgm": {
+          "sha256": "502f7067ec776c610a1816ba22607392ae837f6845048beebb40bf645f33c062",
+          "sha256_lf": "502f7067ec776c610a1816ba22607392ae837f6845048beebb40bf645f33c062"
+        },
+        "vw_synthetic_track_71_centerline.csv": {
+          "sha256": "5d04c56e5890c0df5c52fdfe8497bb4844ac16c4311776fea8d89dc943118b6f",
+          "sha256_lf": "02783b26040a3c68566d97433d8a19103af4f6a32577f0db9a5b4c08bf1b028a"
+        }
+      }
+    },
+    "vw_synthetic_track_72": {
+      "split": "vw_train",
+      "raw_index": 72,
+      "same_shape_as": "synthetic_track_72",
+      "target_half_width_m": 1.113281,
+      "generator_width": 7.766448,
+      "measured_half_width_m": 1.1134,
+      "files": {
+        "vw_synthetic_track_72_map.yaml": {
+          "sha256": "e28ab0c3687807eaca4aa76e429cdc127ae81a35b4bb87bcbbfe82090fc65cab",
+          "sha256_lf": "87c81d5d3e335423493644415c2d75a62d97f24554b79a6287d03701ab1cf171"
+        },
+        "vw_synthetic_track_72_map.pgm": {
+          "sha256": "3be6f922ff9500e47c7a6505b991f3d59994f9a0b64b60e276c6d7a7d4f83426",
+          "sha256_lf": "3be6f922ff9500e47c7a6505b991f3d59994f9a0b64b60e276c6d7a7d4f83426"
+        },
+        "vw_synthetic_track_72_centerline.csv": {
+          "sha256": "52d0268437bb6087e0bc198fee4341201db5c78a2aa19b6fcadec60a7ac87283",
+          "sha256_lf": "865183df4458d7e85b9e7532177962ec40b7bd65345303638250274ee835d2ee"
+        }
+      }
+    },
+    "vw_synthetic_track_73": {
+      "split": "vw_train",
+      "raw_index": 73,
+      "same_shape_as": "synthetic_track_73",
+      "target_half_width_m": 0.888281,
+      "generator_width": 6.37438,
+      "measured_half_width_m": 0.8898,
+      "files": {
+        "vw_synthetic_track_73_map.yaml": {
+          "sha256": "dc52a054f274bbf4ba09495af2bd6e9771e1b74fad06794d1792cb2b29dcaf19",
+          "sha256_lf": "5910de2999bc20b4f251a9d8b07461cbf95e5a07d82d05224469a30ee5d0abd1"
+        },
+        "vw_synthetic_track_73_map.pgm": {
+          "sha256": "8678e80ad0b7195dbbf774275b63167904e3cfb6a092f7e51a2ca1037fc86d72",
+          "sha256_lf": "8678e80ad0b7195dbbf774275b63167904e3cfb6a092f7e51a2ca1037fc86d72"
+        },
+        "vw_synthetic_track_73_centerline.csv": {
+          "sha256": "9659eb13063db6a9c7ca138550a02790ae346db131b8739c2d16eb7d8f5c0fbb",
+          "sha256_lf": "0014a4139e3db3c0e59c7696d65cccb80ef1d452706a89cecb313ea0df48469e"
+        }
+      }
+    },
+    "vw_synthetic_track_74": {
+      "split": "vw_train",
+      "raw_index": 74,
+      "same_shape_as": "synthetic_track_74",
+      "target_half_width_m": 1.338281,
+      "generator_width": 9.158516,
+      "measured_half_width_m": 1.3392,
+      "files": {
+        "vw_synthetic_track_74_map.yaml": {
+          "sha256": "4992e033b9a8684da30af21dbb50e1520dd1daf21538c7275ad09cb9cded6d97",
+          "sha256_lf": "d2aeda334aec963fc3d5e365445bcebbbcd052ca5699aa006b4f2dfbe59fbaab"
+        },
+        "vw_synthetic_track_74_map.pgm": {
+          "sha256": "34acc332646a4471550cbe07a9dea01ddfd663ecfe425b9fc0c17cd5b8db658b",
+          "sha256_lf": "34acc332646a4471550cbe07a9dea01ddfd663ecfe425b9fc0c17cd5b8db658b"
+        },
+        "vw_synthetic_track_74_centerline.csv": {
+          "sha256": "e107f1931a5f58d3fe6b3a35849516a82f4705eb84100b01985378f27dc913d8",
+          "sha256_lf": "6097a84c3ae2efbaeb3b4a4f0dd6d145b488eb7827426ff9c2ac00f929cb0207"
+        }
+      }
+    },
+    "vw_synthetic_track_75": {
+      "split": "vw_train",
+      "raw_index": 75,
+      "same_shape_as": "synthetic_track_75",
+      "target_half_width_m": 0.775781,
+      "generator_width": 5.678346,
+      "measured_half_width_m": 0.7761,
+      "files": {
+        "vw_synthetic_track_75_map.yaml": {
+          "sha256": "1a475e768c3c830739d66df68692a5e8369172134b02648ca81b7e2224cdceb1",
+          "sha256_lf": "ae3bc5a2815d1ee3e0c0c2514dc9a0b641f8ef3939e240b139e6c6adce5bc95a"
+        },
+        "vw_synthetic_track_75_map.pgm": {
+          "sha256": "09a00845463be00452c0ede6af5f4b638223174d9cfdae1b269a986d23028f0c",
+          "sha256_lf": "09a00845463be00452c0ede6af5f4b638223174d9cfdae1b269a986d23028f0c"
+        },
+        "vw_synthetic_track_75_centerline.csv": {
+          "sha256": "e6af742aac52cfe9cee8e0493d9242184b99efae58fb6cd4b311497cdc1449f5",
+          "sha256_lf": "9ee497c828dec5a593c4cb9c99e61976372cb37e834167af5231e555796f057b"
+        }
+      }
+    },
+    "vw_synthetic_track_76": {
+      "split": "vw_train",
+      "raw_index": 76,
+      "same_shape_as": "synthetic_track_76",
+      "target_half_width_m": 1.225781,
+      "generator_width": 8.462482,
+      "measured_half_width_m": 1.2243,
+      "files": {
+        "vw_synthetic_track_76_map.yaml": {
+          "sha256": "bd9034a93958ad934d84d934b43e344347b1d6f5267645430dc83921935ceecd",
+          "sha256_lf": "5844e31e352295578b53640003a02a5496ce5f0ed15c10a371e9618273d0e0fe"
+        },
+        "vw_synthetic_track_76_map.pgm": {
+          "sha256": "960e33eaa98930f8c77c8c2feb5216ae6baa5b48994fcc99af79797cd0dd24ee",
+          "sha256_lf": "960e33eaa98930f8c77c8c2feb5216ae6baa5b48994fcc99af79797cd0dd24ee"
+        },
+        "vw_synthetic_track_76_centerline.csv": {
+          "sha256": "65fbf4718c82614648aa0d61764af4418e861c44523accc53d0d3e0b4918e6e8",
+          "sha256_lf": "cc720b3221957292ec2c4366cdb35c2cd2b91281e48ed4dfeca2862bb15cefa6"
+        }
+      }
+    },
+    "vw_synthetic_track_77": {
+      "split": "vw_train",
+      "raw_index": 77,
+      "same_shape_as": "synthetic_track_77",
+      "target_half_width_m": 1.000781,
+      "generator_width": 7.070414,
+      "measured_half_width_m": 1.0044,
+      "files": {
+        "vw_synthetic_track_77_map.yaml": {
+          "sha256": "a2cb8f90c55b24956e60f18647efaaf8d3831ec0aba0cb3c9ece8619ac6e8af4",
+          "sha256_lf": "f839de099faa16ecebedd5a358d5eabce2643980f8efc2d90df3ec2e7d79464f"
+        },
+        "vw_synthetic_track_77_map.pgm": {
+          "sha256": "4c9026cd73c12b0271885c37371c474b9a6274bdb68b094a01e984d52216d53b",
+          "sha256_lf": "4c9026cd73c12b0271885c37371c474b9a6274bdb68b094a01e984d52216d53b"
+        },
+        "vw_synthetic_track_77_centerline.csv": {
+          "sha256": "635624a79862b860dbe5e65735ceb3c9eaeed3b981e1905ba8dc7396c32cfe22",
+          "sha256_lf": "68b7555288e69bbc0c770f1bc196acbfb06e2d0260837b30d77d379dd6772b29"
+        }
+      }
+    },
+    "vw_synthetic_track_78": {
+      "split": "vw_train",
+      "raw_index": 78,
+      "same_shape_as": "synthetic_track_78",
+      "target_half_width_m": 1.450781,
+      "generator_width": 9.854551,
+      "measured_half_width_m": 1.4533,
+      "files": {
+        "vw_synthetic_track_78_map.yaml": {
+          "sha256": "67e884da9df8ed47e91f8474abaf25f4f86e0146b57eabf3e1a1aeba47ae4e9e",
+          "sha256_lf": "acf4c5de213ffd9884e0e300dba481f18ffc7e1f179f8fc73a4f2dbd3cf3dfaa"
+        },
+        "vw_synthetic_track_78_map.pgm": {
+          "sha256": "6025389276d91a357ccfca8bbb8de8519f6c5eac5963f7dc41ebd6d7a5f10383",
+          "sha256_lf": "6025389276d91a357ccfca8bbb8de8519f6c5eac5963f7dc41ebd6d7a5f10383"
+        },
+        "vw_synthetic_track_78_centerline.csv": {
+          "sha256": "2d39e54322897676a0a0b22aeffb3dfb5324cecc5656e0fd8663bfd89a54f4f7",
+          "sha256_lf": "3eab6f4218cbce0f5b226f37ea81c6ae2058a669a9cdde437771aed3ae42d83d"
+        }
+      }
+    },
+    "vw_synthetic_track_79": {
+      "split": "vw_train",
+      "raw_index": 79,
+      "same_shape_as": "synthetic_track_79",
+      "target_half_width_m": 0.635156,
+      "generator_width": 4.808303,
+      "measured_half_width_m": 0.6352,
+      "files": {
+        "vw_synthetic_track_79_map.yaml": {
+          "sha256": "63b86d7cc01954553837c78c53fa09550de1076eb155eecd0977dbf1d6c1c2ae",
+          "sha256_lf": "31a8a8d9ea31e93aed0b29b0e79df14abf31bafb64e9da47b0804f1d7b639ea6"
+        },
+        "vw_synthetic_track_79_map.pgm": {
+          "sha256": "e121d9c0895aab53a63a7ef3c288080629d58a701dc7db17fa6d0a1cbef54060",
+          "sha256_lf": "e121d9c0895aab53a63a7ef3c288080629d58a701dc7db17fa6d0a1cbef54060"
+        },
+        "vw_synthetic_track_79_centerline.csv": {
+          "sha256": "9f676dcbca0c89a469a4553ee0efa48edf337697f074cf5f75078e6600737df8",
+          "sha256_lf": "2cd88b37dcfb87be34427b7763653cf18c7d65a20eb09d4e2e0e5e4be49fbee1"
+        }
+      }
+    },
+    "vw_synthetic_track_80": {
+      "split": "vw_train",
+      "raw_index": 80,
+      "same_shape_as": "synthetic_track_80",
+      "target_half_width_m": 1.085156,
+      "generator_width": 7.59244,
+      "measured_half_width_m": 1.0849,
+      "files": {
+        "vw_synthetic_track_80_map.yaml": {
+          "sha256": "2b89724b2faa10073c00a552dc45f07f9ef406ce2f843d447af8b49d7c52788c",
+          "sha256_lf": "2a739f377f6ef074b27556870b48ab2028a0fdb7b553926668d34331e1d5c912"
+        },
+        "vw_synthetic_track_80_map.pgm": {
+          "sha256": "7a677c41474d5d0c68bc4700387c20b7ec2e5ee5bc96fb0a1d1bc2f5a68b46d8",
+          "sha256_lf": "7a677c41474d5d0c68bc4700387c20b7ec2e5ee5bc96fb0a1d1bc2f5a68b46d8"
+        },
+        "vw_synthetic_track_80_centerline.csv": {
+          "sha256": "135c9b41c8f49df38daa2b165664bb5c419898627298fb4d7ee557802adff42e",
+          "sha256_lf": "139bc9ef1d0fe2f574634957c0c59ddc275204fa1eeb2ec7da2fa9bbd5421761"
+        }
+      }
+    },
+    "vw_synthetic_track_81": {
+      "split": "vw_train",
+      "raw_index": 81,
+      "same_shape_as": "synthetic_track_81",
+      "target_half_width_m": 0.860156,
+      "generator_width": 6.200371,
+      "measured_half_width_m": 0.8592,
+      "files": {
+        "vw_synthetic_track_81_map.yaml": {
+          "sha256": "1e3a3a0f088c9379c7a2d54d9a5ea7ecff910bdb7c099082429bbb5f6ac5a55e",
+          "sha256_lf": "09cba2f0d7fcda5342b28c75810861f64135a2a5788ae0d8a8e778dc4b112e20"
+        },
+        "vw_synthetic_track_81_map.pgm": {
+          "sha256": "334890eb1b240c830a2c5fa43fcff1b623a860fde8e09e06f223f9a43c6d8f3c",
+          "sha256_lf": "334890eb1b240c830a2c5fa43fcff1b623a860fde8e09e06f223f9a43c6d8f3c"
+        },
+        "vw_synthetic_track_81_centerline.csv": {
+          "sha256": "3814d72b2943835e42f32f39da85a313ac795428e1de72d969f98738fc4e9a68",
+          "sha256_lf": "86c70943c333ae1aa76cf7cde38b9d8c774ceb698f04fbd64401df8402842e25"
+        }
+      }
+    },
+    "vw_synthetic_track_82": {
+      "split": "vw_train",
+      "raw_index": 82,
+      "same_shape_as": "synthetic_track_82",
+      "target_half_width_m": 1.310156,
+      "generator_width": 8.984508,
+      "measured_half_width_m": 1.3119,
+      "files": {
+        "vw_synthetic_track_82_map.yaml": {
+          "sha256": "987ece53c0eeeb29575d45437e7401433c9275acae79d10a63bea15ac33431a2",
+          "sha256_lf": "b5a336353dfa30fa8db83745c27ec17f4c280e403ca8549011f064943c257d32"
+        },
+        "vw_synthetic_track_82_map.pgm": {
+          "sha256": "9a2fa184e3f5cd05efd4af90c1bcd7e8b0ac53b436dbb79d4eb006fb24effa4f",
+          "sha256_lf": "9a2fa184e3f5cd05efd4af90c1bcd7e8b0ac53b436dbb79d4eb006fb24effa4f"
+        },
+        "vw_synthetic_track_82_centerline.csv": {
+          "sha256": "9230796d514770c5934fee4ab4df6ed7d3a3d932521b34e25e19f861134b9bf7",
+          "sha256_lf": "ce88bbae470e411806b97815b34385100c1c6f9534fb58d5fd404e4db4852f42"
+        }
+      }
+    },
+    "vw_synthetic_track_83": {
+      "split": "vw_train",
+      "raw_index": 83,
+      "same_shape_as": "synthetic_track_83",
+      "target_half_width_m": 0.747656,
+      "generator_width": 5.504337,
+      "measured_half_width_m": 0.749,
+      "files": {
+        "vw_synthetic_track_83_map.yaml": {
+          "sha256": "8eca2ee45fae19bea30d52aa75b52454895f0564afc28a81e1a54329c18121b4",
+          "sha256_lf": "a7ee653680dfe9e09ebd9321a414088885719f9ab6be2c7b1da8f21306a59682"
+        },
+        "vw_synthetic_track_83_map.pgm": {
+          "sha256": "419c009a02dedea9f9ca7ef581f460712f0e26662d8849acd7bff741f4ba4af5",
+          "sha256_lf": "419c009a02dedea9f9ca7ef581f460712f0e26662d8849acd7bff741f4ba4af5"
+        },
+        "vw_synthetic_track_83_centerline.csv": {
+          "sha256": "6e7cd123d5c4263a0ec3896809d774a497b7e462696eaa60b8dbb894e65200cd",
+          "sha256_lf": "17117b560a4acb37ca5a4c48cd04d2794484cff3529f3abb149afb07734ab14b"
+        }
+      }
+    },
+    "vw_synthetic_track_84": {
+      "split": "vw_train",
+      "raw_index": 84,
+      "same_shape_as": "synthetic_track_84",
+      "target_half_width_m": 1.197656,
+      "generator_width": 8.288474,
+      "measured_half_width_m": 1.2017,
+      "files": {
+        "vw_synthetic_track_84_map.yaml": {
+          "sha256": "f417291484a0ae03cab756a54a09352988cff7eb96fe1ea6eb709400d743399f",
+          "sha256_lf": "45ea862cda0e2445d28dfa3f98401800f8dc2e34041c095e67ab6ff530b07c6e"
+        },
+        "vw_synthetic_track_84_map.pgm": {
+          "sha256": "57cb1f85bc6d6e65a11f9c364b69e9909fd86b309e3419895bc0b491f69ad5a3",
+          "sha256_lf": "57cb1f85bc6d6e65a11f9c364b69e9909fd86b309e3419895bc0b491f69ad5a3"
+        },
+        "vw_synthetic_track_84_centerline.csv": {
+          "sha256": "ae6cc47a92a50cc2fd26d1676a8223f842f0af3a2defe6a428cfe1017a5680b4",
+          "sha256_lf": "937e9d3c960ce5c7a829fac21cb237fe9af354e498af167827f7fa787dcc7088"
+        }
+      }
+    },
+    "vw_synthetic_track_85": {
+      "split": "vw_train",
+      "raw_index": 85,
+      "same_shape_as": "synthetic_track_85",
+      "target_half_width_m": 0.972656,
+      "generator_width": 6.896405,
+      "measured_half_width_m": 0.9714,
+      "files": {
+        "vw_synthetic_track_85_map.yaml": {
+          "sha256": "6971ccffc6b7672eb24b80639f4952271b891cdc9f57492a9977b2c6ab0a8eb8",
+          "sha256_lf": "5185895407e3a3f61bff2504a0c1f16641d9169c3b6823dc78dee5efe4403934"
+        },
+        "vw_synthetic_track_85_map.pgm": {
+          "sha256": "72bec305eaf494e0660cefa3857f6acc59be7c98fa44b9906f4fd75b829fe31a",
+          "sha256_lf": "72bec305eaf494e0660cefa3857f6acc59be7c98fa44b9906f4fd75b829fe31a"
+        },
+        "vw_synthetic_track_85_centerline.csv": {
+          "sha256": "e28a2e856a7cb6e480c07965c0a1e331f1bf2ee7f56df46d3aee7d7f349f7d90",
+          "sha256_lf": "8570cefef327b569ab44857ab2d46d5eb6b4d007a4a7a9294a45130164d1d9eb"
+        }
+      }
+    },
+    "vw_synthetic_track_86": {
+      "split": "vw_train",
+      "raw_index": 86,
+      "same_shape_as": "synthetic_track_86",
+      "target_half_width_m": 1.422656,
+      "generator_width": 9.680542,
+      "measured_half_width_m": 1.424,
+      "files": {
+        "vw_synthetic_track_86_map.yaml": {
+          "sha256": "e65eb5eddbf34c16f4968a6fa6d38b4f9de8824cd0c469611708943aa47895a4",
+          "sha256_lf": "f8616840b7af1ec34d4cf744581d1190c9342693783f4fbb9e5c88aadfea3c2c"
+        },
+        "vw_synthetic_track_86_map.pgm": {
+          "sha256": "236dd889a90a56c1454929f823cd7cdccdf0f2b9116496afa4d976c7c90cecc5",
+          "sha256_lf": "236dd889a90a56c1454929f823cd7cdccdf0f2b9116496afa4d976c7c90cecc5"
+        },
+        "vw_synthetic_track_86_centerline.csv": {
+          "sha256": "f89d937977f01bd1da93ddb658608836388f530022591812c3b906f287fdb564",
+          "sha256_lf": "56c71df323da1ad3afee5d96e41dd8f8561a34adc7c1e624347b0ba660430cae"
+        }
+      }
+    },
+    "vw_synthetic_track_87": {
+      "split": "vw_train",
+      "raw_index": 87,
+      "same_shape_as": "synthetic_track_87",
+      "target_half_width_m": 0.691406,
+      "generator_width": 5.15632,
+      "measured_half_width_m": 0.6935,
+      "files": {
+        "vw_synthetic_track_87_map.yaml": {
+          "sha256": "ee0e2cab6ee892554a677728144ac426b74f1c44b4e0a811a27ec03097e1e5eb",
+          "sha256_lf": "60f6dc2e0564cce50fc64facfbe4ce38be607ecea885707518a2411a147af885"
+        },
+        "vw_synthetic_track_87_map.pgm": {
+          "sha256": "adf3ae1213c131594f8c580d4ea93f98523387779d7728d2c6d8e604b217eebf",
+          "sha256_lf": "adf3ae1213c131594f8c580d4ea93f98523387779d7728d2c6d8e604b217eebf"
+        },
+        "vw_synthetic_track_87_centerline.csv": {
+          "sha256": "e2cbc9841ea95a9792725e01bf7dcc0f469087bd9e6ea4a22429d4d46d3e3063",
+          "sha256_lf": "c305e7d71c85d6b429458243c7ec170aff4801249ef7560f7f9922b934b3f328"
+        }
+      }
+    },
+    "vw_synthetic_track_88": {
+      "split": "vw_train",
+      "raw_index": 88,
+      "same_shape_as": "synthetic_track_88",
+      "target_half_width_m": 1.141406,
+      "generator_width": 7.940457,
+      "measured_half_width_m": 1.1424,
+      "files": {
+        "vw_synthetic_track_88_map.yaml": {
+          "sha256": "ca7ae99433ae2465737e0f15a3fa6e0436dfce659e50ea57ee22caf71e61f698",
+          "sha256_lf": "42611d39e6f38a814b8db044db7fab75f864a2eeb1909ebe4f7c16a2e7c2748c"
+        },
+        "vw_synthetic_track_88_map.pgm": {
+          "sha256": "736a7d01c4cb07ab7d309a97eb972a5bcb477fd2d521602498fddc96af7b2de2",
+          "sha256_lf": "736a7d01c4cb07ab7d309a97eb972a5bcb477fd2d521602498fddc96af7b2de2"
+        },
+        "vw_synthetic_track_88_centerline.csv": {
+          "sha256": "393e000c6a6ca83a959666c93fa12151a6eb292997a69164e1eed327e569a756",
+          "sha256_lf": "a2f169d32a5bb010a29ef947d325e0a41e150e293202f75ec2e93219b081ac5b"
+        }
+      }
+    },
+    "vw_synthetic_track_89": {
+      "split": "vw_train",
+      "raw_index": 89,
+      "same_shape_as": "synthetic_track_89",
+      "target_half_width_m": 0.916406,
+      "generator_width": 6.548388,
+      "measured_half_width_m": 0.9154,
+      "files": {
+        "vw_synthetic_track_89_map.yaml": {
+          "sha256": "77c9d75f0a3504698e287b958c7653f46db18381e89dea631d1f3505a91fe7c4",
+          "sha256_lf": "f98af328b0106c018d3d694d2ff6a61d9b3f738d859218d07d9df28165b77d93"
+        },
+        "vw_synthetic_track_89_map.pgm": {
+          "sha256": "4976a7834afae61a2e233b541618e0ae64b4f85d3408c8a1930eb4e5888ee223",
+          "sha256_lf": "4976a7834afae61a2e233b541618e0ae64b4f85d3408c8a1930eb4e5888ee223"
+        },
+        "vw_synthetic_track_89_centerline.csv": {
+          "sha256": "42c48d5f133ff39b2c7b1045275c0d266c13e827829e99112fdf89a95cfd6e35",
+          "sha256_lf": "36457fa93251f273e7b9d0b23747a383fe14d424c98047df9dbbeb293e7d5b08"
+        }
+      }
+    },
+    "vw_synthetic_track_90": {
+      "split": "vw_train",
+      "raw_index": 90,
+      "same_shape_as": "synthetic_track_90",
+      "target_half_width_m": 1.366406,
+      "generator_width": 9.332525,
+      "measured_half_width_m": 1.3679,
+      "files": {
+        "vw_synthetic_track_90_map.yaml": {
+          "sha256": "7920216d2eb74f11c2d93a2aecf5a3870f437f268be740d55beabf70fab73dc2",
+          "sha256_lf": "116aaf8c5c0320f9e15265a3e8c2e891e40ec5b79cf3576522f902e4d080330c"
+        },
+        "vw_synthetic_track_90_map.pgm": {
+          "sha256": "0359f3aa82328abc88183111309b35981a334281922cce42fbd7426efb9d05ee",
+          "sha256_lf": "0359f3aa82328abc88183111309b35981a334281922cce42fbd7426efb9d05ee"
+        },
+        "vw_synthetic_track_90_centerline.csv": {
+          "sha256": "8bb6353b8d9a05f14692ace8adfa7e46912e1187841c000263488797383afa20",
+          "sha256_lf": "18cf2df6f9c8327fbaf6ad493b14f28dc271ce05bdc9ff96363e529f21655078"
+        }
+      }
+    },
+    "vw_synthetic_track_91": {
+      "split": "vw_train",
+      "raw_index": 91,
+      "same_shape_as": "synthetic_track_91",
+      "target_half_width_m": 0.803906,
+      "generator_width": 5.852354,
+      "measured_half_width_m": 0.8036,
+      "files": {
+        "vw_synthetic_track_91_map.yaml": {
+          "sha256": "061d989bf658d0e24b8c6a1f60182ecf151ad3070e01a8466c742267bda7d56a",
+          "sha256_lf": "76bc165a908bf513966de3c0d2d3d43c00d3e33fc1289d780bf4d139c0ccaa17"
+        },
+        "vw_synthetic_track_91_map.pgm": {
+          "sha256": "538a2dc98b65840e69014bfbafea47ace29c2b4a442a974c044c342854287d0b",
+          "sha256_lf": "538a2dc98b65840e69014bfbafea47ace29c2b4a442a974c044c342854287d0b"
+        },
+        "vw_synthetic_track_91_centerline.csv": {
+          "sha256": "e7088990b73bdc2143ae66ca60aae72b3bcd3e8ec682e54f3e76de8461a092fe",
+          "sha256_lf": "2ee79b5c050252076a75d5ecc897f5d78f10ff23c15b13f1f03dd9aa8344f4c3"
+        }
+      }
+    },
+    "vw_synthetic_track_92": {
+      "split": "vw_train",
+      "raw_index": 92,
+      "same_shape_as": "synthetic_track_92",
+      "target_half_width_m": 1.253906,
+      "generator_width": 8.636491,
+      "measured_half_width_m": 1.2579,
+      "files": {
+        "vw_synthetic_track_92_map.yaml": {
+          "sha256": "e33886d75563d5326ef83cd9f3dd382fd63ee3a94d9e2295e4f8c8f9f85b5292",
+          "sha256_lf": "5c6199f375be539724bdb5fe32e233ae6a688f5c82d24a3ed0374221e79cb66c"
+        },
+        "vw_synthetic_track_92_map.pgm": {
+          "sha256": "0a6782d88423b0b197d574bcb973df840576218c6e65b865b90df87034975edd",
+          "sha256_lf": "0a6782d88423b0b197d574bcb973df840576218c6e65b865b90df87034975edd"
+        },
+        "vw_synthetic_track_92_centerline.csv": {
+          "sha256": "7644f726280ee504808e84c777b84cf4a5c3cc1fdf829e6ba86a5feace14a6d6",
+          "sha256_lf": "7a40aebdf20f8da117abf722efbb323e01982bafdcccdf3fe6d7b1d858ceadda"
+        }
+      }
+    },
+    "vw_synthetic_track_93": {
+      "split": "vw_train",
+      "raw_index": 93,
+      "same_shape_as": "synthetic_track_93",
+      "target_half_width_m": 1.028906,
+      "generator_width": 7.244422,
+      "measured_half_width_m": 1.0291,
+      "files": {
+        "vw_synthetic_track_93_map.yaml": {
+          "sha256": "7fb6108f8e393046ca61375fe18c33bad642e5dcd6df2ca33a23e715e77ba3fc",
+          "sha256_lf": "80899626ad1d8def941c77dced466ab90aeb01f45ad071f07dde3f54c036fc80"
+        },
+        "vw_synthetic_track_93_map.pgm": {
+          "sha256": "ec9715de99c2a6af51f3484a05130de48952efddb2affd1bdfc7bf9d281c8211",
+          "sha256_lf": "ec9715de99c2a6af51f3484a05130de48952efddb2affd1bdfc7bf9d281c8211"
+        },
+        "vw_synthetic_track_93_centerline.csv": {
+          "sha256": "b414d18752d7d33551f015d93edc8d497f4712920a89e9e8425e58a81c537409",
+          "sha256_lf": "d893da00388a924fddca93252409d40cf904ddb5547b73f653aa5a92dff3048a"
+        }
+      }
+    },
+    "vw_synthetic_track_94": {
+      "split": "vw_train",
+      "raw_index": 94,
+      "same_shape_as": "synthetic_track_94",
+      "target_half_width_m": 1.478906,
+      "generator_width": 10.028559,
+      "measured_half_width_m": 1.4779,
+      "files": {
+        "vw_synthetic_track_94_map.yaml": {
+          "sha256": "dbebdbe006a2d6c78666f3b7a6aa410b5c27ea75929d28df77191d84ac4759c4",
+          "sha256_lf": "4f6a0baffd8d51f4f676c23d6b88ebd3e82c3b623da9c33d82715653c381c5fa"
+        },
+        "vw_synthetic_track_94_map.pgm": {
+          "sha256": "aa199af2f514a4ccba662babfb5fc457e210952c590160c2e855820bfcb643d6",
+          "sha256_lf": "aa199af2f514a4ccba662babfb5fc457e210952c590160c2e855820bfcb643d6"
+        },
+        "vw_synthetic_track_94_centerline.csv": {
+          "sha256": "c989dae5c18e2ffdbcae05650ba548a268d150286a8c7715bb8ca5b66a8c8e26",
+          "sha256_lf": "11649f7cce37c0b763ee148bc9c095f450fc0c7b2b5a5b6e7c7199fcd9ac6a03"
+        }
+      }
+    },
+    "vw_synthetic_track_95": {
+      "split": "vw_train",
+      "raw_index": 95,
+      "same_shape_as": "synthetic_track_95",
+      "target_half_width_m": 0.621094,
+      "generator_width": 4.721302,
+      "measured_half_width_m": 0.622,
+      "files": {
+        "vw_synthetic_track_95_map.yaml": {
+          "sha256": "d9b08a48c59348792444ca2ebcc9edc2e954109fbaf4620de9600d01ff572461",
+          "sha256_lf": "71e868202b37264821e2c87655ba376b4fa81762945f7d72dc5ca37e90042841"
+        },
+        "vw_synthetic_track_95_map.pgm": {
+          "sha256": "3b679f2c077a102a8fa9fe7107af98ab997bd9b96be8457640f2eb7aad741dd7",
+          "sha256_lf": "3b679f2c077a102a8fa9fe7107af98ab997bd9b96be8457640f2eb7aad741dd7"
+        },
+        "vw_synthetic_track_95_centerline.csv": {
+          "sha256": "9d35e5df41a1eece55ab7e769252ff6ce8f854475463f51dcdc4f4b39bb9e721",
+          "sha256_lf": "229ff8a300e93491482bc4d119d7048c2dcd7ffd54798137ba908fa1ec4cbb99"
+        }
+      }
+    },
+    "vw_synthetic_track_96": {
+      "split": "vw_train",
+      "raw_index": 96,
+      "same_shape_as": "synthetic_track_96",
+      "target_half_width_m": 1.071094,
+      "generator_width": 7.505438,
+      "measured_half_width_m": 1.0729,
+      "files": {
+        "vw_synthetic_track_96_map.yaml": {
+          "sha256": "a0d0867aed0adfc2acd998ab0a17a8df923cdf5177f8c97508ccbff7ea20f4fd",
+          "sha256_lf": "c24550af37b49b8c13745d3cae6b698f7d9315d8007195ca8194a7932b0792da"
+        },
+        "vw_synthetic_track_96_map.pgm": {
+          "sha256": "942fc514326cbba861d5e6d1acf6c373125a1d898b5490e4db6e26d46d9055c0",
+          "sha256_lf": "942fc514326cbba861d5e6d1acf6c373125a1d898b5490e4db6e26d46d9055c0"
+        },
+        "vw_synthetic_track_96_centerline.csv": {
+          "sha256": "a8126659ac01d28559497ddd3cb0160e1f41a851b774e5fdf4ee83000fa104dc",
+          "sha256_lf": "4200275a6e3fe999e0b9618960bfd312f8a17987d85e381e83cd0c98475c629b"
+        }
+      }
+    },
+    "vw_synthetic_track_97": {
+      "split": "vw_train",
+      "raw_index": 97,
+      "same_shape_as": "synthetic_track_97",
+      "target_half_width_m": 0.846094,
+      "generator_width": 6.11337,
+      "measured_half_width_m": 0.8449,
+      "files": {
+        "vw_synthetic_track_97_map.yaml": {
+          "sha256": "2ac76be029a5e11844593d944f96ac84094fdd29a9dccd2bcf88b37f13a12986",
+          "sha256_lf": "c4653530cfe0ab438308cb6f829452e7e73c81421c4f4194afdfb8afd9aed081"
+        },
+        "vw_synthetic_track_97_map.pgm": {
+          "sha256": "fe71f1a6be6704e88b4ff9a6c41408acf507c3dde9cc6392e0db66921d193a64",
+          "sha256_lf": "fe71f1a6be6704e88b4ff9a6c41408acf507c3dde9cc6392e0db66921d193a64"
+        },
+        "vw_synthetic_track_97_centerline.csv": {
+          "sha256": "394150d48c61da25d29a524e6a02e41f501bbc5084af521a29a48ee45e590104",
+          "sha256_lf": "f01a615f19634d0b1ba6d938770346e53a2d64210892e4e00e787d230ea61497"
+        }
+      }
+    },
+    "vw_synthetic_track_98": {
+      "split": "vw_train",
+      "raw_index": 98,
+      "same_shape_as": "synthetic_track_98",
+      "target_half_width_m": 1.296094,
+      "generator_width": 8.897507,
+      "measured_half_width_m": 1.2959,
+      "files": {
+        "vw_synthetic_track_98_map.yaml": {
+          "sha256": "caaba26f460285e70020b24c9f152f1d9d042f05997cd69b4b4947b235003d47",
+          "sha256_lf": "e0992a9d3ae5d944a9c9b314b6548e7ce90d856f373bd0997e4f202e75c4fc4b"
+        },
+        "vw_synthetic_track_98_map.pgm": {
+          "sha256": "fda953b9986612370068b9762e3ff57cafd87a5664e0c11035a8d922c001dfdc",
+          "sha256_lf": "fda953b9986612370068b9762e3ff57cafd87a5664e0c11035a8d922c001dfdc"
+        },
+        "vw_synthetic_track_98_centerline.csv": {
+          "sha256": "770ca1bb34db032fd542b518d3d4e512a2620973160ceb724c8079fdf9c2e5b3",
+          "sha256_lf": "e6fc87cde64f99016726776727229ffb8eb920499061ca961a57a74f6ecf5d59"
+        }
+      }
+    },
+    "vw_synthetic_track_99": {
+      "split": "vw_train",
+      "raw_index": 99,
+      "same_shape_as": "synthetic_track_99",
+      "target_half_width_m": 0.733594,
+      "generator_width": 5.417336,
+      "measured_half_width_m": 0.7344,
+      "files": {
+        "vw_synthetic_track_99_map.yaml": {
+          "sha256": "30dfbfa16902a0c9acec4f12277fcde84d775a15ef0d43dda7cddaf0ae04158e",
+          "sha256_lf": "2165bb00db925dbf41967e070c4e8f2a7cce8dc242dc51a80f56fdbe987fad1f"
+        },
+        "vw_synthetic_track_99_map.pgm": {
+          "sha256": "cd2953c23c57cd640e94cda544a8c6ddb668706ca0e6898207b8bb045654e369",
+          "sha256_lf": "cd2953c23c57cd640e94cda544a8c6ddb668706ca0e6898207b8bb045654e369"
+        },
+        "vw_synthetic_track_99_centerline.csv": {
+          "sha256": "4c2e36b255adc275c5049c67fb35fecaf235cceb64ba5666e52c6312ea64529e",
+          "sha256_lf": "022db2ee8b6179609171c567113acf748141eb5f03a209e3a8d737dfe7916357"
+        }
+      }
+    },
+    "vw_val_track_0": {
+      "split": "vw_val",
+      "raw_index": 100,
+      "same_shape_as": "val_track_0",
+      "target_half_width_m": 1.05,
+      "generator_width": 7.37493,
+      "measured_half_width_m": 1.0507,
+      "files": {
+        "vw_val_track_0_map.yaml": {
+          "sha256": "e6e06b220efb15572f17b0dd1ba71a3825f23c6a91243184d7995a5634944e3e",
+          "sha256_lf": "2573ebee6b0368691dd65d898c7e25147437247b7196462f642e84ed316b841e"
+        },
+        "vw_val_track_0_map.pgm": {
+          "sha256": "4f378a68e9f5790173577405a6c414dd8bf79bc52905511c3b0aa104691827bd",
+          "sha256_lf": "4f378a68e9f5790173577405a6c414dd8bf79bc52905511c3b0aa104691827bd"
+        },
+        "vw_val_track_0_centerline.csv": {
+          "sha256": "1c80474a4ad4146644ba9f02696088058a28d28c5d8d4decd6d7d23a4e9ad3b4",
+          "sha256_lf": "33b770f209832d6803b11728f1981e6168fc613425b9d13afa5e7b8a860361f8"
+        }
+      }
+    },
+    "vw_val_track_1": {
+      "split": "vw_val",
+      "raw_index": 101,
+      "same_shape_as": "val_track_1",
+      "target_half_width_m": 0.825,
+      "generator_width": 5.982862,
+      "measured_half_width_m": 0.8283,
+      "files": {
+        "vw_val_track_1_map.yaml": {
+          "sha256": "ee31b1b59593a4a74d066d1e1909b0185c554859fdee43ebad3a531ed5e94bff",
+          "sha256_lf": "720c602077e5c31dcc56ee24d757ffff489689cffb5aa0fc8beaafe05852e274"
+        },
+        "vw_val_track_1_map.pgm": {
+          "sha256": "5f2b3c1a3dc4e1e848557f6e052c481132ec7bf9fbf745b6c8a7b25f167d4347",
+          "sha256_lf": "5f2b3c1a3dc4e1e848557f6e052c481132ec7bf9fbf745b6c8a7b25f167d4347"
+        },
+        "vw_val_track_1_centerline.csv": {
+          "sha256": "ae440ae709970353d33e9028e027832352499d17411ba4672ccf973cf495fae0",
+          "sha256_lf": "434c8bed66736efd3c86bbf1c252ad2730b85a59475a0f4fea3eae7159edcbcb"
+        }
+      }
+    },
+    "vw_val_track_2": {
+      "split": "vw_val",
+      "raw_index": 102,
+      "same_shape_as": "val_track_2",
+      "target_half_width_m": 1.275,
+      "generator_width": 8.766999,
+      "measured_half_width_m": 1.2784,
+      "files": {
+        "vw_val_track_2_map.yaml": {
+          "sha256": "f133b9088cf7b2ca6b4a9f583fec219019f331a9eaac94302a650915d208a0f3",
+          "sha256_lf": "70dc4f873ecdfb36526eff668da811d389c58419d7896b7f1eea97f1594219d1"
+        },
+        "vw_val_track_2_map.pgm": {
+          "sha256": "c4be8ba10bee7ecfa38d92ea7d7e17061591dcc30272f0a8da2bccee0ea87463",
+          "sha256_lf": "c4be8ba10bee7ecfa38d92ea7d7e17061591dcc30272f0a8da2bccee0ea87463"
+        },
+        "vw_val_track_2_centerline.csv": {
+          "sha256": "dd3ceea95c88c8e4245734970bd414df5054928781438de374b28e50740c59f7",
+          "sha256_lf": "2dd462a6957af9314d85ca1b2f82ea7d96bdc90a5851d94fbe7df1512d7608a4"
+        }
+      }
+    },
+    "vw_val_track_3": {
+      "split": "vw_val",
+      "raw_index": 103,
+      "same_shape_as": "val_track_3",
+      "target_half_width_m": 0.7125,
+      "generator_width": 5.286828,
+      "measured_half_width_m": 0.7149,
+      "files": {
+        "vw_val_track_3_map.yaml": {
+          "sha256": "4b434a053c38988566eb5601fdbd86b58e0c98ca044b2b33211761f5017d825d",
+          "sha256_lf": "9462583688f95e6587f7213ae4f8526daf4840d7efe8584e69afa96091be3237"
+        },
+        "vw_val_track_3_map.pgm": {
+          "sha256": "47b78cdb897ac3157ed773216fad8c9201163ac463fb20db5266f694f0b6ea05",
+          "sha256_lf": "47b78cdb897ac3157ed773216fad8c9201163ac463fb20db5266f694f0b6ea05"
+        },
+        "vw_val_track_3_centerline.csv": {
+          "sha256": "040ce540790bdafbbaf33703149fa03865083eccc2eabce466367f83673833a4",
+          "sha256_lf": "7b8ca25f4afe326a649bb1839f26c7b5a7f44c5bfa1f5490831c41cf129f38ad"
+        }
+      }
+    },
+    "vw_val_track_4": {
+      "split": "vw_val",
+      "raw_index": 104,
+      "same_shape_as": "val_track_4",
+      "target_half_width_m": 1.1625,
+      "generator_width": 8.070965,
+      "measured_half_width_m": 1.1609,
+      "files": {
+        "vw_val_track_4_map.yaml": {
+          "sha256": "6dd6ae9badf7646ee67701ea428249b30e1cfdde95b8022c2d0d33ad69e2e58c",
+          "sha256_lf": "ce94eb9aba5d52dea513d80e4a692b8f1255fa8db04f9cf8713dc71b277c5923"
+        },
+        "vw_val_track_4_map.pgm": {
+          "sha256": "d9d9172adadb70cbb3733124d4252859f2e969d96a0390901180ce16115c88f2",
+          "sha256_lf": "d9d9172adadb70cbb3733124d4252859f2e969d96a0390901180ce16115c88f2"
+        },
+        "vw_val_track_4_centerline.csv": {
+          "sha256": "bfd3dacd8b01ca97224c5c8de5ef4b67f45565522fe38620b82f635ed8900ccc",
+          "sha256_lf": "13c81eac8843bb45e39976293d63e01692c8720d4b39a77c31b088b7d1593ea0"
+        }
+      }
+    },
+    "vw_val_track_5": {
+      "split": "vw_val",
+      "raw_index": 105,
+      "same_shape_as": "val_track_5",
+      "target_half_width_m": 0.9375,
+      "generator_width": 6.678896,
+      "measured_half_width_m": 0.9385,
+      "files": {
+        "vw_val_track_5_map.yaml": {
+          "sha256": "cc8c07c9f62295aa71560d1ca58234959bbe860f872e3192dff6a8ef4ee7ed31",
+          "sha256_lf": "90043b430f113fa2fbb775e7079425b1f8fbd665785aa296ecc362dbdd7a4d97"
+        },
+        "vw_val_track_5_map.pgm": {
+          "sha256": "de55e08244bd485a5143b4b69d000cf44d54ee9202d649640e1565d4245423a3",
+          "sha256_lf": "de55e08244bd485a5143b4b69d000cf44d54ee9202d649640e1565d4245423a3"
+        },
+        "vw_val_track_5_centerline.csv": {
+          "sha256": "f8015573778ce4ac2a7a7c6b9e848449c8320481b8de8b84fad37e261f8eed81",
+          "sha256_lf": "a550b245b2d13c2be51b604e325e656d170884921701e2f9ff86bf5d542dd1d2"
+        }
+      }
+    },
+    "vw_val_track_6": {
+      "split": "vw_val",
+      "raw_index": 106,
+      "same_shape_as": "val_track_6",
+      "target_half_width_m": 1.3875,
+      "generator_width": 9.463033,
+      "measured_half_width_m": 1.3922,
+      "files": {
+        "vw_val_track_6_map.yaml": {
+          "sha256": "1f84f468a5e35a3c3775538c02339c5ed3c5a7e99a84eaad59671d2f8a3948f2",
+          "sha256_lf": "c0a9dddd05c3cc433ad24877939384b6e71aa771b081ee638313521a58096593"
+        },
+        "vw_val_track_6_map.pgm": {
+          "sha256": "12e5180201de9fe896b3f4d71a1bab0285fbddd0bee2a98cdd6b123f70c22db8",
+          "sha256_lf": "12e5180201de9fe896b3f4d71a1bab0285fbddd0bee2a98cdd6b123f70c22db8"
+        },
+        "vw_val_track_6_centerline.csv": {
+          "sha256": "e80240ffd7a828ae6398ffd726fd0707e2213cff4abaedd603ab654d442c2f77",
+          "sha256_lf": "727fc8150ca80fec65a3c846a018d1e6520f9bd2da23867a1795ebc5f4fc8342"
+        }
+      }
+    },
+    "vw_val_track_7": {
+      "split": "vw_val",
+      "raw_index": 107,
+      "same_shape_as": "val_track_7",
+      "target_half_width_m": 0.65625,
+      "generator_width": 4.938811,
+      "measured_half_width_m": 0.6562,
+      "files": {
+        "vw_val_track_7_map.yaml": {
+          "sha256": "6c5e5b46bc7e09365ec3ed22e904551ac92f27761305d50fc2733b19330f4766",
+          "sha256_lf": "adaad29b410cb0992cf5af2a496738336c862427bad4663b67d092204f7062ad"
+        },
+        "vw_val_track_7_map.pgm": {
+          "sha256": "de83ef09094f499aa96f0f13b1d6773cebc8832c89b4c7123f15c1f1da9b5073",
+          "sha256_lf": "de83ef09094f499aa96f0f13b1d6773cebc8832c89b4c7123f15c1f1da9b5073"
+        },
+        "vw_val_track_7_centerline.csv": {
+          "sha256": "e62feaf87826c18230e613547990648237dd91bb29a2fa704b6f71865c9d76b0",
+          "sha256_lf": "62a5ee32e2e3a41e13b74edbe93dd3b9fba72ef5b46faf4de410fbd5afa50ad4"
+        }
+      }
+    },
+    "vw_val_track_8": {
+      "split": "vw_val",
+      "raw_index": 108,
+      "same_shape_as": "val_track_8",
+      "target_half_width_m": 1.10625,
+      "generator_width": 7.722947,
+      "measured_half_width_m": 1.106,
+      "files": {
+        "vw_val_track_8_map.yaml": {
+          "sha256": "a4384817a5eb90acbef5f7cecb9c99aef98445b0fa3859c8c935f2cb394d3b85",
+          "sha256_lf": "8b396919ca8381b34b68f7db1162ca7b02115c329a40df1b5955e1ab65a5bdb4"
+        },
+        "vw_val_track_8_map.pgm": {
+          "sha256": "062c31eeba2905d7e06f67d62fe7b7b0e76a03c44277f8bcb6db24564f5b783a",
+          "sha256_lf": "062c31eeba2905d7e06f67d62fe7b7b0e76a03c44277f8bcb6db24564f5b783a"
+        },
+        "vw_val_track_8_centerline.csv": {
+          "sha256": "13fd873d935f5fcd77026ccac722654c4726d2df9552f08543acf31bab527ee2",
+          "sha256_lf": "0b3db44fd327ac507dd30474cb74c97e16836831a01ffd8f82392ba760e363d7"
+        }
+      }
+    },
+    "vw_val_track_9": {
+      "split": "vw_val",
+      "raw_index": 109,
+      "same_shape_as": "val_track_9",
+      "target_half_width_m": 0.88125,
+      "generator_width": 6.330879,
+      "measured_half_width_m": 0.8833,
+      "files": {
+        "vw_val_track_9_map.yaml": {
+          "sha256": "c570189a06fbd96d9ebd905fd7b4c002b94676c2a3b0392fc2f32215475bc914",
+          "sha256_lf": "9b77ea3722dfac8a714e0a1f730e0af0048053395132163bf987c08c515a9feb"
+        },
+        "vw_val_track_9_map.pgm": {
+          "sha256": "9380d1bb52e7064f380d501818b5ad779ea623705d403b6dc7856ed398be29bd",
+          "sha256_lf": "9380d1bb52e7064f380d501818b5ad779ea623705d403b6dc7856ed398be29bd"
+        },
+        "vw_val_track_9_centerline.csv": {
+          "sha256": "7f355265c54cdd1197a3a829abc641bb5f454d0ff782a264e64382e6c89c6090",
+          "sha256_lf": "b63ac9e03d2dad87a9f8ea927f36f81ba532c2685d7239c004aa46bd91c2b43b"
+        }
+      }
+    },
+    "vw_test_track_0": {
+      "split": "vw_test",
+      "raw_index": 110,
+      "same_shape_as": "test_track_0",
+      "target_half_width_m": 1.05,
+      "generator_width": 7.37493,
+      "measured_half_width_m": 1.0507,
+      "files": {
+        "vw_test_track_0_map.yaml": {
+          "sha256": "2ca1e010163dc770a596c34a2cd06be1af9bb6f14b5ff52badbe4563f5bcf519",
+          "sha256_lf": "de1ee0f448eeaa829d96a98ee8ca8cabf59049e890aac3e694aa84e940eb5be7"
+        },
+        "vw_test_track_0_map.pgm": {
+          "sha256": "50791d9b2d5cc1714ffa83ebaf8fab1bc0e3bd2053fa5c30611ae61d25413544",
+          "sha256_lf": "50791d9b2d5cc1714ffa83ebaf8fab1bc0e3bd2053fa5c30611ae61d25413544"
+        },
+        "vw_test_track_0_centerline.csv": {
+          "sha256": "6c990b7f8b3b6ba19807dcfa0bab0a7c00b91aaad61875698b0f647b6f4f5bd4",
+          "sha256_lf": "8e414507e0e0f20fd5ca51c658076c284bba47c5a3ce82e19db8ee636e9dc0ed"
+        }
+      }
+    },
+    "vw_test_track_1": {
+      "split": "vw_test",
+      "raw_index": 111,
+      "same_shape_as": "test_track_1",
+      "target_half_width_m": 0.825,
+      "generator_width": 5.982862,
+      "measured_half_width_m": 0.8261,
+      "files": {
+        "vw_test_track_1_map.yaml": {
+          "sha256": "d0e55205c6982328a13e3477c72c40c3598239ffd50c76a74e2c0167b038d0ab",
+          "sha256_lf": "301440968e1370cf72e62b9731b43783ce078acee9a49ea8876d93b1819ffff4"
+        },
+        "vw_test_track_1_map.pgm": {
+          "sha256": "821580fbf1fbd76070c06f7ce53f7b1af2a61fab86397c90040bdbcbabfce23e",
+          "sha256_lf": "821580fbf1fbd76070c06f7ce53f7b1af2a61fab86397c90040bdbcbabfce23e"
+        },
+        "vw_test_track_1_centerline.csv": {
+          "sha256": "73aeb4545945d14ff096dccdcb345fcc858403b1c335edc80a19e13e936b4788",
+          "sha256_lf": "06ffa8cdf3c5429d1e14ee92b8d3a23bed9afc9a011e2d1298d2e7773507e67f"
+        }
+      }
+    },
+    "vw_test_track_2": {
+      "split": "vw_test",
+      "raw_index": 112,
+      "same_shape_as": "test_track_2",
+      "target_half_width_m": 1.275,
+      "generator_width": 8.766999,
+      "measured_half_width_m": 1.2758,
+      "files": {
+        "vw_test_track_2_map.yaml": {
+          "sha256": "1ba8bb06662b26d450ea1a3e2480d83730a6268ee6e4ea7dd5d454f7a08b8444",
+          "sha256_lf": "56f0d8f7ca3a9c3a2fd9df62eabd37220defd669e471edcf3f78d8b13df4646a"
+        },
+        "vw_test_track_2_map.pgm": {
+          "sha256": "01463653ec14722198980f51d2d0da78987530d1bf8e917a7de5ea9d106c53c3",
+          "sha256_lf": "01463653ec14722198980f51d2d0da78987530d1bf8e917a7de5ea9d106c53c3"
+        },
+        "vw_test_track_2_centerline.csv": {
+          "sha256": "d4fa20cc0946d664a79ff218b003ef142ad2b999a50c916469b6f1381f1bc6fe",
+          "sha256_lf": "219c5352bc25f71cb4e0079d560f173ef967ceab978c64450821a4eb7e09b76f"
+        }
+      }
+    },
+    "vw_test_track_3": {
+      "split": "vw_test",
+      "raw_index": 113,
+      "same_shape_as": "test_track_3",
+      "target_half_width_m": 0.7125,
+      "generator_width": 5.286828,
+      "measured_half_width_m": 0.7144,
+      "files": {
+        "vw_test_track_3_map.yaml": {
+          "sha256": "ef01b95f9fb0e29e33e8969d949867fb1a1490e681edb48ad460099d9ce90a5c",
+          "sha256_lf": "3eba68145d2c54c3092086ad0d3711e455923273a1573b5606881ae546732b0e"
+        },
+        "vw_test_track_3_map.pgm": {
+          "sha256": "530f8a1163095f57a79b4d6b3dd162bdc239a1285825c9eaa2b47cb01edbb092",
+          "sha256_lf": "530f8a1163095f57a79b4d6b3dd162bdc239a1285825c9eaa2b47cb01edbb092"
+        },
+        "vw_test_track_3_centerline.csv": {
+          "sha256": "7eef0aeb34147c5e9d80d964c973c1f201941dcd3e9df564fbc0ccafd879c98c",
+          "sha256_lf": "98a0b26c6a3c6f80d902f90edd0c944ffd6168f3bc00df44cb113b2c777bc5f2"
+        }
+      }
+    },
+    "vw_test_track_4": {
+      "split": "vw_test",
+      "raw_index": 114,
+      "same_shape_as": "test_track_4",
+      "target_half_width_m": 1.1625,
+      "generator_width": 8.070965,
+      "measured_half_width_m": 1.1613,
+      "files": {
+        "vw_test_track_4_map.yaml": {
+          "sha256": "2a9c1ee05be8c5179df691a692feda1ebbac9aee84dd9bd7995bb00c47bd67ca",
+          "sha256_lf": "bff7392903f2da773cd46ba350dbea6805433b6119cb7b32e75dba01ae2714c7"
+        },
+        "vw_test_track_4_map.pgm": {
+          "sha256": "b3638a0d88bb3ca008223c4b47d87a9cd66e77a9696870646baea754f1daf904",
+          "sha256_lf": "b3638a0d88bb3ca008223c4b47d87a9cd66e77a9696870646baea754f1daf904"
+        },
+        "vw_test_track_4_centerline.csv": {
+          "sha256": "be1f6bfb84ee60fad634e939d7b444700a64a6bc8c872d59798fb91c83920ba0",
+          "sha256_lf": "5644c337c64e0b7cb5f23390601539a89ba85f9ade4f471c8cebdbfaa64d73f7"
+        }
+      }
+    },
+    "vw_test_track_5": {
+      "split": "vw_test",
+      "raw_index": 115,
+      "same_shape_as": "test_track_5",
+      "target_half_width_m": 0.9375,
+      "generator_width": 6.678896,
+      "measured_half_width_m": 0.9383,
+      "files": {
+        "vw_test_track_5_map.yaml": {
+          "sha256": "0cccf1322202a1e84089242d4f5ae263c1ee9537c86a52d53510cca7070d3342",
+          "sha256_lf": "577a33bcd4d57c5e9ff16bd29c79da5b658e2cf74548b3fb2ddebcb7e22b8833"
+        },
+        "vw_test_track_5_map.pgm": {
+          "sha256": "80c2322a2a46678036477ac114df3892a2585bc05595ec7f627be35650134a64",
+          "sha256_lf": "80c2322a2a46678036477ac114df3892a2585bc05595ec7f627be35650134a64"
+        },
+        "vw_test_track_5_centerline.csv": {
+          "sha256": "9d181b58cbff4744f2d983b750f450fa945b800c317663ec74a259cf165e50fb",
+          "sha256_lf": "086006d1f07b2a2fab9d113cbe1a0493713a68bd44df87c541f345d2bda1572e"
+        }
+      }
+    },
+    "vw_test_track_6": {
+      "split": "vw_test",
+      "raw_index": 116,
+      "same_shape_as": "test_track_6",
+      "target_half_width_m": 1.3875,
+      "generator_width": 9.463033,
+      "measured_half_width_m": 1.3894,
+      "files": {
+        "vw_test_track_6_map.yaml": {
+          "sha256": "bccd3f64ec0d145cbe7776066693d3d40b8abac90a642c4d45a327dac2600151",
+          "sha256_lf": "59b2e6fb62061fd33ed54dcb76a0b453cca4ae8f6c093378131d5a3b4df01e5d"
+        },
+        "vw_test_track_6_map.pgm": {
+          "sha256": "744da0adbe9dd2a06f643b8f37c5e8d80e3208193cdc99ff26aeefb1ad627104",
+          "sha256_lf": "744da0adbe9dd2a06f643b8f37c5e8d80e3208193cdc99ff26aeefb1ad627104"
+        },
+        "vw_test_track_6_centerline.csv": {
+          "sha256": "4a59dd904a92bbfb0496d291fc10d4ebe1e3936ed09e552876da6178b3f6e407",
+          "sha256_lf": "3a921bf35da5bbd5739c0b013d47826074dc6a21b43a2b87b70658164e55301d"
+        }
+      }
+    },
+    "vw_test_track_7": {
+      "split": "vw_test",
+      "raw_index": 117,
+      "same_shape_as": "test_track_7",
+      "target_half_width_m": 0.65625,
+      "generator_width": 4.938811,
+      "measured_half_width_m": 0.6562,
+      "files": {
+        "vw_test_track_7_map.yaml": {
+          "sha256": "aa7f8b53ee016c4b4f069a004a73e6d25f0c9978798bd6e066e5cb21c30a5b41",
+          "sha256_lf": "9b88b2caab0ee4691fef2654cc81bc3ac86c2c9833598a404d991cf01f3b5496"
+        },
+        "vw_test_track_7_map.pgm": {
+          "sha256": "d92e035b0cd79907142e108d9e06ae23e4a8c91a997489d141e55d66df145426",
+          "sha256_lf": "d92e035b0cd79907142e108d9e06ae23e4a8c91a997489d141e55d66df145426"
+        },
+        "vw_test_track_7_centerline.csv": {
+          "sha256": "ed36cdfd0140795061dc0df6e66d91ff78b11a3cfc7d53ef6774e459cf482c62",
+          "sha256_lf": "7e180e002cc4b8303f39458d308212dd638da00b8c749c45edbc8bd6476e57db"
+        }
+      }
+    },
+    "vw_test_track_8": {
+      "split": "vw_test",
+      "raw_index": 118,
+      "same_shape_as": "test_track_8",
+      "target_half_width_m": 1.10625,
+      "generator_width": 7.722947,
+      "measured_half_width_m": 1.1053,
+      "files": {
+        "vw_test_track_8_map.yaml": {
+          "sha256": "41077e2bf96ca51850a94b1824de64f3f768e29c7be230ec4257e4bb01517ad6",
+          "sha256_lf": "784691698bf5f7b9648a520e5c17b1e549d412d27b76bf06816cd8bb2fe85e3d"
+        },
+        "vw_test_track_8_map.pgm": {
+          "sha256": "774ea062b360d70e20a0996b1d611e5dc7d1e65c53ff4b1e1f66772a6b9a3dce",
+          "sha256_lf": "774ea062b360d70e20a0996b1d611e5dc7d1e65c53ff4b1e1f66772a6b9a3dce"
+        },
+        "vw_test_track_8_centerline.csv": {
+          "sha256": "c1b177b88520a0d1ced8f98753323402e09245a6f3ad74c433e68a24b15ee9c5",
+          "sha256_lf": "518471c75243fcf723b0269c68eb0cbd09d371c3acdc91a3216e454c20eeda74"
+        }
+      }
+    },
+    "vw_test_track_9": {
+      "split": "vw_test",
+      "raw_index": 119,
+      "same_shape_as": "test_track_9",
+      "target_half_width_m": 0.88125,
+      "generator_width": 6.330879,
+      "measured_half_width_m": 0.8835,
+      "files": {
+        "vw_test_track_9_map.yaml": {
+          "sha256": "e95a547c2da22b09eaa4e704ac8801b0d3209a69c712f5d756f822d317705ca6",
+          "sha256_lf": "a5c5edf49256e111e27c8018a051470a417044daeb720a25bdd2a26a765ff827"
+        },
+        "vw_test_track_9_map.pgm": {
+          "sha256": "557e892e577dc0f3bd4c13e69394f03f00e540e87504705d005e08bccd3519fb",
+          "sha256_lf": "557e892e577dc0f3bd4c13e69394f03f00e540e87504705d005e08bccd3519fb"
+        },
+        "vw_test_track_9_centerline.csv": {
+          "sha256": "2e0ce4bd2464c77e662acf8c8f77e921ca1ffd98972ed12c47b95510bc1e9a21",
+          "sha256_lf": "77b0d51902cc0d0cd6d67aa17e2e031c1301212efc2de4f56d2d8f7c88fa20e6"
+        }
+      }
+    },
+    "vw_test_track_10": {
+      "split": "vw_test",
+      "raw_index": 120,
+      "same_shape_as": "test_track_10",
+      "target_half_width_m": 1.33125,
+      "generator_width": 9.115016,
+      "measured_half_width_m": 1.3344,
+      "files": {
+        "vw_test_track_10_map.yaml": {
+          "sha256": "1b2053ad3a5a01b33da402e1f870a5cdc2bce474d2746a0b7cf792f892145bc7",
+          "sha256_lf": "ea9ee6c031dcade7ea2395ef3e566f8edd56874f1ea4f50985486394de68ecc4"
+        },
+        "vw_test_track_10_map.pgm": {
+          "sha256": "498bb0c381fade54761cd3a3cd3f658fca6cf420c28a39354f3bfa5cf734997b",
+          "sha256_lf": "498bb0c381fade54761cd3a3cd3f658fca6cf420c28a39354f3bfa5cf734997b"
+        },
+        "vw_test_track_10_centerline.csv": {
+          "sha256": "f13d93dab8da83820e6ad2a5d7550aea8b88522232c2f6be8f8080e0053e5783",
+          "sha256_lf": "4d26f52ebec35c771180adc507c07754d835d6fb995a96f8b09f2762cd550e53"
+        }
+      }
+    },
+    "vw_test_track_11": {
+      "split": "vw_test",
+      "raw_index": 121,
+      "same_shape_as": "test_track_11",
+      "target_half_width_m": 0.76875,
+      "generator_width": 5.634845,
+      "measured_half_width_m": 0.772,
+      "files": {
+        "vw_test_track_11_map.yaml": {
+          "sha256": "e2faaa19ff585356f7ef71dcf6bd8452a882833b5a0451ddfd2e83db908479e0",
+          "sha256_lf": "fdf8a1c5d200d29721f8f5e14b33d20c0a65024732941f24cadeea2de3fd9696"
+        },
+        "vw_test_track_11_map.pgm": {
+          "sha256": "4692d64018b3cb1736e2f6e3c7da49a3e0019ee6fab5b738788bc27d90ce0560",
+          "sha256_lf": "4692d64018b3cb1736e2f6e3c7da49a3e0019ee6fab5b738788bc27d90ce0560"
+        },
+        "vw_test_track_11_centerline.csv": {
+          "sha256": "6fdaa08fa2f2888164520c1bfb636a4db1b4c1fa8677812d433572722c1c72bd",
+          "sha256_lf": "e4d24aadf8a113bdc64b07f54d9bb90f30f407f5db4cf85e6f70eb2972ce7f56"
+        }
+      }
+    },
+    "vw_test_track_12": {
+      "split": "vw_test",
+      "raw_index": 122,
+      "same_shape_as": "test_track_12",
+      "target_half_width_m": 1.21875,
+      "generator_width": 8.418982,
+      "measured_half_width_m": 1.2165,
+      "files": {
+        "vw_test_track_12_map.yaml": {
+          "sha256": "35585cd54eea3a403a24efd1a2c86cd2135cc7ea5eeaa4ea9990d92dfb263af0",
+          "sha256_lf": "a0babcbc3b3a0eed88dfb4096fb4c7b5cae2efdfd760286fed2b5a3adb7d4078"
+        },
+        "vw_test_track_12_map.pgm": {
+          "sha256": "634ec0ffa10e44c009ace4d054c25276a33d5c079e3eb4a96fd31058d220b9f9",
+          "sha256_lf": "634ec0ffa10e44c009ace4d054c25276a33d5c079e3eb4a96fd31058d220b9f9"
+        },
+        "vw_test_track_12_centerline.csv": {
+          "sha256": "045f6dc8f23ed153d667054996ee0ee1089497565cf679af66ff995ad70f0ffd",
+          "sha256_lf": "5576af73b9131235491985c16c9a3b0ad2536f5484fd17a10fd32d05774ee48d"
+        }
+      }
+    },
+    "vw_test_track_13": {
+      "split": "vw_test",
+      "raw_index": 123,
+      "same_shape_as": "test_track_13",
+      "target_half_width_m": 0.99375,
+      "generator_width": 7.026913,
+      "measured_half_width_m": 0.9938,
+      "files": {
+        "vw_test_track_13_map.yaml": {
+          "sha256": "c02587831e14b65c7c0a3345a29f34eb49dcc1b226d5afa53ec49c3b012c87e2",
+          "sha256_lf": "3f0ac692cf16359674c0d21b3ca5a3171a7af8249ecd2ca77196bfa7037ea224"
+        },
+        "vw_test_track_13_map.pgm": {
+          "sha256": "65d21d13cc4634d9191849af2c55376f7cfd2be53ffdef2d7dc6452c5d9e0a5d",
+          "sha256_lf": "65d21d13cc4634d9191849af2c55376f7cfd2be53ffdef2d7dc6452c5d9e0a5d"
+        },
+        "vw_test_track_13_centerline.csv": {
+          "sha256": "bc7d5a619632a1754e70e24596b30c19f0adeab12cd2cc67fccdfa0a8139b1a7",
+          "sha256_lf": "2f43fffa2db5073f95d5dec76554e995d3bbccbeca32536610990147f8de3f59"
+        }
+      }
+    },
+    "vw_test_track_14": {
+      "split": "vw_test",
+      "raw_index": 124,
+      "same_shape_as": "test_track_14",
+      "target_half_width_m": 1.44375,
+      "generator_width": 9.81105,
+      "measured_half_width_m": 1.4453,
+      "files": {
+        "vw_test_track_14_map.yaml": {
+          "sha256": "c3da629ee3b7e2c56b766c230228520727e35e3f52b4525638b591ea4fe3cb4f",
+          "sha256_lf": "64c338db69e48147f8a0b1d8cdbf735e4a7a1c5ada97ef9eb7fb3b4e1dfa5695"
+        },
+        "vw_test_track_14_map.pgm": {
+          "sha256": "f69e444b42ffca1e65e7b5ef384c7947dc5a31a3b952bd9bc0012d20d20ecedc",
+          "sha256_lf": "f69e444b42ffca1e65e7b5ef384c7947dc5a31a3b952bd9bc0012d20d20ecedc"
+        },
+        "vw_test_track_14_centerline.csv": {
+          "sha256": "edd1adcaa6201c48e80e5c56bfdd365cac363997cb4f39a01a7d68a378814739",
+          "sha256_lf": "91093a8e58eda1a997c290e73d714c54da465b116d5a451b0f3a660864943283"
+        }
+      }
+    },
+    "vw_test_track_15": {
+      "split": "vw_test",
+      "raw_index": 125,
+      "same_shape_as": "test_track_15",
+      "target_half_width_m": 0.628125,
+      "generator_width": 4.764802,
+      "measured_half_width_m": 0.6328,
+      "files": {
+        "vw_test_track_15_map.yaml": {
+          "sha256": "bd07c512bfc5f8614ee21d9d48cb10762216d06340a948749a0a437942f08903",
+          "sha256_lf": "3ed4d496e9ffd21ae9aa9a4b758695f89986f93c52f2483069b34c6487cdbd50"
+        },
+        "vw_test_track_15_map.pgm": {
+          "sha256": "bfde55e48823abfc6868cf0eb4f870c767068137357d7b80c34dfe4e76b180e5",
+          "sha256_lf": "bfde55e48823abfc6868cf0eb4f870c767068137357d7b80c34dfe4e76b180e5"
+        },
+        "vw_test_track_15_centerline.csv": {
+          "sha256": "fddff5bb65e34d9b5058371fdb74e82552a981715a651ca9337173111b06498d",
+          "sha256_lf": "d65b13d0aa44e0759bbe397409f05d845f0e38d094fe12f2ba3f4c43e1a83cba"
+        }
+      }
+    },
+    "vw_test_track_16": {
+      "split": "vw_test",
+      "raw_index": 126,
+      "same_shape_as": "test_track_16",
+      "target_half_width_m": 1.078125,
+      "generator_width": 7.548939,
+      "measured_half_width_m": 1.0815,
+      "files": {
+        "vw_test_track_16_map.yaml": {
+          "sha256": "68b34a6f116670ea602256d67e34cf175f222593960186906f36e67c5576ada3",
+          "sha256_lf": "050556dca725dd555316780331fecddd9970302f07eeb1a83e7350c9604c6e10"
+        },
+        "vw_test_track_16_map.pgm": {
+          "sha256": "2a873cff2454f7f3cb9b224305865487e1ed54e1798c95eba14434adb7e7d932",
+          "sha256_lf": "2a873cff2454f7f3cb9b224305865487e1ed54e1798c95eba14434adb7e7d932"
+        },
+        "vw_test_track_16_centerline.csv": {
+          "sha256": "0708dc109424be231969ec1ce0c361657dbd62c6d1875e7e1fe1d97c365797c1",
+          "sha256_lf": "f2f94237a63d24b8488954840eb6209e0ee42320226a172f3343ae9733767093"
+        }
+      }
+    },
+    "vw_test_track_17": {
+      "split": "vw_test",
+      "raw_index": 127,
+      "same_shape_as": "test_track_17",
+      "target_half_width_m": 0.853125,
+      "generator_width": 6.156871,
+      "measured_half_width_m": 0.8517,
+      "files": {
+        "vw_test_track_17_map.yaml": {
+          "sha256": "997b3dc2afe75e5a8b45e25d716840d1a1157c1fe259e64f99d5e32c1bcc54b6",
+          "sha256_lf": "709c5e1dd256254fdac98a99a9b1c41766d93bb0d9b66b90a665c3c934552717"
+        },
+        "vw_test_track_17_map.pgm": {
+          "sha256": "61f656ebeafb9239d28bb65096b3bd7ffdcbb735490133bb502d4f467c2813ff",
+          "sha256_lf": "61f656ebeafb9239d28bb65096b3bd7ffdcbb735490133bb502d4f467c2813ff"
+        },
+        "vw_test_track_17_centerline.csv": {
+          "sha256": "1c77d980152f99c8af29806f622f2d1f8c0552cda4b5b0292658869d87850520",
+          "sha256_lf": "d9b51fc50eb4f957af9bd4d445b24406ce8509c1e0a13843a5da3185fac4c389"
+        }
+      }
+    },
+    "vw_test_track_18": {
+      "split": "vw_test",
+      "raw_index": 128,
+      "same_shape_as": "test_track_18",
+      "target_half_width_m": 1.303125,
+      "generator_width": 8.941007,
+      "measured_half_width_m": 1.303,
+      "files": {
+        "vw_test_track_18_map.yaml": {
+          "sha256": "3938c92fbaa44d0946382511e9623c7190109505f9abd549bbec0601ccabc6ad",
+          "sha256_lf": "2e27f06e0612ca826da4a5b805704c1b313525b6dd488788afd0ec0df43dc39e"
+        },
+        "vw_test_track_18_map.pgm": {
+          "sha256": "33d0d2ca93165abf4780e79a9011e3fe342cd28a292c03f768591525bd2cf08f",
+          "sha256_lf": "33d0d2ca93165abf4780e79a9011e3fe342cd28a292c03f768591525bd2cf08f"
+        },
+        "vw_test_track_18_centerline.csv": {
+          "sha256": "a0cfe10ec1f91d77c869cc3ad033a1338c142f4f0b29c35782da776447f44799",
+          "sha256_lf": "a53f46f31362efbf4cd93adaf6a4021ca753b4d3b08959d9e93ba6fd9abf3e2f"
+        }
+      }
+    },
+    "vw_test_track_19": {
+      "split": "vw_test",
+      "raw_index": 129,
+      "same_shape_as": "test_track_19",
+      "target_half_width_m": 0.740625,
+      "generator_width": 5.460836,
+      "measured_half_width_m": 0.7422,
+      "files": {
+        "vw_test_track_19_map.yaml": {
+          "sha256": "ebcc274e8ccd0d1ac5a4b449061d8a2ce1bb0cd44d3315df2e8dcff1323bca67",
+          "sha256_lf": "c3318239d1f1c4791dca95af8c986255fa836bba1c7f1cff60b9a1e9895d1190"
+        },
+        "vw_test_track_19_map.pgm": {
+          "sha256": "fd01d0424bebbdc4ae316e194f3437137ddcc0713a4fdc0f74c39a53e8b63516",
+          "sha256_lf": "fd01d0424bebbdc4ae316e194f3437137ddcc0713a4fdc0f74c39a53e8b63516"
+        },
+        "vw_test_track_19_centerline.csv": {
           "sha256": "dc6dca54983b815d0194b9594036081ac5fdbc27b217780183221a7176aa3cb0",
           "sha256_lf": "133ddbf095c3a8af3ceb004d83eeff11d3700fbf5b5b7c5d74fc9b0d20405dc5"
         }

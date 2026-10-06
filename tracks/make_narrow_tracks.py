@@ -95,7 +95,8 @@ def generator():
     return rt
 
 
-def render(track, track_int, track_ext, track_id, outdir, layout_walls):
+def render(track, track_int, track_ext, track_id, outdir, layout_walls,
+           limits_from_layout_only=False):
     """random_trackgen.convert_track, with the layout pinned to the WIDTH-10 walls.
 
     convert_track calls tight_layout() before fixing the axis limits, so the
@@ -105,15 +106,25 @@ def render(track, track_int, track_ext, track_id, outdir, layout_walls):
     the WIDTH-10 walls as invisible lines (they count for autoscaling but are
     not drawn) reproduces the original layout exactly. Every other line is
     the generator's. Checked byte-for-byte against convert_track at WIDTH 10.
+
+    Walls WIDER than WIDTH 10 would still enlarge the autoscaled extent. With
+    limits_from_layout_only=True the visible walls are added as plain artists,
+    which are drawn identically but never enter the data limits, so only the
+    WIDTH-10 walls set the layout whatever the width.
     """
     import cv2
     import matplotlib.pyplot as plt
+    from matplotlib.lines import Line2D
     fig, ax = plt.subplots()
     fig.set_size_inches(20, 20)
     for w in layout_walls:
         ax.plot(w[:, 0], w[:, 1], color="black", linewidth=3, visible=False)
-    ax.plot(track_int[:, 0], track_int[:, 1], color="black", linewidth=3)
-    ax.plot(track_ext[:, 0], track_ext[:, 1], color="black", linewidth=3)
+    if limits_from_layout_only:
+        for w in (track_int, track_ext):
+            ax.add_artist(Line2D(w[:, 0], w[:, 1], color="black", linewidth=3))
+    else:
+        ax.plot(track_int[:, 0], track_int[:, 1], color="black", linewidth=3)
+        ax.plot(track_ext[:, 0], track_ext[:, 1], color="black", linewidth=3)
     plt.tight_layout()
     ax.set_aspect("equal")
     ax.set_xlim(-180, 300)
@@ -158,12 +169,15 @@ def walls(track_xy: np.ndarray, width: float):
             np.array(poly.buffer(-width).exterior.xy).T)
 
 
-def replay(raw_dir: pathlib.Path, redraw: dict[str, float]) -> None:
-    """Replay random_trackgen.main exactly; also redraw 110-129 at other widths.
+def replay(raw_dir: pathlib.Path, redraw: dict, indices=RAW,
+           limits_from_layout_only=False) -> None:
+    """Replay random_trackgen.main exactly; also redraw some tracks at other widths.
 
     raw_dir/base gets every track at WIDTH 10, as the generator wrote it;
-    raw_dir/<key> gets tracks 110-129 at width redraw[key]; raw_dir/selfcheck
-    gets 110-129 at WIDTH 10 through render(), which must equal base.
+    raw_dir/<key> gets the tracks in `indices` redrawn at redraw[key], either
+    one WIDTH for all of them or a {raw index: WIDTH} dict; raw_dir/selfcheck
+    gets the same tracks at WIDTH 10 through render() in the same mode, which
+    must equal base byte-for-byte.
     """
     import contextlib
     import io
@@ -180,18 +194,20 @@ def replay(raw_dir: pathlib.Path, redraw: dict[str, float]) -> None:
                 break
             except Exception:
                 continue
-        if i in RAW:
+        if i in indices:
             # Same buffer code at WIDTH 10 must give the generator's own walls.
             a, b = walls(track, BASE_WIDTH)
             assert np.array_equal(a, t_int) and np.array_equal(b, t_ext), i
-            render(track, t_int, t_ext, i, raw_dir / "selfcheck", (t_int, t_ext))
+            render(track, t_int, t_ext, i, raw_dir / "selfcheck", (t_int, t_ext),
+                   limits_from_layout_only)
             for f in (f"map{i}_map.yaml", f"map{i}_map.pgm", f"map{i}_centerline.csv"):
                 if (raw_dir / "selfcheck" / f).read_bytes() != (raw_dir / "base" / f).read_bytes():
                     raise SystemExit(f"render() does not reproduce convert_track for {f}; "
                                      "the generator has changed. Nothing written.")
             for key, w in redraw.items():
-                ti, te = walls(track, w)
-                render(track, ti, te, i, raw_dir / key, (t_int, t_ext))
+                ti, te = walls(track, w[i] if isinstance(w, dict) else w)
+                render(track, ti, te, i, raw_dir / key, (t_int, t_ext),
+                       limits_from_layout_only)
 
 
 def check_base(pkg: pathlib.Path, manifest: dict) -> None:

@@ -1,6 +1,9 @@
 """Centreline geometry of every track, and where the SAC agents crash on it.
 
     python analysis/track_geometry.py
+    python analysis/track_geometry.py --twin-check vw_train vw_val vw_test
+        (only: derived splits share their originals' centrelines; writes
+        results/track_geometry_twins/, nothing else)
 
 PART 1, GEOMETRY. For every track in the train, test and real splits of
 tracks/manifest.json, along the centreline as the simulator itself samples it
@@ -175,12 +178,21 @@ def summarise(split: str, name: str, df: pd.DataFrame, meta: dict) -> dict:
     }
 
 
-def check_narrow(manifest: dict, geo: dict, meta: dict, geo_splits) -> dict | None:
-    """Each narrow track against its test twin: same centreline, narrower walls.
+def twins(manifest: dict, split: str) -> list[tuple[str, str]]:
+    """(original, derived) name pairs for a split made from another split's shapes."""
+    entry = manifest["splits"][split]
+    names = entry["names"]
+    if all("same_shape_as" in manifest["tracks"][n] for n in names):
+        return [(manifest["tracks"][n]["same_shape_as"], n) for n in names]
+    return list(zip(manifest["splits"][entry["same_shapes_as"]]["names"], names))
+
+
+def check_twins(manifest: dict, geo: dict, meta: dict, splits) -> dict | None:
+    """Each derived track against its original: same centreline, different walls.
 
     Compares the simulator's resampled centreline (x, y every 0.1 m), the map
     frame (yaml origin and resolution) and curvature exactly, and reports the
-    half-width of both.
+    half-width of both (and the manifest's target, where one is recorded).
     """
     import re
     maps = _load("make_heldout_tracks", "tracks/make_heldout_tracks.py").maps_dir()
@@ -191,25 +203,30 @@ def check_narrow(manifest: dict, geo: dict, meta: dict, geo_splits) -> dict | No
                 re.search(r"resolution:\s*(\S+)", text).group(1))
 
     rows, out = [], {}
-    tests = manifest["splits"]["test"]["names"]
-    for split in (s for s in NARROW_SPLITS if s in geo_splits):
-        for test, name in zip(tests, manifest["splits"][split]["names"]):
-            a, b = geo[test], geo[name]
+    for split in splits:
+        for orig, name in twins(manifest, split):
+            a, b = geo[orig], geo[name]
             same_n = len(a) == len(b)
             d_xy = float(np.max(np.hypot(a["x"] - b["x"], a["y"] - b["y"]))) if same_n else np.inf
             d_k = float(np.max(np.abs(a["curvature_1m"] - b["curvature_1m"]))) if same_n else np.inf
+            target = manifest["tracks"][name].get(
+                "target_half_width_m", manifest["splits"][split].get("target_half_width_m"))
+            hw = float(b["half_width_m"].median())
             rows.append({
-                "split": split, "track": name, "test_twin": test,
+                "split": split, "track": name, "twin": orig,
                 "same_n_points": same_n, "max_centreline_diff_m": d_xy,
                 "max_curvature_diff": d_k,
-                "same_map_frame": frame(test) == frame(name),
-                "same_length": meta[test]["length_m"] == meta[name]["length_m"],
-                "test_half_width_median_m": round(float(a["half_width_m"].median()), 4),
-                "half_width_median_m": round(float(b["half_width_m"].median()), 4),
+                "same_map_frame": frame(orig) == frame(name),
+                "same_length": meta[orig]["length_m"] == meta[name]["length_m"],
+                "twin_half_width_median_m": round(float(a["half_width_m"].median()), 4),
+                "target_half_width_m": target,
+                "half_width_median_m": round(hw, 4),
+                "half_width_error_m": round(hw - target, 4) if target is not None else None,
                 "half_width_min_m": round(float(b["half_width_m"].min()), 4),
                 "half_width_max_m": round(float(b["half_width_m"].max()), 4),
             })
         r = [x for x in rows if x["split"] == split]
+        errs = [abs(x["half_width_error_m"]) for x in r if x["half_width_error_m"] is not None]
         out[split] = {
             "n_tracks": len(r),
             "centreline_identical": all(x["same_n_points"] and x["max_centreline_diff_m"] == 0.0
@@ -219,10 +236,42 @@ def check_narrow(manifest: dict, geo: dict, meta: dict, geo_splits) -> dict | No
             "half_width_median_m": round(float(np.median([x["half_width_median_m"] for x in r])), 4),
             "half_width_min_m": round(min(x["half_width_min_m"] for x in r), 4),
             "half_width_max_m": round(max(x["half_width_max_m"] for x in r), 4),
-            "test_half_width_median_m": round(float(np.median([x["test_half_width_median_m"] for x in r])), 4),
+            "twin_half_width_median_m": round(float(np.median([x["twin_half_width_median_m"] for x in r])), 4),
+            "max_abs_target_error_m": round(max(errs), 4) if errs else None,
         }
     out["per_track"] = rows
     return out if rows else None
+
+
+def twin_check(splits, out_dir: pathlib.Path) -> int:
+    """--twin-check: measure only the given splits and their originals; write to out_dir."""
+    manifest = json.loads((REPO / "tracks" / "manifest.json").read_text())
+    needed = set()
+    for split in splits:
+        for orig, name in twins(manifest, split):
+            needed.update((orig, name))
+    geo, meta = {}, {}
+    for name in sorted(needed):
+        geo[name], meta[name] = track_geometry(name)
+    res = check_twins(manifest, geo, meta, splits)
+    out_dir.mkdir(parents=True, exist_ok=True)
+    pd.DataFrame(res["per_track"]).to_csv(out_dir / "twin_check.csv", index=False)
+    with open(out_dir / "twin_check.json", "w", encoding="utf-8", newline="\n") as f:
+        json.dump({k: v for k, v in res.items() if k != "per_track"}, f, indent=2)
+        f.write("\n")
+    ok = True
+    for split in splits:
+        c = res[split]
+        good = c["centreline_identical"] and c["map_frame_identical"] and c["curvature_identical"]
+        ok &= good
+        err = c["max_abs_target_error_m"]
+        print(f"  {split:<9} {c['n_tracks']:>3} tracks: centreline identical {c['centreline_identical']}, "
+              f"map frame identical {c['map_frame_identical']}, curvature identical "
+              f"{c['curvature_identical']}; half-width {c['half_width_min_m']:.3f}-"
+              f"{c['half_width_max_m']:.3f} m (originals {c['twin_half_width_median_m']:.3f})"
+              + (f", max |median - target| {err * 1000:.1f} mm" if err is not None else ""))
+    print(f"written {out_dir}")
+    return 0 if ok else 1
 
 
 # ------------------------------------------------------------------- spawns
@@ -374,7 +423,8 @@ def main() -> int:
     summary_df = pd.DataFrame(summaries)
     summary_df.to_csv(OUT / "track_summary.csv", index=False)
 
-    narrow_check = check_narrow(manifest, geo, meta, geo_splits)
+    narrow_check = check_twins(manifest, geo, meta,
+                               [s for s in NARROW_SPLITS if s in geo_splits])
     if narrow_check:
         pd.DataFrame(narrow_check["per_track"]).to_csv(OUT / "narrow_vs_test.csv", index=False)
 
@@ -628,7 +678,7 @@ def main() -> int:
                 continue
             print(f"  {split} vs test: centreline identical {c['centreline_identical']}, map frame "
                   f"identical {c['map_frame_identical']}, curvature identical {c['curvature_identical']}; "
-                  f"half-width median {c['half_width_median_m']:.3f} m (test {c['test_half_width_median_m']:.3f}), "
+                  f"half-width median {c['half_width_median_m']:.3f} m (test {c['twin_half_width_median_m']:.3f}), "
                   f"range {c['half_width_min_m']:.3f}-{c['half_width_max_m']:.3f}")
     print(f"spawn check: {spawn_check}")
     print(f"SAC episodes: {summary['episodes']}")
@@ -652,4 +702,14 @@ def main() -> int:
 
 
 if __name__ == "__main__":
+    import argparse
+    ap = argparse.ArgumentParser(description=__doc__.split("\n\n")[0])
+    ap.add_argument("--twin-check", nargs="+", metavar="SPLIT",
+                    help="Only check that these derived splits (e.g. vw_train vw_val vw_test) "
+                         "share their originals' centrelines; skip everything else.")
+    ap.add_argument("--out", type=pathlib.Path, default=None,
+                    help="Output directory for --twin-check (default results/track_geometry_twins).")
+    a = ap.parse_args()
+    if a.twin_check:
+        sys.exit(twin_check(a.twin_check, a.out or REPO / "results" / "track_geometry_twins"))
     sys.exit(main())
