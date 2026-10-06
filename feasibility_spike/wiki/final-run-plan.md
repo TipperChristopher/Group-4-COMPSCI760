@@ -23,7 +23,7 @@ for both, and records what was chosen against and why.
 | component | ready? | evidence |
 |---|---|---|
 | Environment, reward, spawn, track pool | **yes** | canonical seed-123 pool reproduced byte-for-byte (manifest identical); eval bit-reproducible |
-| PPO configuration | **yes at d1; unverified at d5–100** | γ 0.999 + n_steps 8192: 52–65% training laps, 3 seeds |
+| PPO configuration | **yes at d1, with a stability risk; unverified at d5–100** | γ 0.999 + n_steps 8192 laps on 3/3 seeds by 1 M, but 1/3 collapsed by 2 M (`ppo-diagnosis.md`) |
 | SAC configuration | **pending** | `G999_SAC` (does γ 0.999 help SAC?) ~12 h from 2026-10-06 20:00 |
 | Evaluation protocol | **needs two fixes** | single-checkpoint volatility; 3 distinct spawns per track |
 | Real-circuit set | **needs install** | 2/23 installed locally; `tracks/install_real_tracks.py` exists |

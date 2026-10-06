@@ -20,7 +20,8 @@ final 200 k env steps) and `max_laps`.
 | V0–V7, G999_gamma, G999L99_full, P40_penalty40 | completed, 2 M |
 | X1_v4_5M | **killed** at 2.54 M (plateau identical to V4) |
 | R2_repeat10_v6, R3_repeat10_v4, R4_repeat25 | **killed** (to reduce machine load; all 0% laps) |
-| G999_s1, G999_s2, G999_ns2048, G999_SAC, R1_repeat10_alone | **still running at archive time** — logs are a snapshot |
+| G999_s1, G999_s2, G999_ns2048 | completed, 2 M (re-archived 2026-10-06 ~21:30) |
+| G999_SAC, R1_repeat10_alone | **still running at archive time** — logs are a snapshot |
 
 ## `runs/<run>/`
 

@@ -111,7 +111,7 @@ steps (5 s) ahead:
 
 Raising the penalty to 40 is a crude way of making crashing matter at γ 0.99. It
 worked briefly for PPO (36% laps at 868 k) and then collapsed to 0% by 2 M.
-Raising γ makes the existing penalty matter (×90): seed 0 held 65% to 2 M (one of three seeds later dropped; `ppo-diagnosis.md`).
+Raising γ makes the existing penalty matter (×90): all three seeds lapped by 1 M; by 2 M two still lap well and one collapsed (`ppo-diagnosis.md`), so it is better but not fully stable.
 
 ## The frozen-penalty decision (open)
 

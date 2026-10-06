@@ -114,7 +114,25 @@ matters because training is **not bit-reproducible** even at a fixed seed (our
 re-run of Desmond's PPO d1 differs from iteration 0), whereas deterministic
 evaluation is.
 
-*Update 21:00, 2026-10-06 (runs still going):* at ~1.73 M, seed 1 = **85%** (263 m), but seed 2 has **dropped to 18%** (101 m, from 52%). Seed 0 held at 64–65% from 1 M to 2 M. So the fix produces laps on all 3 seeds, but **one of three has destabilised late** — "stable" is supported for 2/3 seeds, not all. `G999_ns2048` is still **0%** at 1.73 M. Re-archive when the runs finish.
+### Correction: "seed 0 held 64–65% from 1 M to 2 M" (written 21:00, wrong)
+Seed 0 rose to 82% and then fell back to 64%; it did not hold. Final numbers below.
+
+*Final (all three seeds finished 2 M, 2026-10-06 ~21:30):* training-log lap rate per 200 k window —
+
+| window | seed 0 | seed 1 | seed 2 |
+|---|---|---|---|
+| 0.8–1.0 M | 65% | 57% | 52% |
+| 1.0–1.2 M | 75% | 64% | 39% |
+| 1.2–1.4 M | 76% | 52% | 40% |
+| 1.4–1.6 M | **82%** | 64% | 46% |
+| 1.6–1.8 M | 79% | 79% | 9% |
+| 1.8–2.0 M | 64% | **82%** | **3%** |
+
+- **seed 1: still improving at 2 M.** **seed 0: peaked at 82% (97% in one 100 k window at 1.7 M) then fell to 64%.** **seed 2: collapsed** (0% in the 1.8 M and 1.9 M windows).
+- Seed 2's crashes sit at the same place before and after the collapse (median 77 m at 1 M, 72 m at 2 M) — i.e. it stopped getting past one corner, the same spot where the γ 0.99 V4 policy crashes (73.9 m). Consistent with sliding back toward the crash-fast basin; not proven.
+- Optimiser health does not explain it: seed 2 has the *lowest* KL (0.036) and similar σ (0.23) to the seeds that kept lapping. In all three, σ keeps falling (0.8 → ~0.2) and KL keeps rising (0.014 → 0.04–0.08) — the same drift as the original collapse, just ~3× slower.
+- `G999_ns2048` (γ alone) finished 2 M at **0%** — no laps at any point.
+- **Net:** the fix produces laps on 3/3 seeds by 1 M; at 2 M it is 2/3 lapping well and 1/3 collapsed. Late-training stability is **not** established. Expect large seed variance in the final grid.
 
 ## Why SAC copes at γ=0.99 — and is not immune
 

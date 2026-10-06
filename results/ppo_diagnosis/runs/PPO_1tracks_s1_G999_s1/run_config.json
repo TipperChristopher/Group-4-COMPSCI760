@@ -1,5 +1,5 @@
 {
-  "status": "running",
+  "status": "completed",
   "started_at": "2026-10-06T19:49:12+1300",
   "pid": 34792,
   "host": "CM11700K",
@@ -65,5 +65,9 @@
     "monitor_csv": "monitor_*.monitor.csv",
     "progress_csv": "progress.csv",
     "final_model": "final_model.zip"
-  }
+  },
+  "finished_at": "2026-10-06T20:58:22+1300",
+  "wall_seconds": 4146.3,
+  "num_timesteps": 2007040,
+  "steps_per_second": 484.1
 }
