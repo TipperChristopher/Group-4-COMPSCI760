@@ -23,6 +23,8 @@ from stable_baselines3.common.vec_env import DummyVecEnv, SubprocVecEnv
 from stable_baselines3.common.callbacks import CheckpointCallback
 from stable_baselines3.common.logger import configure
 
+from action_repeat import ActionRepeat
+
 _PROJECT_ROOT = os.path.dirname(os.path.abspath(__file__))
 _WRAPPER_FILE = os.path.join(_PROJECT_ROOT, "sb3_wrapper.py")
 _TRACK_MANIFEST = os.path.join(_PROJECT_ROOT, "tracks", "manifest.json")
@@ -58,7 +60,7 @@ TrackPoolWrapper = _track_pool_module.TrackPoolWrapper
 
 
 def make_env(track_pool, seed, track_seed, stream=0, cache_size=8,
-             max_episode_steps=None, monitor_path=None):
+             max_episode_steps=None, monitor_path=None, action_repeat=1):
     """Build one environment that cycles through the whole track pool.
 
     The pool is handled inside a single environment rather than by spawning one
@@ -66,6 +68,10 @@ def make_env(track_pool, seed, track_seed, stream=0, cache_size=8,
     Stable-Baselines3 updates is inversely proportional to n_envs, and
     f1tenth_gym shares one ray-casting engine across every environment in a
     process.
+
+    ``action_repeat`` holds each action for that many physics steps. The step
+    limit above it is divided by the same factor so the simulated time budget
+    (30 s) is unchanged; see action_repeat.py.
     """
 
     def _init():
@@ -79,11 +85,16 @@ def make_env(track_pool, seed, track_seed, stream=0, cache_size=8,
                 "map": track_pool[0],
             },
         )
+        # Repeat sits below F1TenthSB3Wrapper on purpose: the action it holds
+        # is the rescaled physical one, and the wrapper above then accounts for
+        # progress and reward once per decision rather than once per physics step.
+        if action_repeat > 1:
+            env = ActionRepeat(env, action_repeat)
         env = F1TenthSB3Wrapper(
             env,
             max_episode_steps=(
-                DEFAULT_MAX_EPISODE_STEPS if max_episode_steps is None
-                else max_episode_steps
+                (DEFAULT_MAX_EPISODE_STEPS if max_episode_steps is None
+                 else max_episode_steps) // max(1, action_repeat)
             ),
         )
         env = TrackPoolWrapper(
@@ -286,7 +297,17 @@ def main():
                              "own, so without this a stalled policy runs "
                              "forever, reset() never fires and the track pool "
                              "never advances. Default 3000 is 30 s of sim time, "
-                             "about one lap of a synthetic track at 6 m/s.")
+                             "about one lap of a synthetic track at 6 m/s. "
+                             "Measured in PHYSICS steps; with --action-repeat N "
+                             "it is divided by N so the 30 s budget is kept.")
+    parser.add_argument("--action-repeat", type=int, default=1,
+                        help="Hold each action for N physics steps (frame skip). "
+                             "At the default 1 the policy decides at 100 Hz, "
+                             "where PPO's advantage window (1/(1-gamma*lambda) = "
+                             "16.8 steps) covers only ~1.7 m of track. N=10 gives "
+                             "10 Hz control and a ~17 m window at no change to "
+                             "gamma or lambda. Simulated time per episode is "
+                             "unchanged because the step cap is divided by N.")
     parser.add_argument("--torch-threads", type=int, default=None,
                         help="Cap torch's intra-op threads for this process. "
                              "Set to 1 when running cells in parallel: torch "
@@ -334,12 +355,23 @@ def main():
                         help="PPO initial policy log std. SB3 default 0 gives std 1.0 "
                              "on a [-1,1] action space, so a fresh policy saturates "
                              "steering every step.")
+    parser.add_argument("--gamma", type=float, default=None,
+                        help="Discount factor. SB3 default 0.99 at 100 Hz gives a "
+                             "value horizon of 1/(1-gamma) = 100 steps = 1.0 s, so "
+                             "anything more than ~1 s ahead is discounted to nothing "
+                             "(0.99^1190 ~ 6e-6 for a whole lap). 0.999 gives 10 s.")
+    parser.add_argument("--gae-lambda", type=float, default=None,
+                        help="GAE lambda (PPO only). The advantage window is "
+                             "1/(1-gamma*lambda) = 16.8 steps = 0.168 s at the "
+                             "defaults, about 1.7 m of track at 10 m/s.")
     args = parser.parse_args()
 
     if args.n_envs < 1:
         parser.error("--n-envs must be at least 1")
+    if args.action_repeat < 1:
+        parser.error("--action-repeat must be at least 1")
 
-    _PPO_ONLY = ("n_steps", "n_epochs", "target_kl", "log_std_init")
+    _PPO_ONLY = ("n_steps", "n_epochs", "target_kl", "log_std_init", "gae_lambda")
     if args.algo == "SAC":
         stray = [f"--{f.replace('_', '-')}" for f in _PPO_ONLY
                  if getattr(args, f) is not None]
@@ -417,6 +449,7 @@ def main():
             cache_size=args.track_cache_size,
             max_episode_steps=args.max_episode_steps,
             monitor_path=os.path.join(save_dir, f"monitor_{i}"),
+            action_repeat=args.action_repeat,
         )
         for i in range(n_envs)
     ]
@@ -445,7 +478,7 @@ def main():
     if args.algo == "PPO":
         ppo_kwargs = {}
         for flag in ("ent_coef", "target_kl", "n_steps", "n_epochs",
-                     "batch_size", "learning_rate"):
+                     "batch_size", "learning_rate", "gamma", "gae_lambda"):
             value = getattr(args, flag)
             if value is not None:
                 ppo_kwargs[flag] = value
@@ -457,7 +490,7 @@ def main():
                     device="cpu", **ppo_kwargs)
     else:
         sac_kwargs = {}
-        for flag in ("ent_coef", "batch_size", "learning_rate"):
+        for flag in ("ent_coef", "batch_size", "learning_rate", "gamma"):
             value = getattr(args, flag)
             if value is not None:
                 sac_kwargs[flag] = value
