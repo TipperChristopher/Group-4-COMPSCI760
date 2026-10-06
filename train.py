@@ -296,10 +296,60 @@ def main():
                         help="Allow reusing a run directory that already holds "
                              "a run_config.json. Off by default so relaunching a "
                              "grid cannot clobber a run that is in progress or done.")
+
+    # --- Optional overrides -------------------------------------------------
+    # Every flag below defaults to None, so a plain invocation behaves exactly
+    # as before and the committed defaults stay the reference configuration.
+    # Anything set here is recorded in run_config.json (under "args" and, for
+    # the reward, under "reward_constants"), so an overridden cell stays
+    # self-describing and cannot be mistaken for a default one after the fact.
+    parser.add_argument("--run-tag", type=str, default="",
+                        help="Suffix appended to the run directory name, so several "
+                             "hyperparameter settings can be trained side by side "
+                             "without colliding or passing --overwrite.")
+    parser.add_argument("--crash-penalty", type=float, default=None,
+                        help="Override sb3_wrapper.CRASH_PENALTY for this run only. "
+                             "Unset means use the committed constant (5.0). This is "
+                             "the one reward constant still unfrozen (decision D6), "
+                             "and it changes in-memory only: the file and its "
+                             "sha256 are untouched.")
+    parser.add_argument("--learning-rate", type=float, default=None)
+    parser.add_argument("--batch-size", type=int, default=None)
+    # PPO-only knobs. Passing any of these with --algo SAC is an error, because
+    # SAC has no rollout/epoch structure to configure.
+    parser.add_argument("--n-steps", type=int, default=None,
+                        help="PPO rollout length. Default 2048, which at ~350-step "
+                             "episodes is only ~6 complete episodes per update.")
+    parser.add_argument("--n-epochs", type=int, default=None,
+                        help="PPO passes over each rollout. Default 10 combined with "
+                             "n_steps 2048 / batch 64 gives 320 gradient steps per "
+                             "rollout over ~6 episodes of data.")
+    parser.add_argument("--ent-coef", type=float, default=None,
+                        help="PPO entropy bonus. Default 0.0 means nothing counteracts "
+                             "policy-std collapse; SAC by contrast auto-tunes entropy.")
+    parser.add_argument("--target-kl", type=float, default=None,
+                        help="PPO early-stops the epoch loop once approx_kl exceeds "
+                             "this. Default None (no limit).")
+    parser.add_argument("--log-std-init", type=float, default=None,
+                        help="PPO initial policy log std. SB3 default 0 gives std 1.0 "
+                             "on a [-1,1] action space, so a fresh policy saturates "
+                             "steering every step.")
     args = parser.parse_args()
 
     if args.n_envs < 1:
         parser.error("--n-envs must be at least 1")
+
+    _PPO_ONLY = ("n_steps", "n_epochs", "target_kl", "log_std_init")
+    if args.algo == "SAC":
+        stray = [f"--{f.replace('_', '-')}" for f in _PPO_ONLY
+                 if getattr(args, f) is not None]
+        if stray:
+            parser.error(f"{', '.join(stray)} apply to PPO only (--algo SAC given)")
+
+    if args.crash_penalty is not None:
+        _wrapper_module.CRASH_PENALTY = float(args.crash_penalty)
+        print(f"[override] CRASH_PENALTY = {_wrapper_module.CRASH_PENALTY} "
+              f"(committed default 5.0; recorded in run_config.json)")
 
     if args.torch_threads:
         import torch
@@ -310,7 +360,8 @@ def main():
 
     # One directory per cell. Absolute, so the launch directory cannot change it.
     save_dir = os.path.join(_PROJECT_ROOT, "models",
-                            f"{args.algo}_{args.diversity}tracks_s{args.seed}")
+                            f"{args.algo}_{args.diversity}tracks_s{args.seed}"
+                            + (f"_{args.run_tag}" if args.run_tag else ""))
     config_path = os.path.join(save_dir, "run_config.json")
     if os.path.exists(config_path) and not args.overwrite:
         raise SystemExit(f"{save_dir} already holds a run. Refusing to overwrite it; "
@@ -392,9 +443,28 @@ def main():
     # so installing CUDA torch would have silently moved one algorithm, and
     # only one, onto the GPU.
     if args.algo == "PPO":
-        model = PPO("MlpPolicy", vec_env, verbose=1, seed=args.seed, device="cpu")
+        ppo_kwargs = {}
+        for flag in ("ent_coef", "target_kl", "n_steps", "n_epochs",
+                     "batch_size", "learning_rate"):
+            value = getattr(args, flag)
+            if value is not None:
+                ppo_kwargs[flag] = value
+        if args.log_std_init is not None:
+            ppo_kwargs["policy_kwargs"] = {"log_std_init": args.log_std_init}
+        if ppo_kwargs:
+            print(f"[override] PPO kwargs: {ppo_kwargs}")
+        model = PPO("MlpPolicy", vec_env, verbose=1, seed=args.seed,
+                    device="cpu", **ppo_kwargs)
     else:
-        model = SAC("MlpPolicy", vec_env, verbose=1, seed=args.seed, device="cpu")
+        sac_kwargs = {}
+        for flag in ("ent_coef", "batch_size", "learning_rate"):
+            value = getattr(args, flag)
+            if value is not None:
+                sac_kwargs[flag] = value
+        if sac_kwargs:
+            print(f"[override] SAC kwargs: {sac_kwargs}")
+        model = SAC("MlpPolicy", vec_env, verbose=1, seed=args.seed,
+                    device="cpu", **sac_kwargs)
 
     # Training statistics (ep_rew_mean, losses, fps, ...) to progress.csv as
     # well as stdout, so convergence curves survive the terminal.
