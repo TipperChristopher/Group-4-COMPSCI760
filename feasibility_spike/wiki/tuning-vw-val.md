@@ -101,6 +101,43 @@ crawl at 0.38–2.29 m/s.
   ent_coef+target_kl stability arm fails — it stabilised the optimiser (KL
   0.007) but the entropy bonus inflated σ to ~2.0 and the policy crawled.
 
+## Follow-up (2026-10-07): does the time cost cause early crashes? Why did crawling appear?
+
+**Early-crash test (last 400 training episodes per run, exact crash flag).** The wrapper's
+design note warns that any per-step cost invites suicide once idling costs more than a crash.
+In bootstrapped form: crash beats idling forever iff `penalty < time_cost/(1−γ)`. With
+c = 0.01 at γ 0.999 that threshold is 10, so **penalty 40 is safe; penalty 5 would not be.**
+The data agrees — taxed runs crash often but *late*, at speed:
+
+| run | speed m/s | crash % | median m at crash | crashes < 10 m |
+|---|---|---|---|---|
+| S2 s99 / s98 (taxed) | 7.7 / 7.3 | 86 / 86 | 62 / 66 | 0% / 1% |
+| S1 s99 / s98 (untaxed γ .999) | 2.3 / 1.1 | 100 / 64 | 1.6 / 1.5 | **100% / 100%** |
+| P1 s99 (untaxed) | 1.5 | 33 | 8.8 | 84% |
+| P2 s99 (taxed) | 4.2 | 62 | 9.6 | 61% |
+
+The early crashes are in *untaxed* runs (S1's diverged critic, PPO collapse), not caused by the tax.
+
+**Why crawling appeared here and not in our d1 runs.** SB3 bootstraps through the 3000-step
+time limit, so the critic never sees a deadline: the only time pressure is γ. The design
+note's "the step limit already supplies the time pressure" holds at γ 0.99 (1 s horizon) but
+not at γ 0.999. Toy model (illustrative, not measured; FAST = 8 m/s crashing after 3 s,
+CRAWL = slow, never crashes): at γ 0.99 FAST wins in every penalty/time-cost combination; at
+γ 0.999 a crawl beats fast-but-crashing — narrowly with penalty 5 (17.0 vs 20.0), by a wide
+margin with penalty 40 (−8.9 vs 20.0). **γ 0.999 + penalty 40 had never been tested before
+this round** (our P40 runs were at γ 0.99; our γ 0.999 runs used penalty 5).
+
+**P1 is not a one-variable test of our fix.** It changes three things at once versus our
+validation: penalty 40 (not 5), 20 tracks (not 1), half-widths down to 0.63 m (ours ~1.47 m;
+our d1 policy scored 0/50 at 0.75 m). Its optimiser side does reproduce — std 0.30–0.34 and
+KL 0.005–0.030 at 1 M (ours: 0.39, 0.047) — but it does not lap, and by 2 M std is 0.06–0.07
+and KL 0.19 / 2.5 (the late drift again). Clean test still needed: P1 with penalty 5 at d20.
+
+**SAC.** S1's critic loss (median) goes 0.10 → 20.8 → 24.1 between 400 k and 1.2 M, exactly when
+its score falls 0.28 → 0.02; S0 falls smoothly 0.31 → 0.03; S2 stays 0.06–0.09. The time cost
+kept the γ-0.999 critic stable; why is open. Lap *completion* on vw_val at the best checkpoint:
+S0 6% / 42%, S2 4% / 4%, P0 0 / 0, P1 0 / 0, P2 0 / 18%.
+
 ## See also
 
 - [final-run-plan.md](final-run-plan.md) — SAC γ rule revised with this data
