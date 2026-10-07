@@ -138,6 +138,14 @@ its score falls 0.28 → 0.02; S0 falls smoothly 0.31 → 0.03; S2 stays 0.06–
 kept the γ-0.999 critic stable; why is open. Lap *completion* on vw_val at the best checkpoint:
 S0 6% / 42%, S2 4% / 4%, P0 0 / 0, P1 0 / 0, P2 0 / 18%.
 
+**Speed vs lap time (deterministic eval, best checkpoint).** The README's "S2 laps are fast,
+19–23 s" rests on **one distinct lap per seed** (2 completed laps each, duplicated by the
+repeated spawns: 19.3 s on t8, 48.4 s on t6) — not a measurement. Speed *is* measurable without
+finished laps (progress/length over all 50 episodes): SAC baseline 1.3 / 3.6 m/s (laps 6% / 42%),
+SAC + time cost 8.0 / 7.4 m/s (4% / 4%), PPO P0 s99 at γ 0.99 7.0 m/s with 0 laps (the
+crash-fast strategy again), P2 s98 5.4 m/s (18%). The time cost made the policy 2–6× faster;
+at that speed it mostly crashes.
+
 ## See also
 
 - [final-run-plan.md](final-run-plan.md) — SAC γ rule revised with this data
