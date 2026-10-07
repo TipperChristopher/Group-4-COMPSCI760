@@ -334,6 +334,13 @@ def main():
                              "the one reward constant still unfrozen (decision D6), "
                              "and it changes in-memory only: the file and its "
                              "sha256 are untouched.")
+    parser.add_argument("--time-cost", type=float, default=None,
+                        help="Override sb3_wrapper.TIME_COST (per-step progress bleed) "
+                             "for this run only. Unset means the committed constant "
+                             "(0.0). Upper bound: TIME_COST * max_episode_steps must "
+                             "stay below CRASH_PENALTY, or idling costs more than "
+                             "crashing (suicide preference, see the wrapper comment). "
+                             "0.0015 x 3000 = 4.5 < 5.0.")
     parser.add_argument("--learning-rate", type=float, default=None)
     parser.add_argument("--batch-size", type=int, default=None)
     # PPO-only knobs. Passing any of these with --algo SAC is an error, because
@@ -382,6 +389,10 @@ def main():
         _wrapper_module.CRASH_PENALTY = float(args.crash_penalty)
         print(f"[override] CRASH_PENALTY = {_wrapper_module.CRASH_PENALTY} "
               f"(committed default 5.0; recorded in run_config.json)")
+    if args.time_cost is not None:
+        _wrapper_module.TIME_COST = float(args.time_cost)
+        print(f"[override] TIME_COST = {_wrapper_module.TIME_COST} "
+              f"(committed default 0.0; recorded in run_config.json)")
 
     if args.torch_threads:
         import torch
