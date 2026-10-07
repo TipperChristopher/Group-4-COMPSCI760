@@ -25,6 +25,13 @@ for both, and records what was chosen against and why.
 | Environment, reward, spawn, track pool | **yes** | canonical seed-123 pool reproduced byte-for-byte (manifest identical); eval bit-reproducible |
 | PPO configuration | **yes at d1, with a stability risk; unverified at d5–100** | γ 0.999 + n_steps 8192 laps on 3/3 seeds by 1 M, but 1/3 collapsed by 2 M (`ppo-diagnosis.md`) |
 | SAC configuration | **pending** | `G999_SAC` (does γ 0.999 help SAC?) ~12 h from 2026-10-06 20:00 |
+
+> **2026-10-07 update (teammate tuning round, verified — `tuning-vw-val.md`):** γ 0.999 alone
+> breaks SAC at d20 (0.246 vs baseline 0.509, collapse after 400 k), and adding the 0.01 time cost
+> rescues the collapse but still scores below baseline (0.439). **Recommendation: SAC stays at γ 0.99.**
+> Also at d20: PPO P1 (γ .999 + n_steps 8192) does not beat PPO defaults (0.077 vs 0.142), and the
+> ent_coef+target_kl arm (P3) stabilised the optimiser but crawled (0.039). The PPO setting for the
+> grid is therefore still unresolved; the d100 pilot remains the cheapest next test.
 | Evaluation protocol | **needs two fixes** | single-checkpoint volatility; 3 distinct spawns per track |
 | Real-circuit set | **needs install** | 2/23 installed locally; `tracks/install_real_tracks.py` exists |
 | Compute | **tight for SAC** | SAC 2 M = 5.4 h (fast machine) to ~12 h (this one, loaded) |

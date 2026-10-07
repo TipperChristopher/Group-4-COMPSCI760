@@ -1,0 +1,9 @@
+setting,algo,role,best_s99,best_ck_s99,best_s98,best_ck_s98,seed_average,seed_gap,final_s99,final_s98,declines_late,crawling_runs,verdict,crash_penalty,time_cost,vs_baseline
+S0,SAC,baseline,0.4525,1600k,0.5664,final,0.5094,0.1139,0.3659,0.5664,False,1,,40.0,0.0,0.0
+S1,SAC,candidate,0.2774,400k,0.2141,400k,0.2458,0.0633,0.0091,0.0444,True,2,,40.0,0.0,-0.2636
+S2,SAC,candidate,0.483,1200k,0.3959,final,0.4394,0.0871,0.2691,0.3959,True,0,WINNER,40.0,0.01,-0.07
+S3,SAC,candidate,0.2774,400k,0.2141,400k,0.2458,0.0633,0.2384,0.0076,True,1,,40.0,0.0,-0.2636
+P0,PPO,baseline,0.1746,1600k,0.1091,400k,0.1418,0.0655,0.0988,0.0821,True,0,,40.0,0.0,0.0
+P1,PPO,candidate,0.0284,final,0.1264,final,0.0774,0.098,0.0284,0.1264,False,1,,40.0,0.0,-0.0644
+P2,PPO,candidate,0.0706,1200k,0.4907,1600k,0.2806,0.4201,0.0693,0.376,True,0,WINNER,40.0,0.01,0.1388
+P3,PPO,candidate,0.044,400k,0.0338,400k,0.0389,0.0102,0.0393,0.0,True,2,,40.0,0.0,-0.1029

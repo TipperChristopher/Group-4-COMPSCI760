@@ -37,6 +37,7 @@ wiki/
 ├── handoff.md        # how to resume: branches, file map, commands (reference)
 ├── glossary.md       # domain terms (reference)
 ├── ppo-diagnosis.md  # why PPO never lapped: hypothesis trail + fix (synthesis, 2026-10)
+├── tuning-vw-val.md    # teammate tuning round verified: time-cost reward, final-grid settings (2026-10)
 ├── grid-verification.md  # Desmond's seed-0 grid verified from raw files (synthesis, 2026-10)
 ├── sim-to-real-width.md  # width ablation: the real-circuit failure (concept, 2026-10)
 └── final-run-plan.md # PROPOSED final-grid config + env (decision, 2026-10)

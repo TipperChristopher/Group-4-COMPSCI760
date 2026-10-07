@@ -25,6 +25,8 @@ narrower. The grid with ≥3 seeds and the fixed PPO is **not yet run**.
   only walls moved, 29–58% → 0%; training width span 4 cm.
 - [final-run-plan.md](final-run-plan.md) — **PROPOSED** configuration and environment
   for the final comparison, readiness, cost, pre-flight checklist.
+- [tuning-vw-val.md](tuning-vw-val.md) — the teammate's 2026-10-07 tuning round
+  verified: time-cost mechanism, results, and what it changes (SAC γ rule, PPO setting).
 
 **Foundations**
 - [overview.md](overview.md) — project goal, research question, where we are.

@@ -116,3 +116,8 @@ Source: pi session `01a10425-…` and run journal `2026-10-04-cs760-final-presen
   first commit is 2026-08-30, so all were typos for 2026 and are corrected. The canonical
   copy of this wiki is now on `team/crash-penalty-flag` (SCHEMA.md).
 - **Still open:** final grid not launched; `G999_SAC` running; presentation date unconfirmed.
+
+- **2026-10-07:** verified the teammate's `tuning_vw_val_results.zip` (16 runs, 8 settings x 2 seeds,
+  commit `6e5b60e`): configs, reward integrity (time cost 0.0100/step in S2/P2 only), scores (max delta 5e-5),
+  spawn defect. New page `tuning-vw-val.md`; open-questions Q10/Q11 updated; final-run-plan SAC gamma rule
+  revised (gamma 0.999 breaks SAC at d20; time cost doesn't beat baselines).

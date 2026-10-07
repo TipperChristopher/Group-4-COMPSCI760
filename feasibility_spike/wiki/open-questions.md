@@ -25,8 +25,8 @@ Nothing here is stated as a result unless it is marked ANSWERED and points to a 
 | Q7 | Corner-sharpness cap | **REFUTED** (`sim-to-real-width.md`) |
 | Q8 | Would PPO stabilise with more envs? | **SUPERSEDED** — PPO fixed by γ + n_steps, n_envs stays 1 |
 | Q9 | Merge and freeze before the grid | **OPEN** — branch state changed, see below |
-| Q10 | Does the PPO fix hold at d5/20/100? | **OPEN** — highest priority, ~1.3 h pilot |
-| Q11 | Does γ 0.999 help or hurt SAC? | **RUNNING** (`G999_SAC`, ~12 h) |
+| Q10 | Does the PPO fix hold at d5/20/100? | **PARTIAL** — at d20, 2 seeds: it does NOT beat PPO baseline (teammate bundle); d5/100 still open |
+| Q11 | Does γ 0.999 help or hurt SAC? | **ANSWERED for d20: it breaks SAC** (teammate bundle); `G999_SAC` running as d1 confirmation |
 | Q12 | Why do γ and n_steps interact? | **OPEN** (hypothesis only) |
 | Q13 | Does a width-randomised pool fix real circuits? | **OPEN** — needs a generator width flag |
 | Q14 | Final-presentation date and scope | **OPEN** — needed to size the SAC half |
@@ -88,13 +88,21 @@ before launching.
 
 ## Q10 — Does γ 0.999 + n_steps 8192 work at higher diversity?
 
-Only d1 has been tested. At d100 each track gets 20 k steps instead of 2 M. Pilot one d100 seed
-(~1.3 h) before committing 12 PPO runs.
+Only d1 has been tested. **New data point (2026-10-07, teammate's verified tuning round,
+d20 varied-width, 2 seeds): the fix does NOT beat PPO defaults there** — P1 0.077 vs P0 0.142
+(best-checkpoint fractional laps, `tuning-vw-val.md`). Note the differences from our d1
+validation: 20 training tracks (not 1), varied widths 0.63–1.44 m, fractional-lap metric,
+and only 2 seeds. So the d1 fix has not transferred yet — do not claim it generalises.
+The d100 pilot question is unchanged (each track gets 20 k steps instead of 2 M), but a
+single d20 result now exists and is negative.
 
 ## Q11 — γ 0.999 for SAC
 
-`G999_SAC` was running at the time of writing (114 k / 2 M at 20:30 on 2026-10-06). The decision rule
-is in `final-run-plan.md`.
+**Answered for d20 (2026-10-07): γ 0.999 alone breaks SAC.** In the teammate's verified tuning
+round, S1 (γ 0.999) scored 0.246 against the S0 baseline's 0.509, collapsing after 400 k with a
+critic loss spike to ~3789 (`tuning-vw-val.md`). The time-cost variant (S2) rescues it from
+collapsing but still scores below the γ 0.99 baseline (0.439). `G999_SAC` (our d1 run) was still
+running as confirmation; the final-run plan now recommends SAC γ 0.99.
 
 ## Q12 — Mechanism of the γ × n_steps interaction
 

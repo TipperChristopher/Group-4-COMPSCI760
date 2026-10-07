@@ -332,6 +332,13 @@ Raw rollout traces: `results/ppo_diagnosis/eval_own_track/corner_trace_output.tx
 `G999_SAC` (does γ help SAC too?) — 114 k steps at archive time; ~47 env steps/s under
 current load ⇒ ~12 h to 2 M.
 
+**2026-10-07 — teammate tuning round verified** (`tuning-vw-val.md`, 16 runs @ commit `6e5b60e`):
+- γ 0.999 alone BREAKS SAC at d20 (0.246 vs baseline 0.509; collapse after 400 k, critic loss spike ~3789).
+- Time cost 0.01/step (break-even speed 1 m/s; value cost = 0.01/(1−γ) → 10× at γ .999) stops the crawling and the collapse, but still scores below SAC baseline (0.439 vs 0.509).
+- Our PPO fix (γ .999 + n_steps 8192) does NOT beat PPO defaults at d20: 0.077 vs 0.142 (2 seeds). Transfer not established.
+- Our proposed P3 arm (ent_coef 0.01 + target_kl 0.03) stabilised the optimiser (KL 0.007) but inflated σ to ~2.0 and crawled → 0.039.
+- Eval uses canonical reward (no time cost); scores recomputed from raw CSVs match to ≤5e-5; 3-distinct-spawn defect confirmed.
+
 ---
 
 ## 7. The width finding
