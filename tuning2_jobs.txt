@@ -1,0 +1,17 @@
+# Tuning batch 2: SAC and PPO on the varied-width pool (d20), penalty 40 by default.
+# One job per line: <run tag> | <train.py arguments>. launch_queue.ps1 adds
+# --run-tag and --torch-threads (SAC 2, PPO 1). All SAC first, then all PPO.
+# S4 = SAC defaults + time cost (gamma stays 0.99); P4 = PPO defaults + time cost.
+# S0, P0 and P2 repeat the batch-1 settings on extra seeds (identical flags).
+tune_S4_s99 | --algo SAC --diversity 20 --seed 99 --track-prefix vw_synthetic_track_ --time-cost 0.01
+tune_S4_s98 | --algo SAC --diversity 20 --seed 98 --track-prefix vw_synthetic_track_ --time-cost 0.01
+tune_S4_s97 | --algo SAC --diversity 20 --seed 97 --track-prefix vw_synthetic_track_ --time-cost 0.01
+tune_S4_s96 | --algo SAC --diversity 20 --seed 96 --track-prefix vw_synthetic_track_ --time-cost 0.01
+tune_S0_s97 | --algo SAC --diversity 20 --seed 97 --track-prefix vw_synthetic_track_
+tune_S0_s96 | --algo SAC --diversity 20 --seed 96 --track-prefix vw_synthetic_track_
+tune_P0_s97 | --algo PPO --diversity 20 --seed 97 --track-prefix vw_synthetic_track_
+tune_P0_s96 | --algo PPO --diversity 20 --seed 96 --track-prefix vw_synthetic_track_
+tune_P2_s97 | --algo PPO --diversity 20 --seed 97 --track-prefix vw_synthetic_track_ --gamma 0.999 --n-steps 8192 --time-cost 0.01
+tune_P2_s96 | --algo PPO --diversity 20 --seed 96 --track-prefix vw_synthetic_track_ --gamma 0.999 --n-steps 8192 --time-cost 0.01
+tune_P4_s99 | --algo PPO --diversity 20 --seed 99 --track-prefix vw_synthetic_track_ --time-cost 0.01
+tune_P4_s98 | --algo PPO --diversity 20 --seed 98 --track-prefix vw_synthetic_track_ --time-cost 0.01

@@ -1,0 +1,6 @@
+# Tuning batch 2b: the two extra P4 seeds (PPO defaults + time cost), run as a
+# separate small queue (-MaxThreads 2) once batch 2's PPO jobs are finished, so
+# batch 2 (12 SAC threads) + this queue (2) stays within the 16-thread budget.
+# Same flags as tune_P4_s99/s98 in tuning2_jobs.txt apart from the seed.
+tune_P4_s97 | --algo PPO --diversity 20 --seed 97 --track-prefix vw_synthetic_track_ --time-cost 0.01
+tune_P4_s96 | --algo PPO --diversity 20 --seed 96 --track-prefix vw_synthetic_track_ --time-cost 0.01
