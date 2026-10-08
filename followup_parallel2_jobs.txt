@@ -1,0 +1,9 @@
+# Follow-up 2 (NOT tuning, NOT the final grid): the P1 tuning setting with 8
+# parallel envs. --n-steps 1024 is per env, so each update uses 8 x 1024 = 8192
+# transitions, matching the P1 tuning runs (n_steps 8192 in one env); batch 64
+# and 10 epochs unchanged. Penalty 40 (file value), no time cost, 2M total
+# steps, same seeds as P1/P0. Each job costs 9 threads, so one runs at a time.
+par8_P1_s99 | --algo PPO --diversity 20 --seed 99 --track-prefix vw_synthetic_track_ --n-envs 8 --gamma 0.999 --n-steps 1024
+par8_P1_s98 | --algo PPO --diversity 20 --seed 98 --track-prefix vw_synthetic_track_ --n-envs 8 --gamma 0.999 --n-steps 1024
+par8_P1_s97 | --algo PPO --diversity 20 --seed 97 --track-prefix vw_synthetic_track_ --n-envs 8 --gamma 0.999 --n-steps 1024
+par8_P1_s96 | --algo PPO --diversity 20 --seed 96 --track-prefix vw_synthetic_track_ --n-envs 8 --gamma 0.999 --n-steps 1024
