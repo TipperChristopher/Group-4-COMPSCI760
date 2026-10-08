@@ -1,0 +1,8 @@
+# Tuning round 3, PPO: par8_G998 + time cost. 8 envs, n_steps 1024 per env (8192
+# per update), gamma 0.998, --time-cost 0.01, d20 varied-width, penalty 40 (file
+# value), 2M steps. Decision rule fixed in advance: tuning3_DECISION_RULE.md.
+# Each job costs 9 threads (1 learner + 8 env workers).
+par8_G998TC_s99 | --algo PPO --diversity 20 --seed 99 --track-prefix vw_synthetic_track_ --n-envs 8 --gamma 0.998 --n-steps 1024 --time-cost 0.01
+par8_G998TC_s98 | --algo PPO --diversity 20 --seed 98 --track-prefix vw_synthetic_track_ --n-envs 8 --gamma 0.998 --n-steps 1024 --time-cost 0.01
+par8_G998TC_s97 | --algo PPO --diversity 20 --seed 97 --track-prefix vw_synthetic_track_ --n-envs 8 --gamma 0.998 --n-steps 1024 --time-cost 0.01
+par8_G998TC_s96 | --algo PPO --diversity 20 --seed 96 --track-prefix vw_synthetic_track_ --n-envs 8 --gamma 0.998 --n-steps 1024 --time-cost 0.01

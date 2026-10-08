@@ -1,0 +1,7 @@
+# Tuning round 3, SAC: S5 = SAC defaults + gamma 0.998 (5 s horizon) + time cost
+# 0.01, 1 env, d20 varied-width, penalty 40 (file value), 2M steps. Identical to
+# S4 apart from gamma. Decision rule fixed in advance: tuning3_DECISION_RULE.md.
+tune_S5_s99 | --algo SAC --diversity 20 --seed 99 --track-prefix vw_synthetic_track_ --gamma 0.998 --time-cost 0.01
+tune_S5_s98 | --algo SAC --diversity 20 --seed 98 --track-prefix vw_synthetic_track_ --gamma 0.998 --time-cost 0.01
+tune_S5_s97 | --algo SAC --diversity 20 --seed 97 --track-prefix vw_synthetic_track_ --gamma 0.998 --time-cost 0.01
+tune_S5_s96 | --algo SAC --diversity 20 --seed 96 --track-prefix vw_synthetic_track_ --gamma 0.998 --time-cost 0.01

@@ -111,7 +111,7 @@ function Load-State { Get-Content $StatePath -Raw | ConvertFrom-Json -AsHashtabl
 
 function Run-Summary {
     & $Python (Join-Path $Root "analysis\tuning_summary.py") --state $StatePath `
-        --results $ResultsAbs --baselines $Baselines 2>&1
+        --results $ResultsAbs --baselines $Baselines --name $QName 2>&1
 }
 
 # ======================================================================= STATUS
