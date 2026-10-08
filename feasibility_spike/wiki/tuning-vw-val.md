@@ -146,6 +146,13 @@ SAC + time cost 8.0 / 7.4 m/s (4% / 4%), PPO P0 s99 at γ 0.99 7.0 m/s with 0 la
 crash-fast strategy again), P2 s98 5.4 m/s (18%). The time cost made the policy 2–6× faster;
 at that speed it mostly crashes.
 
+**Two protocol changes vs Desmond's grid (verified 2026-10-09).** All 8 cells of the seed-0 grid
+used `CRASH_PENALTY = 5.0` on uniform-width `synthetic_track_*`. This tuning round used **penalty
+40** on **varied-width `vw_synthetic_track_*`**. Both are reasonable (vw tracks address the
+sim-to-real width finding), but the reward must be identical across every grid cell
+(`sb3_wrapper.py`: "must be identical in every cell of the grid"), so the penalty is a shared
+decision for both algorithms, and our PPO fix has only been validated at penalty 5.
+
 ## See also
 
 - [final-run-plan.md](final-run-plan.md) — SAC γ rule revised with this data

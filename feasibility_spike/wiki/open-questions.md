@@ -26,7 +26,7 @@ Nothing here is stated as a result unless it is marked ANSWERED and points to a 
 | Q8 | Would PPO stabilise with more envs? | **SUPERSEDED** — PPO fixed by γ + n_steps, n_envs stays 1 |
 | Q9 | Merge and freeze before the grid | **OPEN** — branch state changed, see below |
 | Q10 | Does the PPO fix hold at d5/20/100? | **PARTIAL** — at d20, 2 seeds: it does NOT beat PPO baseline (teammate bundle); d5/100 still open |
-| Q11 | Does γ 0.999 help or hurt SAC? | **ANSWERED for d20: it breaks SAC** (teammate bundle); `G999_SAC` running as d1 confirmation |
+| Q11 | Does γ 0.999 help or hurt SAC? | **ANSWERED for d20 at penalty 40: it breaks SAC**; at penalty 5 untested (`G999_SAC` died at ~450 k) |
 | Q12 | Why do γ and n_steps interact? | **OPEN** (hypothesis only) |
 | Q13 | Does a width-randomised pool fix real circuits? | **OPEN** — needs a generator width flag |
 | Q14 | Final-presentation date and scope | **OPEN** — needed to size the SAC half |
@@ -101,8 +101,10 @@ single d20 result now exists and is negative.
 **Answered for d20 (2026-10-07): γ 0.999 alone breaks SAC.** In the teammate's verified tuning
 round, S1 (γ 0.999) scored 0.246 against the S0 baseline's 0.509, collapsing after 400 k with a
 critic loss spike to ~3789 (`tuning-vw-val.md`). The time-cost variant (S2) rescues it from
-collapsing but still scores below the γ 0.99 baseline (0.439). `G999_SAC` (our d1 run) was still
-running as confirmation; the final-run plan now recommends SAC γ 0.99.
+collapsing but still scores below the γ 0.99 baseline (0.439). *Correction (2026-10-09):* `G999_SAC` (our d1 run, penalty 5) was **not** still running — it died
+at ~450 k steps on 2026-10-06 ~22:05 (its run_config still says `running`). Up to then: 0% laps,
+8.6–10 m/s, no crawling — too early to judge (the teammate's S1 also looked fine at 400 k).
+SAC γ 0.999 at penalty 5 is therefore untested; the final-run plan recommends SAC γ 0.99.
 
 ## Q12 — Mechanism of the γ × n_steps interaction
 
