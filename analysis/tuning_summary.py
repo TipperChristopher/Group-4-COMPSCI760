@@ -54,9 +54,16 @@ def run_rows(state: dict, results: pathlib.Path) -> pd.DataFrame:
         row = {"tag": tag, "setting": setting, "algo": j["algo"], "seed": j["seed"],
                "status": j["status"], "train_exit": j.get("exit"),
                "crash_penalty": rew.get("CRASH_PENALTY"), "time_cost": rew.get("TIME_COST")}
-        mon = run_dir / "monitor_0.monitor.csv"
-        if mon.exists():
-            mm = pd.read_csv(mon, skiprows=1).tail(200)
+        mons = sorted(run_dir.glob("monitor_*.monitor.csv"))   # one per env when n_envs > 1
+        if mons:
+            # Episodes from all envs, ordered by wall-clock end time (t_start + t).
+            parts = []
+            for f in mons:
+                head = json.loads(f.open().readline().lstrip("#"))
+                d = pd.read_csv(f, skiprows=1)
+                d["_end"] = head.get("t_start", 0.0) + d["t"]
+                parts.append(d)
+            mm = pd.concat(parts).sort_values("_end").tail(200)
             spd = float((mm["progress_m"] / (mm["l"] * 0.01)).mean()) if len(mm) else np.nan
             row["train_speed_last200_mps"] = round(spd, 2)
             row["crawling"] = bool(spd < CRAWL_MPS)

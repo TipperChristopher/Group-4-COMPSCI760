@@ -42,13 +42,16 @@ param(
     [switch]$Stop,
     [switch]$Summary,
     [switch]$AllowDirty,
+    # Python interpreter for train/evaluate. Default: this folder's .venv. Pass the
+    # main checkout's .venv when running from a git worktree that has none.
+    [string]$Python = "",
     [switch]$Scheduler          # internal: run the scheduler loop in this process
 )
 
 $ErrorActionPreference = "Stop"
 $Root = $PSScriptRoot
 Set-Location $Root
-$Python = Join-Path $Root ".venv\Scripts\python.exe"
+if (-not $Python) { $Python = Join-Path $Root ".venv\Scripts\python.exe" }
 $JobsPath = (Resolve-Path $Jobs).Path
 $QName = [IO.Path]::GetFileNameWithoutExtension($JobsPath)
 $QDir = Join-Path $Root "logs\queue_$QName"
@@ -78,9 +81,15 @@ function Read-JobList {
         if (-not ($algo -and $div -and $seed)) { throw "Job '$tag' needs --algo, --diversity and --seed" }
         if ($argv -contains "--run-tag" -or $argv -contains "--torch-threads") {
             throw "Job '$tag': --run-tag and --torch-threads are set by the queue" }
+        # torch threads for the learner (SAC 2, PPO 1); with --n-envs N > 1 the job
+        # also runs N environment worker processes, so it costs torch + N threads
+        # against the budget while the learner itself still gets torch threads.
+        $torch = $(if ($algo -eq "SAC") { 2 } else { 1 })
+        $nenv = [int]$(if (& $get "--n-envs") { & $get "--n-envs" } else { 1 })
         $list += [ordered]@{
             tag = $tag; algo = $algo; diversity = [int]$div; seed = [int]$seed; args = $argv
-            threads = $(if ($algo -eq "SAC") { 2 } else { 1 })
+            torch_threads = $torch; n_envs = $nenv
+            threads = $(if ($nenv -gt 1) { $torch + $nenv } else { $torch })
             run_dir = "models\${algo}_${div}tracks_s${seed}_$tag"
             status = "pending"; pid = $null; started = $null; ended = $null; exit = $null
             evals = @()
@@ -160,6 +169,7 @@ if ($Summary) {
     if (-not (Test-Path $StatePath)) { "No queue state at $StatePath"; return }
     $st = Load-State     # this queue's own results folder and baselines, not the defaults
     $ResultsAbs = Join-Path $Root $st.results_dir; $Baselines = $st.baselines
+    if ($st.python) { $Python = $st.python }
     Run-Summary
     return
 }
@@ -172,6 +182,7 @@ if ($Scheduler) {
     $MaxThreads = [int]$s.max_threads; $Checkpoints = @($s.checkpoints | ForEach-Object { [int]$_ })
     $ResultsDir = $s.results_dir; $ResultsAbs = Join-Path $Root $ResultsDir
     $Baselines = $s.baselines; $PollSeconds = [int]$s.poll_seconds
+    if ($s.python) { $Python = $s.python }
     $s.scheduler_pid = $PID; $s.phase = "running"; Save-State $s
     try {
     Log "scheduler started, PID $PID, $($s.jobs.Count) jobs, max threads $MaxThreads"
@@ -251,8 +262,9 @@ if ($Scheduler) {
         foreach ($j in $s.jobs) {
             if ($j.status -ne "pending") { continue }
             if ($used + $j.threads -gt $MaxThreads) { break }
-            $argv = @("-u", "train.py") + $j.args + @("--run-tag", $j.tag, "--torch-threads", $j.threads)
-            $j.pid = Start-Child $j.tag $argv $j.threads (Join-Path $LogDir $j.tag)
+            $tt = $(if ($j.torch_threads) { $j.torch_threads } else { $j.threads })
+            $argv = @("-u", "train.py") + $j.args + @("--run-tag", $j.tag, "--torch-threads", $tt)
+            $j.pid = Start-Child $j.tag $argv $tt (Join-Path $LogDir $j.tag)
             $j.status = "running"; $j.started = (Get-Date -Format s); $used += $j.threads
             Log "$($j.tag) started PID $($j.pid) ($($j.threads) threads)"
         }
@@ -296,6 +308,8 @@ if ($dirty -and -not $AllowDirty) {
 
 # NB: not $jobs, which PowerShell would treat as the [string] -Jobs parameter.
 $jobList = @(Read-JobList)
+$tooBig = @($jobList | Where-Object { $_.threads -gt $MaxThreads })
+if ($tooBig) { throw "Jobs needing more than -MaxThreads $MaxThreads threads would never start: $($tooBig.tag -join ', ')" }
 $clash = @()
 foreach ($j in $jobList) {
     if (Test-Path (Join-Path $Root (Join-Path $j.run_dir "run_config.json"))) { $clash += $j.run_dir }
@@ -309,7 +323,7 @@ New-Item -ItemType Directory -Force $QDir, $LogDir, $ResultsAbs | Out-Null
 Save-State ([ordered]@{ queue = $QName; jobs_file = $JobsPath; created = (Get-Date -Format s)
                         commit = (git rev-parse --short HEAD).Trim(); max_threads = $MaxThreads
                         checkpoints = $Checkpoints; results_dir = $ResultsDir; eval_set = $EVAL_SET
-                        baselines = $Baselines; poll_seconds = $PollSeconds
+                        baselines = $Baselines; poll_seconds = $PollSeconds; python = $Python
                         scheduler_pid = $null; phase = "starting"; jobs = $jobList })
 
 $pwsh = (Get-Process -Id $PID).Path

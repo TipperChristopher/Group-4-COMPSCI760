@@ -1,0 +1,10 @@
+# Follow-up (NOT tuning, NOT the final grid): PPO defaults with 8 parallel envs.
+# n_steps is set automatically to 2048 // 8 = 256, so each update still uses 2048
+# transitions and the number of updates matches default PPO. Penalty 40 (file
+# value), no time cost, gamma 0.99, 2M total steps, same seeds as the P0 tuning
+# runs. Each job costs 9 threads (1 learner + 8 env workers), so with
+# -MaxThreads 16 one runs at a time, alongside its 1-thread vw_val evaluations.
+par8_P0_s99 | --algo PPO --diversity 20 --seed 99 --track-prefix vw_synthetic_track_ --n-envs 8
+par8_P0_s98 | --algo PPO --diversity 20 --seed 98 --track-prefix vw_synthetic_track_ --n-envs 8
+par8_P0_s97 | --algo PPO --diversity 20 --seed 97 --track-prefix vw_synthetic_track_ --n-envs 8
+par8_P0_s96 | --algo PPO --diversity 20 --seed 96 --track-prefix vw_synthetic_track_ --n-envs 8

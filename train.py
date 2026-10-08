@@ -459,6 +459,20 @@ def main():
     args._hp_overrides = {**{k: v for k, v in model_kwargs.items() if k != "policy_kwargs"},
                           **({"log_std_init": args.log_std_init}
                              if args.log_std_init is not None else {})}
+    # Parallel PPO: keep the rollout per update at SB3's default 2048 transitions
+    # (n_steps x n_envs = 2048), so each update sees the same amount of data as
+    # default PPO and the number of updates over the run is unchanged. Applies
+    # only when n_envs > 1 and --n-steps is not given; n_envs = 1 is untouched.
+    parallel = {"n_envs": args.n_envs}
+    if args.n_envs > 1:
+        if args.checkpoint_freq % args.n_envs:
+            parser.error(f"--checkpoint-freq ({args.checkpoint_freq}) must be divisible by "
+                         f"--n-envs ({args.n_envs}) so checkpoints land on exact step counts")
+        if args.algo == "PPO" and args.n_steps is None:
+            if 2048 % args.n_envs:
+                parser.error("--n-envs must divide 2048 (or pass --n-steps explicitly)")
+            model_kwargs["n_steps"] = 2048 // args.n_envs
+            parallel["n_steps_rule"] = "n_steps = 2048 // n_envs (rollout per update kept at 2048)"
     reward_overrides = {k: v for k, v in (("CRASH_PENALTY", args.crash_penalty),
                                           ("TIME_COST", args.time_cost)) if v is not None}
     # Applied here too (not only inside the env factory) so that the provenance
@@ -579,7 +593,17 @@ def main():
     hparams = resolved_hyperparameters(model, args.algo)
     run_config["hyperparameters"] = hparams
     run_config["effective_reward_constants"] = effective_reward()
+    parallel["vec_env"] = type(vec_env.venv).__name__
+    if args.algo == "PPO":
+        parallel["n_steps_per_env"] = model.n_steps
+        parallel["rollout_per_update"] = model.n_steps * n_envs
+    parallel["checkpoint_save_freq_per_env"] = max(1, args.checkpoint_freq // n_envs)
+    run_config["n_envs"] = n_envs
+    run_config["parallel"] = parallel
     _write_json(config_path, run_config)
+    print(f"  parallel envs     : {n_envs} ({parallel['vec_env']})"
+          + (f", n_steps per env {model.n_steps}, rollout per update {model.n_steps * n_envs}"
+             if args.algo == "PPO" else ""))
 
     # Training statistics (ep_rew_mean, losses, fps, ...) to progress.csv as
     # well as stdout, so convergence curves survive the terminal.
