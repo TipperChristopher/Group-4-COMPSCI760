@@ -2,11 +2,11 @@
 # Keys starting with 'info.' may differ between machines; every other line must match.
 # Check against the reference: python final_grid/check_setup.py --compare <this file>
 [code]
-git.code_tree = d3dab94bc0fa7fce
-git.tree = DIRTY: f1tenth_gym
+git.code_tree = a9901fd7df3ab4e7
+git.tree = clean
 git.branch = final-grid
-info.git.commit = 9d1d58795fcf9b33de70ebed9b446ae68e6d886d
-f1tenth_gym.commit = 5a301bd0ae1c (pinned, clean, gitlink 594d922b93be differs)
+info.git.commit = d9c4ac534425d3c5d898baba6824425a6727ed48
+f1tenth_gym.commit = 5a301bd0ae1c (pinned, clean, gitlink matches)
 f1tenth_gym.installed_from = ./f1tenth_gym (editable)
 sha256.sb3_wrapper.py = 9b73ea777f09d17306f0d1d5486edb024ad9c028629d927a38cdbb3c338a8a34
 sha256.train.py = 3718407910cf0ce3ddb7426cf149226b326a96b266c28bbf279ca001ddf03fa6
@@ -40,11 +40,11 @@ env.vw_synthetic_track_7 = steps 262, end crash, progress_m 6.992797161, return 
 env.vw_synthetic_track_12 = steps 541, end crash, progress_m 14.960000154, return -25.039999846, traj 72f3a800e689f055
 [smoke test]
 smoke.SAC = OK (2,000-step run, checkpoint, VecNormalize and final model written; run folder deleted)
-info.smoke.SAC = 2,000 steps in 22 s, 113 steps/s
+info.smoke.SAC = 2,000 steps in 26 s, 93 steps/s
 smoke.PPO = OK (2,000-step run, checkpoint, VecNormalize and final model written; run folder deleted)
-info.smoke.PPO = 2,048 steps in 6 s, 1053 steps/s
+info.smoke.PPO = 2,048 steps in 7 s, 886 steps/s
 [machine]
 info.machine = AMD Ryzen 7 9800X3D 8-Core Processor, 16 logical CPUs, RAM 31 GB
 info.disk_free_gb = 3 (drive of C:\)
 info.sleep_on_ac = never
-info.generated = 2026-10-08 20:57
+info.generated = 2026-10-08 21:05
