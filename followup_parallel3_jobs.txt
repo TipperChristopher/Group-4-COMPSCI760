@@ -1,0 +1,8 @@
+# Follow-up 3 (NOT tuning, NOT the final grid): the 5-second horizon. Identical to
+# par8_P1 (8 envs, n_steps 1024 per env = 8192 per update, batch 64, 10 epochs)
+# except gamma 0.998 (1/(1-gamma) = 500 steps = 5 s at 100 Hz) instead of 0.999.
+# Penalty 40 (file value), no time cost, 2M steps. Each job costs 9 threads.
+par8_G998_s99 | --algo PPO --diversity 20 --seed 99 --track-prefix vw_synthetic_track_ --n-envs 8 --gamma 0.998 --n-steps 1024
+par8_G998_s98 | --algo PPO --diversity 20 --seed 98 --track-prefix vw_synthetic_track_ --n-envs 8 --gamma 0.998 --n-steps 1024
+par8_G998_s97 | --algo PPO --diversity 20 --seed 97 --track-prefix vw_synthetic_track_ --n-envs 8 --gamma 0.998 --n-steps 1024
+par8_G998_s96 | --algo PPO --diversity 20 --seed 96 --track-prefix vw_synthetic_track_ --n-envs 8 --gamma 0.998 --n-steps 1024
