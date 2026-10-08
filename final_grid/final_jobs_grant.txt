@@ -1,0 +1,13 @@
+# Final grid, grant: SAC seed 2 (4 runs, 2 torch threads each = 8 threads)
+# Settings from final_grid/DECISION.md: no time cost, SAC = S0 and PPO = P0 (SB3 defaults,
+# crash penalty 40 and time cost 0 from sb3_wrapper.py). Every line equals the winning
+# tuning line (tune_S0_s99 / tune_P0_s99 in tuning_jobs.txt) apart from --diversity,
+# --seed and the tag. 2M steps each, checkpoints every 100k.
+#
+# Start (from the repo folder, PowerShell 7):
+#   .\launch_queue.ps1 -Jobs final_grid\final_jobs_grant.txt -ResultsDir results\final_grid_grant -MaxThreads 8 -Checkpoints 200000,400000,600000,800000,1000000,1200000,1400000,1600000,1800000
+# The queue evaluates every 200k checkpoint plus the final model on vw_val.
+final_SAC_d1_s2 | --algo SAC --diversity 1 --seed 2 --track-prefix vw_synthetic_track_
+final_SAC_d5_s2 | --algo SAC --diversity 5 --seed 2 --track-prefix vw_synthetic_track_
+final_SAC_d20_s2 | --algo SAC --diversity 20 --seed 2 --track-prefix vw_synthetic_track_
+final_SAC_d100_s2 | --algo SAC --diversity 100 --seed 2 --track-prefix vw_synthetic_track_

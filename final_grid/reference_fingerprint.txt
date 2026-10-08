@@ -2,10 +2,10 @@
 # Keys starting with 'info.' may differ between machines; every other line must match.
 # Check against the reference: python final_grid/check_setup.py --compare <this file>
 [code]
-git.code_tree = a9901fd7df3ab4e7
-git.tree = clean
+git.code_tree = 3c7b5bdd3ea27dd2
+info.git.tree = uncommitted: analysis/tuning_summary.py, final_grid/README.md, final_grid/check_setup.py, final_grid/final_jobs_seed0.txt, final_grid/final_jobs_seed1.txt, final_grid/final_jobs_seed2.txt, final_grid/pack_results.ps1, final_grid/setup_teammate.ps1, launch_queue.ps1
 git.branch = final-grid
-info.git.commit = d9c4ac534425d3c5d898baba6824425a6727ed48
+info.git.commit = fa31c9d25766b7a9eb3f0c1a1b58d41e4a4b791b
 f1tenth_gym.commit = 5a301bd0ae1c (pinned, clean, gitlink matches)
 f1tenth_gym.installed_from = ./f1tenth_gym (editable)
 sha256.sb3_wrapper.py = 9b73ea777f09d17306f0d1d5486edb024ad9c028629d927a38cdbb3c338a8a34
@@ -25,8 +25,8 @@ pip.lock = MATCH (44 packages)
 tracks.vw_train = 100/100 OK
 tracks.vw_val = 10/10 OK
 [settings]
-jobs = PLACEHOLDER (no job lines yet)
-settings.source = PROVISIONAL: defaults S0 and P0, until the job files are written
+jobs = OK: 24 jobs (desmond 8 SAC, grant 4 SAC, chris 12 PPO), identical apart from --diversity and --seed
+settings.source = final_grid/final_jobs_{desmond,grant,chris}.txt
 settings.SAC.args = --algo SAC --track-prefix vw_synthetic_track_
 settings.SAC.hyperparameters = {"gamma":0.99,"learning_rate":0.0003,"batch_size":256,"buffer_size":1000000,"ent_coef":"auto","target_entropy":-2.0,"tau":0.005,"learning_starts":100,"train_freq":"1 step","gradient_steps":1,"target_update_interval":1,"net_arch":"[256, 256]"}
 settings.SAC.reward = {"PROGRESS_WEIGHT":1.0,"TIME_COST":0.0,"CRASH_PENALTY":40.0}
@@ -40,11 +40,11 @@ env.vw_synthetic_track_7 = steps 262, end crash, progress_m 6.992797161, return 
 env.vw_synthetic_track_12 = steps 541, end crash, progress_m 14.960000154, return -25.039999846, traj 72f3a800e689f055
 [smoke test]
 smoke.SAC = OK (2,000-step run, checkpoint, VecNormalize and final model written; run folder deleted)
-info.smoke.SAC = 2,000 steps in 26 s, 93 steps/s
+info.smoke.SAC = 2,000 steps in 21 s, 115 steps/s
 smoke.PPO = OK (2,000-step run, checkpoint, VecNormalize and final model written; run folder deleted)
-info.smoke.PPO = 2,048 steps in 7 s, 886 steps/s
+info.smoke.PPO = 2,048 steps in 5 s, 1253 steps/s
 [machine]
 info.machine = AMD Ryzen 7 9800X3D 8-Core Processor, 16 logical CPUs, RAM 31 GB
 info.disk_free_gb = 3 (drive of C:\)
 info.sleep_on_ac = never
-info.generated = 2026-10-08 21:05
+info.generated = 2026-10-08 23:51

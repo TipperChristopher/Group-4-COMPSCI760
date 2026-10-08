@@ -1,10 +1,10 @@
 <#
 .SYNOPSIS
-    Zip one person's finished final-grid runs for sending back: share\final_<name>_seed<N>.zip
+    Zip one person's finished final-grid runs for sending back: share\final_<name>.zip
 
 .DESCRIPTION
-    Reads the queue state (logs\queue_final_jobs_seed<N>\state.json) and packs, for
-    every job in it:
+    Reads the queue state of final_grid\final_jobs_<name>.txt
+    (logs\queue_final_jobs_<name>\state.json) and packs, for every job in it:
       models\<run>\            everything: run_config.json, progress.csv, monitor CSVs,
                                all checkpoints with their VecNormalize statistics,
                                final_model.zip and vecnormalize.pkl
@@ -12,21 +12,24 @@
       logs\<tag>*.log          training and evaluation logs
     plus the queue folder (state, scheduler log, summary), the results summaries,
     final_grid\fingerprint_<name>.txt and logs\setup_teammate.log, and a
-    pack_manifest_<name>_seed<N>.csv listing every file with its size and sha256.
+    pack_manifest_<name>.csv listing every file with its size and sha256.
     Paths inside the zip are relative to the repo root, so all bundles can be
-    unzipped into one clone side by side (every name contains the seed).
+    unzipped into one clone side by side (run folders, tags and result folders
+    all differ between people).
 
-    Expected size: about 400 MB for 8 runs (each SAC run about 90 MB, each PPO
-    run about 7 MB; checkpoints are already compressed).
+    Expected size (each SAC run about 90 MB, each PPO run about 7 MB; the
+    checkpoints are already compressed):
+      chris    12 PPO runs   about  85 MB
+      grant     4 SAC runs   about 360 MB
+      desmond   8 SAC runs   about 720 MB
 
 .EXAMPLE
-    pwsh -File final_grid\pack_results.ps1 -Name alice -Seed 1
+    pwsh -File final_grid\pack_results.ps1 -Name grant
 #>
 param(
     [Parameter(Mandatory = $true)][string]$Name,
-    [Parameter(Mandatory = $true)][ValidateRange(0, 2)][int]$Seed,
     [string]$OutDir = "share",
-    # Queue to pack; default final_jobs_seed<Seed>. Only needed for testing.
+    # Queue to pack; default final_jobs_<Name>. Only needed for testing.
     [string]$Queue = "",
     # Pack even though the queue has not finished (e.g. to send a partial result).
     [switch]$Force
@@ -36,7 +39,7 @@ $ErrorActionPreference = "Stop"
 if ($Name -notmatch '^[A-Za-z0-9]+$') { throw "-Name must be letters/digits only" }
 $Root = Split-Path -Parent $PSScriptRoot
 Set-Location $Root
-if (-not $Queue) { $Queue = "final_jobs_seed$Seed" }
+if (-not $Queue) { $Queue = "final_jobs_$Name" }
 $StatePath = Join-Path $Root "logs\queue_$Queue\state.json"
 if (-not (Test-Path $StatePath)) { throw "No queue state at $StatePath. Was the queue started with final_grid\$Queue.txt?" }
 $s = Get-Content $StatePath -Raw | ConvertFrom-Json -AsHashtable
@@ -75,7 +78,7 @@ $files = [System.Collections.Generic.List[string]]@($files | Select-Object -Uniq
 # --------------------------------------------------------------------- zip
 $out = if ([IO.Path]::IsPathRooted($OutDir)) { $OutDir } else { Join-Path $Root $OutDir }
 New-Item -ItemType Directory -Force $out | Out-Null
-$zipPath = Join-Path $out "final_${Name}_seed$Seed.zip"
+$zipPath = Join-Path $out "final_$Name.zip"
 if (Test-Path $zipPath) { throw "$zipPath already exists. Move or delete it first." }
 Add-Type -AssemblyName System.IO.Compression, System.IO.Compression.FileSystem
 $rootPrefix = $Root.TrimEnd('\') + '\'
@@ -99,7 +102,7 @@ try {
     if (Test-Path $setupLog) {
         [System.IO.Compression.ZipFileExtensions]::CreateEntryFromFile($zip, $setupLog, "teammate/$Name/setup_teammate.log") | Out-Null
     }
-    $me = $zip.CreateEntry("pack_manifest_${Name}_seed$Seed.csv")
+    $me = $zip.CreateEntry("pack_manifest_$Name.csv")
     $w = [System.IO.StreamWriter]::new($me.Open()); $w.Write($manifest.ToString()); $w.Dispose()
 } finally { $zip.Dispose() }
 

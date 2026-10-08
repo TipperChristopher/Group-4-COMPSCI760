@@ -20,7 +20,8 @@ the gap between seeds. The winner within each algorithm is chosen among the
 candidates only; --baselines (default S0, P0) are shown but never win.
 Settings within 0.03 of the winner are marked near-tie.
 
-Writes <results>/summary.csv (one row per run) and summary_settings.csv.
+Writes <results>/summary[_<name>].csv (one row per run) and summary_settings[_<name>].csv;
+launch_queue.ps1 passes --name <queue>, so queues sharing a folder never overwrite each other.
 """
 from __future__ import annotations
 
@@ -54,9 +55,16 @@ def run_rows(state: dict, results: pathlib.Path) -> pd.DataFrame:
         row = {"tag": tag, "setting": setting, "algo": j["algo"], "seed": j["seed"],
                "status": j["status"], "train_exit": j.get("exit"),
                "crash_penalty": rew.get("CRASH_PENALTY"), "time_cost": rew.get("TIME_COST")}
-        mon = run_dir / "monitor_0.monitor.csv"
-        if mon.exists():
-            mm = pd.read_csv(mon, skiprows=1).tail(200)
+        mons = sorted(run_dir.glob("monitor_*.monitor.csv"))   # one per env when n_envs > 1
+        if mons:
+            # Episodes from all envs, ordered by wall-clock end time (t_start + t).
+            parts = []
+            for f in mons:
+                head = json.loads(f.open().readline().lstrip("#"))
+                d = pd.read_csv(f, skiprows=1)
+                d["_end"] = head.get("t_start", 0.0) + d["t"]
+                parts.append(d)
+            mm = pd.concat(parts).sort_values("_end").tail(200)
             spd = float((mm["progress_m"] / (mm["l"] * 0.01)).mean()) if len(mm) else np.nan
             row["train_speed_last200_mps"] = round(spd, 2)
             row["crawling"] = bool(spd < CRAWL_MPS)
@@ -121,7 +129,11 @@ def main() -> int:
     ap.add_argument("--state", required=True)
     ap.add_argument("--results", required=True)
     ap.add_argument("--baselines", default="S0,P0")
+    ap.add_argument("--name", default="",
+                    help="Queue name: writes summary_<name>.csv and summary_settings_<name>.csv, so "
+                         "several queues can share one results folder without overwriting each other.")
     a = ap.parse_args()
+    sfx = f"_{a.name}" if a.name else ""
     state = json.loads(pathlib.Path(a.state).read_text(encoding="utf-8-sig"))
     results = pathlib.Path(a.results)
     results.mkdir(parents=True, exist_ok=True)
@@ -130,8 +142,8 @@ def main() -> int:
         print("No runs in the queue state; nothing to summarise.")
         return 0
     st = settings_table(runs, set(a.baselines.split(",")))
-    runs.to_csv(results / "summary.csv", index=False)
-    st.to_csv(results / "summary_settings.csv", index=False)
+    runs.to_csv(results / f"summary{sfx}.csv", index=False)
+    st.to_csv(results / f"summary_settings{sfx}.csv", index=False)
 
     pd.set_option("display.width", 220)
     pd.set_option("display.max_columns", 40)
@@ -144,7 +156,7 @@ def main() -> int:
     print("\nPER SETTING (baselines shown, never winners; near-tie = within "
           f"{NEAR_TIE} of the winner; declines late = final > {int(DECLINE * 100)}% below best)")
     print(st.to_string(index=False))
-    print(f"\nwritten {results / 'summary.csv'} and {results / 'summary_settings.csv'}")
+    print(f"\nwritten {results / f'summary{sfx}.csv'} and {results / f'summary_settings{sfx}.csv'}")
     return 0
 
 

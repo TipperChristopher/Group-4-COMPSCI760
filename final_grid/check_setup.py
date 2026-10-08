@@ -11,16 +11,19 @@ Every line is "key = value". Keys starting with "info." are allowed to differ
 (machine, timings, floating-point training numbers); every other key must match
 exactly. What is checked:
 
-  code          git tree identity (content hash of HEAD, so it does not depend on
-                commit timestamps), clean working tree, f1tenth_gym submodule at
-                the pinned commit and installed editable from ./f1tenth_gym,
+  code          code identity (content hash of the tracked files and final_grid/ as
+                they are on disk, so it does not depend on commits or timestamps),
+                f1tenth_gym submodule at the pinned commit and installed editable
+                from ./f1tenth_gym,
                 LF-normalised sha256 of sb3_wrapper.py, train.py, tracks/manifest.json
   python        version, venv, key packages, and every package against
                 final_grid/requirements-lock.txt
   tracks        every vw_train and vw_val track file against tracks/manifest.json
-  settings      the final SAC and PPO settings from final_grid/final_jobs_seed*.txt,
-                with hyperparameters and reward constants as train.py resolves
-                them (read back from the smoke runs' run_config.json)
+  settings      the 24 final jobs in final_grid/final_jobs_{desmond,grant,chris}.txt
+                (each cell exactly once, split as planned, identical apart from
+                --diversity and --seed), and the SAC and PPO hyperparameters and
+                reward constants as train.py resolves them (read back from the
+                smoke runs' run_config.json)
   determinism   a fixed open-loop action sequence (no neural network) driven on
                 3 vw_train tracks from a seeded spawn: steps, end reason, progress,
                 return and a hash of the whole trajectory. Run twice per track,
@@ -52,7 +55,10 @@ REPO = pathlib.Path(__file__).resolve().parents[1]
 HERE = REPO / "final_grid"
 REFERENCE = HERE / "reference_fingerprint.txt"
 LOCK = HERE / "requirements-lock.txt"
-JOB_FILES = [HERE / f"final_jobs_seed{s}.txt" for s in (0, 1, 2)]
+# Who runs which part of the 24-run grid: algorithm, seeds, queue -MaxThreads.
+OWNERS = {"desmond": ("SAC", (0, 1), 16), "grant": ("SAC", (2,), 8), "chris": ("PPO", (0, 1, 2), 10)}
+JOB_FILES = {who: HERE / f"final_jobs_{who}.txt" for who in OWNERS}
+DIVERSITIES = (1, 5, 20, 100)
 
 PYTHON_VERSION = "3.12.10"
 F1TENTH_PIN = "5a301bd0ae1ceaf7dec653e7549c8d099db58a6b"   # upstream f1tenth/f1tenth_gym, branch v1.0.0
@@ -65,7 +71,7 @@ FINGERPRINT_RE = re.compile(r"^final_grid/(reference_)?fingerprint[^/]*\.txt$")
 DETERMINISM_TRACKS = ("vw_synthetic_track_0", "vw_synthetic_track_7", "vw_synthetic_track_12")
 RESET_SEED = 2026
 SMOKE_STEPS = 2000
-# Used only while final_jobs_seed*.txt are still placeholders.
+# Used only if the job files are missing (set up before they were committed).
 PROVISIONAL = {"SAC": ["--algo", "SAC", "--track-prefix", "vw_synthetic_track_"],
                "PPO": ["--algo", "PPO", "--track-prefix", "vw_synthetic_track_"]}
 
@@ -132,15 +138,33 @@ def set_flag(argv: list[str], flag: str, value) -> list[str]:
 
 # ------------------------------------------------------------------ checks
 
+def working_tree_id() -> str:
+    """Git tree id of the code as it is on disk: HEAD plus any edits to tracked
+    files plus every non-ignored file under final_grid/. Built in a throwaway
+    index, so the real index is never touched. A clean checkout gives HEAD's
+    tree; uncommitted work gives the tree it will have once committed."""
+    import tempfile
+    with tempfile.TemporaryDirectory() as t:
+        env = dict(os.environ, GIT_INDEX_FILE=str(pathlib.Path(t) / "index"))
+        for args in (("read-tree", "HEAD"), ("add", "-u"), ("add", "-A", "--", "final_grid"),
+                     ("write-tree",)):
+            out = subprocess.run(["git", *args], cwd=REPO, env=env, capture_output=True, text=True)
+            if out.returncode:
+                raise RuntimeError(f"git {' '.join(args)} failed: {out.stderr.strip()}")
+        return out.stdout.strip()
+
+
 def check_code(lines: list[tuple[str, str]]) -> None:
-    tree = [ln for ln in git("ls-tree", "-r", "HEAD").splitlines()
+    tree = [ln for ln in git("ls-tree", "-r", working_tree_id()).splitlines()
             if not FINGERPRINT_RE.match(ln.split("\t", 1)[1])]
     lines.append(("git.code_tree", hashlib.sha256("\n".join(tree).encode()).hexdigest()[:16]))
     # Not stripped: porcelain lines start with a status column that may be a space.
     dirty = sorted({ln[3:] for ln in git("status", "--porcelain", "--untracked-files=no",
                                          strip=False).splitlines()
                     if ln.strip() and not FINGERPRINT_RE.match(ln[3:])})
-    lines.append(("git.tree", "clean" if not dirty else "DIRTY: " + ", ".join(dirty)))
+    # Information only: code_tree above already certifies the content. launch_queue.ps1
+    # refuses to start from a tree with uncommitted changes anyway.
+    lines.append(("info.git.tree", "clean" if not dirty else "uncommitted: " + ", ".join(dirty)))
     lines.append(("git.branch", git("rev-parse", "--abbrev-ref", "HEAD")))
     lines.append(("info.git.commit", git("rev-parse", "HEAD")))
 
@@ -224,36 +248,39 @@ def check_tracks(lines: list[tuple[str, str]]) -> bool:
 
 
 def final_settings(lines: list[tuple[str, str]]) -> dict[str, list[str]]:
-    """The SAC and PPO train.py arguments every final job uses, minus --diversity/--seed."""
-    per_file = {p: parse_jobs(p) for p in JOB_FILES if p.exists()}
-    if len(per_file) < len(JOB_FILES) or not any(per_file.values()):
-        lines.append(("jobs", "PLACEHOLDER (no job lines yet)"))
-        lines.append(("settings.source", "PROVISIONAL: defaults S0 and P0, until the job files are written"))
+    """Check the 24 final jobs; return the SAC and PPO arguments minus --diversity/--seed."""
+    missing = [p.name for p in JOB_FILES.values() if not p.exists()]
+    if missing:
+        lines.append(("jobs", f"MISSING {', '.join(missing)}: run git pull"))
+        lines.append(("settings.source", "PROVISIONAL: defaults S0 and P0"))
         return dict(PROVISIONAL)
-    problems, shape = [], None
-    for path, jobs in per_file.items():
-        seed = path.stem.rsplit("seed", 1)[1]
-        cells = sorted((get_flag(a, "--algo"), int(get_flag(a, "--diversity") or -1)) for _, a in jobs)
-        if cells != sorted((al, d) for al in ("SAC", "PPO") for d in (1, 5, 20, 100)):
-            problems.append(f"{path.name}: not SAC+PPO x diversity 1/5/20/100")
-        if any(get_flag(a, "--seed") != seed for _, a in jobs):
-            problems.append(f"{path.name}: --seed is not {seed} everywhere")
-        this = sorted(" ".join(drop_flags(a, {"--seed"})) for _, a in jobs)
-        if shape is None:
-            shape = this
-        elif this != shape:
-            problems.append(f"{path.name}: arguments differ from {JOB_FILES[0].name} beyond --seed")
+    problems, cells, variants = [], [], {"SAC": set(), "PPO": set()}
+    for who, (algo, seeds, _threads) in OWNERS.items():
+        jobs = parse_jobs(JOB_FILES[who])
+        want = sorted((algo, d, s) for s in seeds for d in DIVERSITIES)
+        have = sorted((get_flag(a, "--algo"), int(get_flag(a, "--diversity") or -1),
+                       int(get_flag(a, "--seed") or -1)) for _, a in jobs)
+        if have != want:
+            problems.append(f"{JOB_FILES[who].name}: expected {algo} seeds {list(seeds)} "
+                            f"x diversity {list(DIVERSITIES)}")
+        for tag, a in jobs:
+            al, d, sd = get_flag(a, "--algo"), get_flag(a, "--diversity"), get_flag(a, "--seed")
+            if tag != f"final_{al}_d{d}_s{sd}":
+                problems.append(f"{JOB_FILES[who].name}: tag {tag} should be final_{al}_d{d}_s{sd}")
+            if al in variants:
+                variants[al].add(" ".join(drop_flags(a, {"--seed", "--diversity"})))
+            cells.append((al, d, sd))
+    if len(cells) != len(set(cells)):
+        problems.append("a cell appears more than once")
     settings = {}
-    for algo in ("SAC", "PPO"):
-        variants = {" ".join(drop_flags(a, {"--seed", "--diversity"}))
-                    for _, a in per_file[JOB_FILES[0]] if get_flag(a, "--algo") == algo}
-        if len(variants) != 1:
-            problems.append(f"{algo}: {len(variants)} different settings across diversity levels")
-        settings[algo] = sorted(variants)[0].split() if variants else PROVISIONAL[algo]
-    n = sum(len(j) for j in per_file.values())
-    lines.append(("jobs", f"OK: {len(per_file)} files, {n} jobs, identical apart from --seed"
+    for algo, v in variants.items():
+        if len(v) != 1:
+            problems.append(f"{algo}: {len(v)} different settings across jobs")
+        settings[algo] = sorted(v)[0].split() if v else PROVISIONAL[algo]
+    lines.append(("jobs", f"OK: {len(cells)} jobs (desmond 8 SAC, grant 4 SAC, chris 12 PPO), "
+                          "identical apart from --diversity and --seed"
                   if not problems else "PROBLEM: " + "; ".join(problems)))
-    lines.append(("settings.source", "final_grid/final_jobs_seed*.txt"))
+    lines.append(("settings.source", "final_grid/final_jobs_{desmond,grant,chris}.txt"))
     return settings
 
 
@@ -425,7 +452,7 @@ def compare(theirs: pathlib.Path, reference: pathlib.Path) -> int:
     soft = [k for k in keys if k.startswith("info.") and ref.get(k) != oth.get(k)]
     print(f"reference: {reference}\ncompared:  {theirs}\n")
     if ref.get("settings.source", "").startswith("PROVISIONAL"):
-        print("NOTE: the reference was made before the final job files existed (provisional settings).\n")
+        print("NOTE: the reference was made without the final job files (provisional settings).\n")
     if not hard:
         print(f"MATCH ({sum(not k.startswith('info.') for k in keys)} checked lines identical)")
     else:
@@ -474,7 +501,7 @@ def main() -> int:
         a.out.write_text(text, encoding="utf-8", newline="\n")
         print(f"\nwritten {a.out}", file=sys.stderr)
     bad = [k for k, v in lines if not k.startswith("info.")
-           and re.search(r"\b(FAIL|DIRTY|DIFFERS|NOT|NONDETERMINISTIC|PROBLEM|MODIFIED|ELSEWHERE|"
+           and re.search(r"\b(FAIL|DIFFERS|NOT|NONDETERMINISTIC|PROBLEM|MODIFIED|ELSEWHERE|MISSING|"
                          r"SKIPPED|differs)\b", v)]
     if bad:
         print(f"\nPROBLEMS on this machine: {', '.join(bad)}", file=sys.stderr)

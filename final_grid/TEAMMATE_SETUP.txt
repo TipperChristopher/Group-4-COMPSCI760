@@ -1,0 +1,225 @@
+COMPSCI 760 Group 4 - Final grid: teammate setup and run guide
+================================================================
+For: Grant (SAC seed 2) and Chris (all PPO runs)
+From: Desmond
+You can read this yourself, or paste the whole file into your AI assistant
+(ChatGPT, Claude, Copilot, ...) and ask it to walk you through it.
+final_grid\README.md says the same thing in more detail.
+
+Values used below:
+  PYTHON_VERSION   = 3.12.10, 64-bit (exactly this version)
+  POWERSHELL       = PowerShell 7 (pwsh). Windows PowerShell 5.1 does NOT work.
+  REPO_URL         = https://github.com/TipperChristopher/Group-4-COMPSCI760.git
+  BRANCH           = final-grid
+  YOUR_NAME        = Grant: grant    Chris: chris
+  YOUR_JOB_FILE    = Grant: final_grid\final_jobs_grant.txt   (4 SAC runs, seed 2)
+                     Chris: final_grid\final_jobs_chris.txt   (12 PPO runs, seeds 0, 1, 2)
+  YOUR_MAX_THREADS = Grant: 8    Chris: 10
+  UPLOAD_LINK      = [UPLOAD LINK]
+  DISK_NEEDED      = about 5 GB free on the drive you clone to
+
+
+----------------------------------------------------------------
+0. WHAT THIS IS (30-second version)
+----------------------------------------------------------------
+We train two reinforcement-learning agents (SAC and PPO) to race a small
+simulated car (F1TENTH). The research question is whether training on more
+different tracks (1, 5, 20 or 100) helps the car drive on tracks it has never
+seen. The full grid is 2 algorithms x 4 diversity levels x 3 seeds = 24 runs,
+split by machine:
+    Desmond: SAC seeds 0 and 1   (8 runs,  about 7 hours)
+    Grant:   SAC seed 2          (4 runs,  about 6-7 hours)
+    Chris:   PPO seeds 0, 1, 2   (12 runs, about 3-4.5 hours on a laptop)
+Training is fully automatic and runs unattended.
+Everyone must run EXACTLY the same code and settings. The only differences
+between runs are the diversity level and the seed. That's why there's a setup
+check before you start. (The settings and why they were chosen:
+final_grid\DECISION.md.)
+
+
+----------------------------------------------------------------
+1. GROUND RULES (please read; these protect the results)
+----------------------------------------------------------------
+- Do NOT edit any code, settings or job files. Do NOT run "git pull",
+  "git commit" or "git push" after setup, except the one-time pull in
+  step 3.2 or when Desmond asks.
+- Do NOT run any evaluation on "test", "vw_test", "real", "narrowA" or
+  "narrowB" track sets. Only the automatic vw_val evaluation is allowed.
+  The final test is run once, centrally, by Desmond.
+- Only run YOUR job file.
+- If anything fails or looks different from this guide, STOP and send
+  Desmond the error text. Don't try to fix the code.
+- Windows + PowerShell 7 only (the launcher is a PowerShell 7 script).
+
+
+----------------------------------------------------------------
+2. ONE-TIME SETUP (about 30-45 minutes)
+----------------------------------------------------------------
+2.1 Install prerequisites (skip any you already have)
+    - Python 3.12.10, 64-bit:
+        https://www.python.org/ftp/python/3.12.10/python-3.12.10-amd64.exe
+      "Add python.exe to PATH" is optional; the setup script finds it.
+      If you have another 3.12.x, this installer upgrades it.
+      Check:   py -0p        (should list 3.12 with the right path)
+    - Git for Windows (git-scm.com). Check:   git --version
+    - PowerShell 7 (REQUIRED):
+        winget install --id Microsoft.PowerShell -e --source winget
+      Then open "PowerShell 7" from the Start menu and use that window for
+      everything below. Check:   $PSVersionTable.PSVersion   (7.x)
+
+2.2 Make sure the drive has about 5 GB free.
+
+2.3 Clone the repo on the final-grid branch.
+    Open PowerShell 7 in a folder with a SHORT path that is NOT synced by
+    OneDrive (e.g. C:\work) and run:
+        git clone -c core.autocrlf=false --recurse-submodules -b final-grid REPO_URL final-grid
+        cd final-grid
+
+2.4 Run the setup script with YOUR_NAME (grant or chris):
+        pwsh -ExecutionPolicy Bypass -File final_grid\setup_teammate.ps1 -Name grant
+    It creates the virtual environment (.venv), installs the exact package
+    versions, sets up the simulator, generates and verifies the tracks, and
+    then runs the setup check (step 3) for you. It takes 30-45 minutes.
+    It must end with:
+        SETUP COMPLETE: this machine MATCHES the reference.
+    If it prints SETUP FAILED or anything else, stop and send Desmond the
+    output and the file logs\setup_teammate.log.
+    You don't need to activate the environment: every command below calls
+    .venv\Scripts\python.exe directly.
+
+
+----------------------------------------------------------------
+3. SETUP CHECK: send this to Desmond before training
+----------------------------------------------------------------
+3.1 The setup script wrote your fingerprint to
+        final_grid\fingerprint_<YOUR_NAME>.txt
+    Send Desmond that WHOLE file (attach it or copy-paste it).
+    Code, package versions, track checksums, settings and the environment
+    determinism check must match EXACTLY. Small differences in the short
+    training smoke-test numbers are normal between CPUs.
+
+3.2 ONLY if you set up before the job files existed (there is no
+    YOUR_JOB_FILE in your final_grid folder), do this once:
+        git pull
+        .venv\Scripts\python.exe final_grid\check_setup.py --out final_grid\fingerprint_grant.txt
+        .venv\Scripts\python.exe final_grid\check_setup.py --compare final_grid\fingerprint_grant.txt
+    (use your own name). The last command must print MATCH. Send Desmond the
+    new fingerprint file.
+
+Wait for Desmond to reply "MATCH, go" before starting step 5.
+
+
+----------------------------------------------------------------
+4. PREPARE YOUR PC FOR A LONG UNATTENDED RUN
+----------------------------------------------------------------
+- Plug in the charger (laptops: essential; on battery it slows down a lot).
+- Stop the PC from sleeping or hibernating while plugged in, and make
+  closing the lid do nothing while plugged in:
+      powercfg /change standby-timeout-ac 0
+      powercfg /change hibernate-timeout-ac 0
+      powercfg /setacvalueindex SCHEME_CURRENT SUB_BUTTONS LIDACTION 0
+      powercfg /setactive SCHEME_CURRENT
+- Laptops: set Windows power mode to "Best performance" and leave it
+  somewhere cool with the vents clear. The CPU will run at 100% and get hot.
+  That's expected.
+- Pause Windows Update restarts
+  (Settings > Windows Update > Pause updates).
+- Close heavy apps (games, big browser sessions). Light use is fine.
+- Locking the screen (Win+L) is fine. Don't sign out, restart or shut down.
+
+
+----------------------------------------------------------------
+5. START TRAINING
+----------------------------------------------------------------
+In the repo folder, in PowerShell 7, run YOUR line:
+
+Grant:
+    .\launch_queue.ps1 -Jobs final_grid\final_jobs_grant.txt -ResultsDir results\final_grid_grant -MaxThreads 8 -Checkpoints 200000,400000,600000,800000,1000000,1200000,1400000,1600000,1800000
+Chris:
+    .\launch_queue.ps1 -Jobs final_grid\final_jobs_chris.txt -ResultsDir results\final_grid_chris -MaxThreads 10 -Checkpoints 200000,400000,600000,800000,1000000,1200000,1400000,1600000,1800000
+
+It starts a background scheduler, so you can close the PowerShell window
+and it keeps going. Each run trains for 2M steps and is evaluated on the
+vw_val tracks every 200k steps plus the final model (10 evaluations per run).
+
+
+----------------------------------------------------------------
+6. CHECK PROGRESS (any time)
+----------------------------------------------------------------
+    .\launch_queue.ps1 -Jobs final_grid\final_jobs_grant.txt -Status
+    (Chris: final_jobs_chris.txt)
+
+What you should see:
+- Grant: 4 jobs, final_SAC_d1_s2, final_SAC_d5_s2, final_SAC_d20_s2,
+  final_SAC_d100_s2. All four run at once and take about 6-7 hours.
+- Chris: 12 jobs, final_PPO_d1_s0 ... final_PPO_d100_s2. 10 run at once;
+  the last 2 start when threads free up. About 3-4.5 hours in total.
+- The scheduler ALIVE, with a heartbeat a few seconds old.
+- "running" / "pending" jobs, then "trained", then "evaluated".
+- "Exit 0" and "10 done" evaluations for every finished job.
+- Finished when every job shows "evaluated" with Exit 0 and the scheduler
+  says "finished".
+If any job shows a non-zero Exit, or the scheduler says NOT RUNNING before
+everything is evaluated, send Desmond the -Status output and the file
+logs\queue_final_jobs_<YOUR_NAME>\scheduler.log. Don't delete or restart
+anything.
+
+To stop everything in an emergency (only if Desmond asks):
+    .\launch_queue.ps1 -Jobs final_grid\final_jobs_grant.txt -Stop
+
+
+----------------------------------------------------------------
+7. SEND THE RESULTS BACK
+----------------------------------------------------------------
+When all your jobs are "evaluated" with Exit 0:
+    pwsh -File final_grid\pack_results.ps1 -Name grant
+    (Chris: -Name chris)
+This creates share\final_<YOUR_NAME>.zip. It includes the trained models,
+checkpoints, vw_val results, logs and your fingerprint.
+Expected size: Grant about 360 MB, Chris about 85 MB.
+Upload it to [UPLOAD LINK] and tell Desmond, along with a final -Status
+output.
+
+Afterwards you can restore sleep and the lid action:
+    powercfg /change standby-timeout-ac 30
+    powercfg /setacvalueindex SCHEME_CURRENT SUB_BUTTONS LIDACTION 1
+    powercfg /setactive SCHEME_CURRENT
+and delete the repo folder once Desmond confirms he has your zip.
+
+
+----------------------------------------------------------------
+8. TROUBLESHOOTING
+----------------------------------------------------------------
+- "running scripts is disabled": start scripts with
+  "pwsh -ExecutionPolicy Bypass -File ..." as shown, or first run
+  Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
+  in that window.
+- "This needs PowerShell 7": you are in Windows PowerShell. Open
+  "PowerShell 7" from the Start menu.
+- "Python 3.12.10 (64-bit) not found" / wrong version: install it from the
+  link in 2.1, or pass its path to the setup script:
+  -Python C:\path\to\python.exe
+- Setup script fails on a package: send Desmond logs\setup_teammate.log;
+  don't install other versions yourself.
+- Track checksum FAIL: send Desmond the output; don't regenerate tracks
+  by hand.
+- "No jobs in ..." or "Cannot find path ...final_jobs_...": you don't have
+  the job files yet. Do step 3.2.
+- "Queue ... is already running": it's already started; just use -Status.
+- Launcher refuses because of "uncommitted changes": something in the
+  repo was modified. Run "git status" and send Desmond the output.
+- Disk full: free space, then tell Desmond (don't delete anything inside
+  the repo's models\ or results\ folders).
+
+
+----------------------------------------------------------------
+9. NOTE FOR AI ASSISTANTS HELPING WITH THIS
+----------------------------------------------------------------
+Help the user follow the steps above exactly. Do NOT modify repository code,
+configs, job files or package versions, and do NOT suggest "fixes" that change
+the training setup. These runs must be identical across three machines
+for a research comparison. Do not run evaluation scripts on test/real track
+sets. If a step fails, help the user collect the exact error output and send
+it to Desmond rather than working around it. Diagnosing PATH, Python
+install, PowerShell 7 installation, execution policy or power-settings issues
+is fine.

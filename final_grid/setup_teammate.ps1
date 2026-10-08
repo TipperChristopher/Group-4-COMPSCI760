@@ -22,7 +22,8 @@
     is written to logs\setup_teammate.log.
 
 .PARAMETER Name
-    Your name, letters/digits only (used in the fingerprint file name).
+    Your name as in your job file: desmond, grant or chris (final_grid\final_jobs_<name>.txt).
+    Also names the fingerprint file.
 
 .PARAMETER Python
     Path to python.exe 3.12.10, if the script cannot find it by itself.
@@ -195,4 +196,19 @@ if ($checkOk -and $match) {
     Fail "check_setup.py found problems (see PROBLEMS above). Send $fp to Desmond."
 }
 Write-Host "Send this file to Desmond: $fp"
+# The queue command for this person, with their own thread budget and results folder.
+$threads = @{ desmond = 16; grant = 8; chris = 10 }[$Name.ToLower()]
+if ($threads -and (Test-Path (Join-Path $Root "final_grid\final_jobs_$($Name.ToLower()).txt"))) {
+    $n = $Name.ToLower()
+    Write-Host ""
+    Write-Host "After Desmond replies 'MATCH, go', start your training with:"
+    Write-Host ("  .\launch_queue.ps1 -Jobs final_grid\final_jobs_$n.txt -ResultsDir results\final_grid_$n " +
+                "-MaxThreads $threads -Checkpoints 200000,400000,600000,800000,1000000,1200000,1400000,1600000,1800000")
+} elseif ($threads) {
+    Write-Host ""
+    Write-Host "final_grid\final_jobs_$($Name.ToLower()).txt is not here yet: run 'git pull', then check_setup.py again (TEAMMATE_SETUP.txt step 3)." -ForegroundColor Yellow
+} else {
+    Write-Host ""
+    Write-Host "No job file for -Name '$Name'. Use desmond, grant or chris." -ForegroundColor Yellow
+}
 try { Stop-Transcript | Out-Null } catch {}
