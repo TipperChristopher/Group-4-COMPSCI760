@@ -26,7 +26,7 @@ Nothing here is stated as a result unless it is marked ANSWERED and points to a 
 | Q8 | Would PPO stabilise with more envs? | **SUPERSEDED** — PPO fixed by γ + n_steps, n_envs stays 1 |
 | Q9 | Merge and freeze before the grid | **OPEN** — branch state changed, see below |
 | Q10 | Does the PPO fix hold at d5/20/100? | **PARTIAL** — at d20, 2 seeds: it does NOT beat PPO baseline (teammate bundle); d5/100 still open |
-| Q11 | Does γ 0.999 help or hurt SAC? | **ANSWERED for d20 at penalty 40: it breaks SAC**; at penalty 5 untested (`G999_SAC` died at ~450 k) |
+| Q11 | Does γ 0.999 help or hurt SAC? | **ANSWERED for d20 at penalty 40: it breaks SAC**; at penalty 5 **RUNNING** (`tune_S1P5_s99/s98`, launched 2026-10-09) |
 | Q12 | Why do γ and n_steps interact? | **OPEN** (hypothesis only) |
 | Q13 | Does a width-randomised pool fix real circuits? | **OPEN** — needs a generator width flag |
 | Q14 | Final-presentation date and scope | **OPEN** — needed to size the SAC half |
@@ -105,6 +105,14 @@ collapsing but still scores below the γ 0.99 baseline (0.439). *Correction (202
 at ~450 k steps on 2026-10-06 ~22:05 (its run_config still says `running`). Up to then: 0% laps,
 8.6–10 m/s, no crawling — too early to judge (the teammate's S1 also looked fine at 400 k).
 SAC γ 0.999 at penalty 5 is therefore untested; the final-run plan recommends SAC γ 0.99.
+
+**Clean test launched 2026-10-09 13:56:** Desmond's S1 exactly (commit `6e5b60e`, vw d20, seeds 99/98,
+γ 0.999), only `--crash-penalty 5` changed. Worktree `team_repo_tuning`; vw tracks rebuilt with his
+`make_vw_tracks.py` — all 130 manifest entries identical to his committed manifest; smoke test: crash pays
+exactly 5. Checkpoints scored with his queue's protocol (`evaluate.py --track-set vw_val --episodes 5
+--max-steps 15000`, 400k/800k/1.2M/1.6M/final) by `_verify/s1p5/eval_watcher.py`. S1 collapsed between
+400 k and 800 k, so ~800 k (~4 h) is the first decisive point. Reading: no collapse → penalty 40 was the
+problem at γ 0.999; collapse → γ 0.999 itself breaks SAC.
 
 ## Q12 — Mechanism of the γ × n_steps interaction
 
