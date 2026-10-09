@@ -161,6 +161,29 @@ Same raw states (seed 2's own approach to the 75.5 m hairpin), fed to each check
 Seed 2's critic has learned that the hairpin approach is worth far less (V 64 → 36), and its speed action has drifted past the lower action bound. PPO **clips** out-of-range actions (SB3 `np.clip`), so the deterministic policy outputs exactly 0 m/s and never leaves; with noise it only moves on ~31% of steps. Candidate loop (consistent with the numbers, **not proven**): noisy attempts crash at the hairpin → critic lowers V there → faster-than-mean samples get negative advantage → mean speed pushed down past the useful point to the clip bound → the policy stops attempting the hairpin, so on-policy data no longer contains successful passes to correct the critic. Seed 0's critic, by contrast, values the same states at ~88.
 Truncation handling was checked and is correct (SB3 bootstraps at `TimeLimit.truncated`; `sb3_wrapper.py` sets it), so it is not the cause.
 
+### Stability A/B: entropy bonus vs small time cost (runs 2026-10-08, evaluated 2026-10-09)
+Launcher `run_ab_sweep.sh` (commit `edbf8ec`): d1, γ 0.999, n_steps 8192, **penalty 5**, seeds 0/1/2,
+plus either `ent_coef 0.01` (ENT001) or `time_cost 0.0015` (TC0015; bootstrapped suicide threshold
+0.0015/(1−γ) = 1.5 < 5, safe). Deterministic laps on the training track, 30 episodes at each of the
+last 5 checkpoints (D14), `diagnostics/ab_own_track_eval.py`, CSVs in `results/ppo_diagnosis/eval_ab_own_track/`:
+
+| arm | seed 0 | seed 1 | seed 2 | mean | worst seed |
+|---|---|---|---|---|---|
+| baseline (γ .999 + ns 8192) | 80% | 75% | **17%** (0/30 at 1.7–2.0 M) | 57% | 17% |
+| + ent_coef 0.01 | 67% | 75% | 65% | **69%** | **65%** |
+| + time_cost 0.0015 | 54% | 73% | **0%** (never laps) | 42% | 0% |
+
+- **Entropy bonus: no seed collapsed** (worst seed 65% vs 17%); σ stays 1.1–1.3 through 2 M (baseline
+  falls to 0.15–0.20) and KL stays 0.016–0.026. But single checkpoints still dip (seed 2: 4/30 at 2.0 M;
+  per-checkpoint SD ≈ 9 laps vs ≈ 4–6 for healthy baseline seeds) — dips *recover* instead of
+  becoming absorbing like baseline seed 2's stall. Consistent with the stall mechanism (exploration
+  keeps the hairpin in the data). **n = 3 seeds: suggestive, not established** (0/3 vs 1/3 collapses).
+- **Small time cost: worse** — one seed never learned to lap; no stability benefit.
+- Contrast: the teammate's P3 (ent 0.01 + target_kl 0.03, **penalty 40, varied-width d20**) crawled
+  with σ → 2.0. So the entropy bonus works at penalty 5 on the wide d1 track; whether it works on the
+  varied-width pool at penalty 5 is untested.
+
+
 ## Why SAC copes at γ=0.99 — and is not immune
 
 SAC faces the same objective. From the basin table, SAC's lap-completing
