@@ -183,6 +183,16 @@ last 5 checkpoints (D14), `diagnostics/ab_own_track_eval.py`, CSVs in `results/p
   with σ → 2.0. So the entropy bonus works at penalty 5 on the wide d1 track; whether it works on the
   varied-width pool at penalty 5 is untested.
 
+**Varied-width replication launched 2026-10-09 14:55** (Desmond's code `6e5b60e`, vw d20, penalty 5,
+seeds 99/98): control `tune_P1P5_*` (γ 0.999 + n_steps 8192) vs σ-fix `tune_P1P5ent_*` (+ ent_coef
+0.01; resolved as float 0.01, control 0.0; crash pay verified = 5). Scored by
+`_verify/ppo_vw/eval_watcher.py` with Desmond's vw_val protocol at 400k/800k/1.2M/1.6M/2.0M plus
+1.7–1.9M for the D14 last-5 mean. **Pass criteria, fixed before results (σ-fix arm, both seeds):**
+(1) `train/std` ≥ 0.5 at 2 M (control expected ≲ 0.15); (2) no crawl — training speed over the last
+200 episodes > 2.5 m/s (the failure of Desmond's P3); (3) no late decline — final score not > 20%
+below its best (Desmond's flag); (4) laps on unseen vw_val, and last-5 mean ≥ the control's on the
+worst seed. Grid bar: beats Desmond's P0 (0.142). n = 2 seeds/arm → suggestive only.
+
 
 ## Why SAC copes at γ=0.99 — and is not immune
 
