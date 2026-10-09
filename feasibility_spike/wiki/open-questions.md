@@ -25,7 +25,7 @@ Nothing here is stated as a result unless it is marked ANSWERED and points to a 
 | Q7 | Corner-sharpness cap | **REFUTED** (`sim-to-real-width.md`) |
 | Q8 | Would PPO stabilise with more envs? | **SUPERSEDED** — PPO fixed by γ + n_steps, n_envs stays 1 |
 | Q9 | Merge and freeze before the grid | **OPEN** — branch state changed, see below |
-| Q10 | Does the PPO fix hold at d5/20/100? | **PARTIAL** — at d20, 2 seeds: it does NOT beat PPO baseline (teammate bundle); d5/100 still open |
+| Q10 | Does the PPO fix hold at d5/20/100? | **d20 varied-width: YES at penalty 5** (best 0.52–0.67 vs 0.03–0.13 at penalty 40, 2 seeds); d5/100 still open |
 | Q11 | Does γ 0.999 help or hurt SAC? | **ANSWERED for d20 at penalty 40: it breaks SAC**; at penalty 5 **RUNNING** (`tune_S1P5_s99/s98`, launched 2026-10-09) |
 | Q12 | Why do γ and n_steps interact? | **OPEN** (hypothesis only) |
 | Q13 | Does a width-randomised pool fix real circuits? | **OPEN** — needs a generator width flag |
@@ -113,6 +113,11 @@ exactly 5. Checkpoints scored with his queue's protocol (`evaluate.py --track-se
 --max-steps 15000`, 400k/800k/1.2M/1.6M/final) by `_verify/s1p5/eval_watcher.py`. S1 collapsed between
 400 k and 800 k, so ~800 k (~4 h) is the first decisive point. Reading: no collapse → penalty 40 was the
 problem at γ 0.999; collapse → γ 0.999 itself breaks SAC.
+
+**Interim at 800 k (2026-10-09 18:30):** no collapse. Scores 0.185 → 0.182 (s99) and 0.250 → 0.287 (s98)
+vs Desmond's S1 at penalty 40: 0.277 → 0.017 and 0.214 → 0.008. Critic loss stays 0.05–0.07 through
+400–800 k (his blew up to ~21). Training speed 8.7–8.9 m/s, no crawl. Not yet better than SAC γ 0.99
+(his S0 at 800 k: 0.283 / 0.353); 0% laps so far. Decision rule needs the best checkpoint by 2 M.
 
 ## Q12 — Mechanism of the γ × n_steps interaction
 

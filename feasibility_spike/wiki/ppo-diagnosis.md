@@ -193,6 +193,30 @@ seeds 99/98): control `tune_P1P5_*` (γ 0.999 + n_steps 8192) vs σ-fix `tune_P1
 below its best (Desmond's flag); (4) laps on unseen vw_val, and last-5 mean ≥ the control's on the
 worst seed. Grid bar: beats Desmond's P0 (0.142). n = 2 seeds/arm → suggestive only.
 
+**Results (2026-10-09 18:20; CSVs in `results/vw_p5_tests/ppo/`).** Score = mean fractional laps on
+unseen vw_val; checkpoints 0.4/0.8/1.2/1.6/1.7/1.8/1.9/2.0 M:
+
+| run | scores | best | final | last-5 | laps% max | std 1M→2M | train speed |
+|---|---|---|---|---|---|---|---|
+| control s99 | .372 .306 .411 .516 .437 .508 .540 .426 | .540 | .426 | .486 | 26 | 0.30→0.14 | 6.1 m/s |
+| control s98 | .521 .351 .171 .151 .211 .160 .177 .324 | .521 | .324 | **.204** | 20 (0% from 0.4–1.9 M) | 0.34→**0.06** | 4.0 m/s |
+| σ-fix s99 | .277 .194 .274 .456 .619 .615 .535 .498 | .619 | .498 | .544 | 34 | 0.96→0.62 | 5.9 m/s |
+| σ-fix s98 | .347 .463 .654 .672 .559 .397 .349 .413 | .672 | .413 | **.478** | 30 | 0.82→0.77 | 5.4 m/s |
+
+**Verdict against the pre-registered criteria (σ-fix arm):** C1 σ ≥ 0.5 — PASS both; C2 no crawl —
+PASS both; C4 laps + worst-seed last-5 ≥ control (0.478 vs 0.204) — PASS; **C3 no late decline —
+PASS s99 (0.498 vs 0.8×0.619 = 0.495, barely), FAIL s98 (0.672 → 0.413, −39%)**. So the entropy
+bonus **fixes the collapse** (no seed falls into the control-s98 hole; σ stays alive) **but not the
+checkpoint-to-checkpoint volatility** — the reason the grid scores the last-5 mean (D14).
+
+**Penalty is the bigger lever for PPO.** The control is Desmond's P1 with only the penalty changed
+(same code `6e5b60e`, tracks, seeds 99/98): best score **0.028 / 0.126 at penalty 40 → 0.540 / 0.521
+at penalty 5**, and no crawling (4.0–6.1 m/s vs his 1.5–4.2). Caveat: his runs were trained on his
+machine, ours on this one (training is not bit-reproducible); the gap is large and holds on both seeds.
+Both arms clear Desmond's PPO baseline (0.142, penalty 40) by a wide margin, and the σ-fix's best
+scores (0.619 / 0.672) are in the range of his best SAC (0.453 / 0.566, penalty 40) — different
+penalties, 2 seeds, not a like-for-like comparison.
+
 
 ## Why SAC copes at γ=0.99 — and is not immune
 
