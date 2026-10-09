@@ -86,6 +86,28 @@ n = 1 training seed per model. Desmond's narrow evaluations use 5 episodes per t
 (≈3 distinct spawns); ours use 10. The two SAC families differ in penalty and code path,
 yet show the same pattern, which makes the result robust to those differences.
 
+
+## Update 2026-10-09: policies trained on the varied-width pool, broken down by width
+
+Training on `vw_synthetic_track_*` (d20, half-widths spread 0.60–1.50 m) and scoring on the unseen
+`vw_val` tracks (half-widths 0.66–1.39 m; narrow = t1/t3/t7/t9, mid = t0/t4/t5/t8, wide = t2/t6).
+Lap completion, checkpoints 1.6 M + final, 2 seeds (200 episodes per row):
+
+| policy | narrow < 0.9 m | mid 0.9–1.2 m | wide > 1.2 m |
+|---|---|---|---|
+| SAC γ 0.99, penalty 40 (Desmond S0) | 0% | 20% | 45% |
+| PPO γ 0.99, penalty 40 (Desmond P0) | 0% | 0% | 0% |
+| PPO γ 0.999 + n_steps 8192, penalty 5 (control) | 2% | 26% | 0% |
+| PPO + ent_coef 0.01, penalty 5 (σ fix) | **9%** | **34%** | 25% |
+
+- Varied-width training makes **mid-width** unseen tracks lappable for both algorithms — the range that
+  contains the real-circuit median (1.07 m).
+- **Narrow tracks (< 0.9 m) remain mostly unsolved** (0–9%), even though narrow widths are inside the
+  training range — narrow is genuinely harder, not only out-of-distribution.
+- Small n: 4 narrow and 2 wide tracks, 3 distinct spawns each; different penalties across rows.
+- **Real circuits have not been evaluated for any varied-width-trained model** (Desmond's tuning
+  deliberately held out real/test; only Silverstone and Spielberg are installed on this machine).
+
 ## See also
 
 - `experiments.md` — the earlier nar7 probe and geometry table
