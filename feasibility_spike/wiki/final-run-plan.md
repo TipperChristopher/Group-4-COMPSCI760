@@ -130,6 +130,30 @@ across machines, but that does not matter when every run is its own seed.
 >   batch 2 use 40; the seed-0 grid and every working PPO run used 5); track pool varied-width vs uniform.
 > - Items 3–5 unchanged and still open.
 
+## Grid B (final-grid-v2) — pre-registered and ready to launch (2026-10-09)
+
+The team chose to keep grid A untouched and run a **second pre-registered grid** with the shared
+penalty-5 reward and the PPO fix. Branch **`final-grid-v2`** (off `origin/final-grid` @ `7552398`);
+grid A's train.py / sb3_wrapper.py / evaluate.py / launch_queue.ps1 are unchanged — v2 differs only in
+job-file flags. Commits: `985b4bb` DECISION_v2.md (pushed before anything else), `a22bc32` job files +
+checker + pack script + teammate guide, `16440e6` reference fingerprint.
+
+- **Settings:** reward = progress − 5 on crash, no time cost; SAC defaults γ 0.99 (locked regardless of
+  S1P5); PPO `--gamma 0.999 --n-steps 8192 --ent-coef 0.01` (disclosed PPO-specific tuning).
+  vw tracks, d1/5/20/100, seeds 0/1/2 (same cells as grid A for paired comparison), 2 M steps.
+- **Split:** Grant 6 SAC (s0 d1/5/20/100 + s1 d1/d5), Chris 6 SAC (s2 all + s1 d20/d100),
+  Desmond 12 PPO, each `-MaxThreads 12`. Results in `results/final_grid_v2_<name>/`.
+- **Evaluation:** identical to grid A (vw_val every 200k + final). Checkpoint selection: best of
+  400k/800k/1.2M/1.6M/final by vw_val fractional laps — **proposed to apply to grid A as well** so the
+  paired comparison is defined (Desmond confirms). Test: vw_test + 23 real circuits, 10 eps/track, once
+  per grid, centrally, after both grids freeze.
+- **Verified:** all 24 job lines = grid A's line for the same cell + exactly the v2 flags (checker
+  rejects planted extra-flag / wrong-tag / missing-cell / duplicate-cell faults); smoke runs pay −5.0
+  exactly on every crash (SAC 15, PPO 53); PPO resolves γ 0.999 / n_steps 8192 / ent_coef 0.01;
+  determinism lines identical to grid A's reference; reference code_tree stable after committing it.
+- **Gate:** teammates run `final_grid_v2\check_setup.py --compare final_grid_v2eference_fingerprint.txt`
+  and wait for MATCH before launching. Environment lines spliced from grid A's reference.
+
 > **Team decision found 2026-10-09 (supersedes this PROPOSED page for the main grid):** Desmond's
 > `final_grid/DECISION.md` (branch `final-grid`, commit `7552398`) applied a pre-registered tuning-round-3
 > rule → **SAC and PPO at SB3 defaults, penalty 40, no time cost**, varied-width tracks; 24 runs split
