@@ -120,6 +120,16 @@ across machines, but that does not matter when every run is its own seed.
 4. **Confirm the final-presentation date.** It decides full SAC grid vs SAC d1+d100 only.
 5. Commit this page as **agreed**, with any changes, before the first grid run starts.
 
+> **Status update 2026-10-09** (supersedes items 1–2 above; nothing ticked yet):
+> - **Item 2 replaced:** `G999_SAC` died at ~450 k. The clean test is running instead: Desmond's S1
+>   with penalty 5 (`tune_S1P5_s99/s98`, vw d20) — decides whether SAC can share γ 0.999 at penalty 5.
+> - **Item 1 updated:** PPO config is now γ 0.999 + n_steps 8192 + **ent_coef 0.01** (stability A/B,
+>   `ppo-diagnosis.md`), validated only on the wide d1 track at penalty 5. The pilot must run on the
+>   pool the grid will use (varied-width, d20 — directly comparable to Desmond's P0–P3).
+> - **New shared decisions (both algorithms, every cell):** crash penalty 5 vs 40 (Desmond's tuning and
+>   batch 2 use 40; the seed-0 grid and every working PPO run used 5); track pool varied-width vs uniform.
+> - Items 3–5 unchanged and still open.
+
 ## Alternatives considered
 
 | alternative | rejected because |
