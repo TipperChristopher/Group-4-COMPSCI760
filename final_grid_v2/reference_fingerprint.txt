@@ -1,0 +1,66 @@
+# F1TENTH final grid v2: setup fingerprint (final_grid_v2/check_setup.py, format 1)
+# Keys starting with 'info.' may differ between machines; every other line must match.
+# Check against the reference: python final_grid_v2/check_setup.py --compare <this file>
+[code]
+git.code_tree = 3bc6313aaa444784
+info.git.tree = clean
+git.branch = final-grid-v2
+info.git.commit = a22bc322faa861b24e7058f17b2c8561612bc846
+# spliced from grid A's reference (this machine's env differs, e.g. dev venv)
+f1tenth_gym.commit = 5a301bd0ae1c (pinned, clean, gitlink matches)
+# spliced from grid A's reference (this machine's env differs, e.g. dev venv)
+f1tenth_gym.installed_from = ./f1tenth_gym (editable)
+sha256.sb3_wrapper.py = 9b73ea777f09d17306f0d1d5486edb024ad9c028629d927a38cdbb3c338a8a34
+sha256.train.py = 3718407910cf0ce3ddb7426cf149226b326a96b266c28bbf279ca001ddf03fa6
+sha256.tracks/manifest.json = 09dd9a8103d82279b5342e6c054e03b1d2e8e6822664a9da8b6f65bb181459a8
+info.sha256_raw.sb3_wrapper.py = 0f11aee7c25165552cf2178693282f9aec0dc26b784d40d0de540a4eb3264783
+[python]
+# spliced from grid A's reference (this machine's env differs, e.g. dev venv)
+python = 3.12.10 64-bit, ./.venv
+# spliced from grid A's reference (this machine's env differs, e.g. dev venv)
+pkg.torch = 2.14.0+cpu
+# spliced from grid A's reference (this machine's env differs, e.g. dev venv)
+pkg.stable_baselines3 = 2.9.0
+# spliced from grid A's reference (this machine's env differs, e.g. dev venv)
+pkg.gymnasium = 0.29.1
+# spliced from grid A's reference (this machine's env differs, e.g. dev venv)
+pkg.numpy = 1.26.4
+# spliced from grid A's reference (this machine's env differs, e.g. dev venv)
+pkg.numba = 0.60.0
+# spliced from grid A's reference (this machine's env differs, e.g. dev venv)
+pkg.scipy = 1.14.1
+# spliced from grid A's reference (this machine's env differs, e.g. dev venv)
+pip.lock = MATCH (44 packages)
+[tracks]
+tracks.vw_train = 100/100 OK
+tracks.vw_val = 10/10 OK
+[settings]
+jobs = OK: 24 jobs (grant 6 SAC, chris 6 SAC, desmond_ppo 12 PPO), each = grid A's line for the same cell + the v2 flags, tags v2_<ALGO>_d<N>_s<seed>
+settings.source = final_grid_v2/jobs_v2_{grant,chris,desmond_ppo}.txt
+settings.SAC.args = --algo SAC --track-prefix vw_synthetic_track_ --crash-penalty 5
+settings.SAC.hyperparameters = {"gamma":0.99,"learning_rate":0.0003,"batch_size":256,"buffer_size":1000000,"ent_coef":"auto","target_entropy":-2.0,"tau":0.005,"learning_starts":100,"train_freq":"1 step","gradient_steps":1,"target_update_interval":1,"net_arch":"[256, 256]"}
+settings.SAC.reward = {"PROGRESS_WEIGHT":1.0,"TIME_COST":0.0,"CRASH_PENALTY":5.0}
+settings.PPO.args = --algo PPO --track-prefix vw_synthetic_track_ --crash-penalty 5 --gamma 0.999 --n-steps 8192 --ent-coef 0.01
+settings.PPO.hyperparameters = {"gamma":0.999,"learning_rate":0.0003,"batch_size":64,"n_steps":8192,"n_epochs":10,"gae_lambda":0.95,"ent_coef":0.01,"vf_coef":0.5,"max_grad_norm":0.5,"clip_range":0.2,"target_kl":null,"log_std_init":0.0,"net_arch":"{'pi': [64, 64], 'vf': [64, 64]}"}
+settings.PPO.reward = {"PROGRESS_WEIGHT":1.0,"TIME_COST":0.0,"CRASH_PENALTY":5.0}
+[determinism]
+env.reward_used = file constants: PROGRESS_WEIGHT 1.0, TIME_COST 0.0, CRASH_PENALTY 40.0
+env.vw_synthetic_track_0 = steps 331, end crash, progress_m 8.415451378, return -31.584548622, traj 965b7e62ddca6767
+env.vw_synthetic_track_7 = steps 262, end crash, progress_m 6.992797161, return -33.007202839, traj 55bcf9f3a2ab1dea
+env.vw_synthetic_track_12 = steps 541, end crash, progress_m 14.960000154, return -25.039999846, traj 72f3a800e689f055
+[smoke test]
+smoke.SAC = OK (2,000-step run, checkpoint, VecNormalize and final model written; run folder deleted)
+info.smoke.SAC = 2,000 steps in 52 s, 50 steps/s
+smoke.SAC.effective_reward = OK: CRASH_PENALTY 5.0, TIME_COST 0.0, PROGRESS_WEIGHT 1.0
+smoke.SAC.hyperparameters = OK: gamma 0.99
+smoke.SAC.crash_pays = OK: all 15 crash episodes pay exactly -5.0
+smoke.PPO = OK (8,192-step run, checkpoint, VecNormalize and final model written; run folder deleted)
+info.smoke.PPO = 8,192 steps in 31 s, 404 steps/s
+smoke.PPO.effective_reward = OK: CRASH_PENALTY 5.0, TIME_COST 0.0, PROGRESS_WEIGHT 1.0
+smoke.PPO.hyperparameters = OK: gamma 0.999, n_steps 8192, ent_coef 0.01
+smoke.PPO.crash_pays = OK: all 53 crash episodes pay exactly -5.0
+[machine]
+info.machine = 11th Gen Intel(R) Core(TM) i7-11700K @ 3.60GHz, 16 logical CPUs, RAM 64 GB
+info.disk_free_gb = 1480 (drive of E:\)
+info.sleep_on_ac = unknown
+info.generated = 2026-10-09 22:06
