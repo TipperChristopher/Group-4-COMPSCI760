@@ -130,6 +130,15 @@ across machines, but that does not matter when every run is its own seed.
 >   batch 2 use 40; the seed-0 grid and every working PPO run used 5); track pool varied-width vs uniform.
 > - Items 3–5 unchanged and still open.
 
+> **Team decision found 2026-10-09 (supersedes this PROPOSED page for the main grid):** Desmond's
+> `final_grid/DECISION.md` (branch `final-grid`, commit `7552398`) applied a pre-registered tuning-round-3
+> rule → **SAC and PPO at SB3 defaults, penalty 40, no time cost**, varied-width tracks; 24 runs split
+> (Desmond SAC s0–1, Grant SAC s2, Chris PPO s0–2). Penalty 5 and the entropy bonus were not candidates.
+> Under that rule's scoring, PPO defaults average 0.124 (4 seeds, 0% laps); our σ-fix at penalty 5 scores
+> 0.498 / 0.672 (2 seeds, 30–32% laps). Options put to the team: A keep as decided; B change the grid
+> (needs SAC-at-penalty-5 evidence + disclosure); C keep the grid and add a fixed-PPO arm at penalty 5
+> (12 PPO runs, within-PPO claims only). Aolin suggests C.
+
 ## Alternatives considered
 
 | alternative | rejected because |
