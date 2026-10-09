@@ -153,6 +153,26 @@ sim-to-real width finding), but the reward must be identical across every grid c
 (`sb3_wrapper.py`: "must be identical in every cell of the grid"), so the penalty is a shared
 decision for both algorithms, and our PPO fix has only been validated at penalty 5.
 
+
+## Update 2026-10-09 (evening): training tracks vs unseen tracks, same checkpoint
+
+Noise-free policy on each run's **own 20 training tracks** (20 × 5 episodes) vs the 10 unseen vw_val
+tracks, at the same checkpoint (CSVs: `results/vw_p5_tests/train_tracks/`):
+
+| run (vw d20, penalty 5) | checkpoint | laps on own training tracks | laps on unseen tracks |
+|---|---|---|---|
+| PPO control s99 / s98 | 2.0 M | 8% / 13% | 8% / 20% |
+| PPO + entropy s99 / s98 | 2.0 M | **30% / 21%** | **32% / 10%** |
+| SAC γ 0.999 s99 / s98 (running) | 1.2 M | 0% / 0% (score .23 / .30) | 0% / 0% (score .24 / .29) |
+
+- **No generalisation gap at d20:** the PPO policies lap unseen tracks about as often as their own
+  training tracks. The limit is driving skill (≈ 100 k steps per track), not memorisation. Contrast d1:
+  PPO laps its single training track 65–80% (`ppo-diagnosis.md`) but almost never an unseen one.
+- By width on the training tracks, laps are not monotone in width (e.g. σ-fix s99: narrow 15%, mid
+  73%, wide 7%); with 6–8 tracks per group, track shape is confounded with width.
+- SAC γ 0.999 at penalty 5 has not collapsed (unseen score .185 → .182 → .243 and .250 → .287 → .294 at
+  0.4 / 0.8 / 1.2 M) but has not completed a lap yet; SAC defaults at penalty 40 had 18% laps by 1.2 M (s98).
+
 ## See also
 
 - [final-run-plan.md](final-run-plan.md) — SAC γ rule revised with this data
