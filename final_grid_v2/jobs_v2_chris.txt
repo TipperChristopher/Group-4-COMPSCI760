@@ -1,0 +1,15 @@
+# Final grid v2, chris: 6 SAC: seed 2 d1/5/20/100 + seed 1 d20/d100 (2 torch threads each = 12 threads)
+# Pre-registered in final_grid_v2/DECISION_v2.md (penalty 5 shared reward; SAC defaults; PPO fix).
+# Every SAC line = grid A's SAC line for the same cell + --crash-penalty 5, nothing else.
+# Every PPO line = grid A's PPO line for the same cell + --crash-penalty 5 --gamma 0.999 --n-steps 8192 --ent-coef 0.01.
+# 2M steps each, checkpoints every 100k. Do not edit; final_grid_v2/check_setup.py verifies these lines.
+#
+# Start (from the repo folder, PowerShell 7):
+#   .\launch_queue.ps1 -Jobs final_grid_v2\jobs_v2_chris.txt -ResultsDir results\final_grid_v2_chris -MaxThreads 12 -Checkpoints 200000,400000,600000,800000,1000000,1200000,1400000,1600000,1800000
+# The queue evaluates every 200k checkpoint plus the final model on vw_val (identical to grid A).
+v2_SAC_d1_s2 | --algo SAC --diversity 1 --seed 2 --track-prefix vw_synthetic_track_ --crash-penalty 5
+v2_SAC_d5_s2 | --algo SAC --diversity 5 --seed 2 --track-prefix vw_synthetic_track_ --crash-penalty 5
+v2_SAC_d20_s2 | --algo SAC --diversity 20 --seed 2 --track-prefix vw_synthetic_track_ --crash-penalty 5
+v2_SAC_d100_s2 | --algo SAC --diversity 100 --seed 2 --track-prefix vw_synthetic_track_ --crash-penalty 5
+v2_SAC_d20_s1 | --algo SAC --diversity 20 --seed 1 --track-prefix vw_synthetic_track_ --crash-penalty 5
+v2_SAC_d100_s1 | --algo SAC --diversity 100 --seed 1 --track-prefix vw_synthetic_track_ --crash-penalty 5

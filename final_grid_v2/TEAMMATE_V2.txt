@@ -1,0 +1,104 @@
+# Final grid v2 — running your share (Grant and Chris)
+
+You already ran setup for grid A, so almost everything is ready. v2 is a second,
+separately pre-registered grid: **crash penalty 5 for both algorithms**, SAC at its
+defaults, PPO with a diagnosed fix. Read `final_grid_v2\DECISION_v2.md` (short). Grid A
+(branch `final-grid`, penalty 40) is **not changed** — do not touch its files, its queues
+or its results.
+
+## Before you start
+
+- If your grid A queue is still running, wait for it to finish (or ask Desmond). v2 wants
+  -MaxThreads 12, so it should not share the CPU with a grid A queue.
+- Use **PowerShell 7** (grid A required it too).
+- One-time branch switch (the code is identical; only `final_grid_v2\` was added, so this is
+  safe even with results present):
+
+```
+cd <your repo folder>
+git fetch origin
+git switch final-grid-v2
+git status          # expect: clean, or only your fingerprint/queue files untracked
+```
+
+## Verify your machine (before launching anything)
+
+Run the repo's own Python (`.venv`):
+
+```
+.\.venv\Scripts\python.exe final_grid_v2\check_setup.py --compare final_grid_v2\reference_fingerprint.txt
+```
+
+Send Desmond the whole output and wait for **"MATCH, go"**. If it says DIFFERENT, stop and
+send him the output — do not launch.
+
+(Optional quick self-test, same rule as grid A: `.\.venv\Scripts\python.exe final_grid_v2\check_setup.py --skip-smoke`.)
+
+## Power settings (run before launching)
+
+- Plugged in, Windows power mode **Best performance**, vents clear, Windows Update restarts paused.
+
+```
+powercfg /change standby-timeout-ac 0
+powercfg /change hibernate-timeout-ac 0
+powercfg /setacvalueindex SCHEME_CURRENT SUB_BUTTONS LIDACTION 0
+powercfg /setactive SCHEME_CURRENT
+```
+
+- Intel CPUs: keep all cores unparked and unthrottled for the whole run (grid A skipped this
+  for PPO-only machines; v2 is SAC-heavy on Grant's and Chris's machines, so include it):
+
+```
+powercfg /setacvalueindex SCHEME_CURRENT SUB_PROCESSOR CPMINCORES 100
+powercfg /setacvalueindex SCHEME_CURRENT SUB_PROCESSOR PROCTHROTTLEMIN 100
+powercfg /setactive SCHEME_CURRENT
+```
+
+## Launch
+
+From the repo folder (PowerShell 7), with YOUR job file:
+
+```
+.\launch_queue.ps1 -Jobs final_grid_v2\jobs_v2_grant.txt -ResultsDir results\final_grid_v2_grant -MaxThreads 12 -Checkpoints 200000,400000,600000,800000,1000000,1200000,1400000,1600000,1800000
+```
+
+```
+.\launch_queue.ps1 -Jobs final_grid_v2\jobs_v2_chris.txt -ResultsDir results\final_grid_v2_chris -MaxThreads 12 -Checkpoints 200000,400000,600000,800000,1000000,1200000,1400000,1600000,1800000
+```
+
+The queue trains the jobs in order and evaluates every checkpoint on **vw_val only**, exactly
+like grid A. Do **not** evaluate anything else — the test sets are run centrally by Desmond.
+
+## Keep an eye on it
+
+Check progress any time (also from another window):
+
+```
+.\launch_queue.ps1 -Jobs final_grid_v2\jobs_v2_grant.txt -Status
+```
+
+Expected runtimes (estimates): 6 SAC runs ≈ 12–18 h on these machines. The queue continues
+after a terminal closes; **do not** let the machine sleep, hibernate, restart or sign out.
+
+## When it finishes
+
+The queue prints `phase: finished`. Then:
+
+```
+pwsh -File final_grid_v2\pack_results_v2.ps1 -Name grant
+```
+
+```
+pwsh -File final_grid_v2\pack_results_v2.ps1 -Name chris
+```
+
+This writes `share\final_v2_<name>.zip` (models, all checkpoints, vw_val evaluations, logs,
+your v2 fingerprint). Upload it to the link Desmond gives you and send him a final `-Status`
+output, as with grid A.
+
+## Troubleshooting (same as grid A)
+
+- **"Queue ... is already running":** it is; just use `-Status`.
+- **Setup mismatch:** stop, don't launch, send Desmond the check output.
+- **Machine died mid-run:** re-run the power commands, then
+  `.\launch_queue.ps1 -Jobs ... -Status` — the queue resumes where it stopped.
