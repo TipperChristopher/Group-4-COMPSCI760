@@ -1,0 +1,7 @@
+tag,setting,algo,seed,status,train_exit,crash_penalty,time_cost,train_speed_last200_mps,crawling
+v2_SAC_d1_s2,SAC_d1,SAC,2,failed,-1,5.0,0.0,5.27,False
+v2_SAC_d5_s2,SAC_d5,SAC,2,failed,-1,5.0,0.0,5.64,False
+v2_SAC_d20_s2,SAC_d20,SAC,2,failed,-1,5.0,0.0,5.57,False
+v2_SAC_d100_s2,SAC_d100,SAC,2,failed,-1,5.0,0.0,5.36,False
+v2_SAC_d20_s1,SAC_d20,SAC,1,failed,-1,5.0,0.0,5.2,False
+v2_SAC_d100_s1,SAC_d100,SAC,1,failed,-1,5.0,0.0,5.33,False
