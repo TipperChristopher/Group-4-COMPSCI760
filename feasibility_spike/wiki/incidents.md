@@ -1,8 +1,9 @@
 ---
 title: Incidents — the two real bugs and the loader pitfall
 type: bug
-updated: 2026-10-06
+updated: 2026-10-23
 sources:
+  - run journal Attempts 23, 30, 33–39 (mixed); final-results.md, final-presentation.md (synthesis)
   - Group4_ProjectUpdate slide 8 "Two Bugs That Voided the Grid" (team)
   - team_repo/train.py, src/track_pool.py (high)
   - spike/f1tenth_gym_v1/.../base_classes.py (RaceCar.scan_simulator) (high)
@@ -107,6 +108,40 @@ The real state is tabled in `results/ppo_diagnosis/README.md`.
 A re-run of Desmond's PPO d1 with the same seed differs from iteration 0, because training *samples*
 from the policy and floating-point differences compound. Deterministic evaluation of his saved
 weights reproduced to 0.0000 m. So "same seed" ≠ "same run": use ≥3 seeds.
+
+## October 8–23: process pitfalls (none affected the final results)
+
+### Pitfall — proposing a configuration without fetching the team's branches
+- **Symptom.** On 2026-10-09 a "proposed final config" and a teammate zip were built without knowing that the team had
+  already decided grid A on `origin/final-grid` (`7552398`, 10-08).
+- **Cause.** Remote branches had not been fetched since 10-07.
+- **Fix.** The zip README was rewritten to open with the team decision and options A/B/C (grid B came from option C).
+  Lesson: `git fetch --all` and read every `DECISION*.md` before proposing.
+
+### Pitfall — background runs reported as running after they had died
+- **Symptom.** `G999_SAC` and `R1_repeat10_alone` were described as running until 10-09, but both had died on 10-06 ~22:05.
+  The S1P5 SAC runs stopped at ~1.81M with no final checkpoint, which went unrecorded until 10-23.
+- **Cause.** Status was read from `run_config.json` (which says `running` until the end) and from memory, not from the
+  process list and log tails.
+- **Fix.** Check the process list and the log tail before reporting status (see the run_config pitfall above).
+
+### Pitfall — two width measures on one slide
+- **Symptom.** A draft slide compared 1.06 m (synthetic) with 1.11 m (real), while slide 5 used 1.07 m for real.
+- **Cause.** The verification JSONs' `median_wall_clearance_m` reads 3–6 cm higher than the geometry method behind
+  `track_summary.csv`.
+- **Fix.** Same method for both sets (1.02 / 1.07 m); decision D20.
+
+### Pitfall — grid A's checkpoint selection committed after the test
+- **Symptom.** `selection.csv` for grid A was written 10-09 19:06 but committed with the results (10-10 19:00).
+- **Mitigation.** Recomputing the rule from the raw vw_val logs reproduces all 48 picks, and model sha256s tie picks to files.
+  The deck's reflection slide lists "commit every selection before testing" as a lesson.
+
+### Pitfall — agent-level statistics read as algorithm-level claims
+- **Symptom.** Draft slides and the talk script said "PPO gains more from diversity in grid B" (p = 0.018), "the drop lowers
+  every score" and "more tracks help on every seed".
+- **Cause.** A track-level test of three agents per cell, driven by one seed (without seed 2 it reverses); 7/48 agents
+  rise from synthetic to real; two grid-B PPO seeds got worse on real circuits.
+- **Fix.** Report every seed; name the test family; agreed wording list (D21, `final-presentation.md`).
 
 ## See also
 

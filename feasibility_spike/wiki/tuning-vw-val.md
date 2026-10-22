@@ -1,7 +1,7 @@
 ---
 title: Teammate tuning round on vw_val — verified (time-cost reward + final-grid settings)
 type: synthesis
-updated: 2026-10-07
+updated: 2026-10-23
 sources:
   - _verify/teammate_tuning_vw/tuning_vw_val_results/ (raw CSVs; canonical copy: desmond/heldout-tracks @ 6e5b60e)
   - results/tuning_vw_val_verified/ (README + summary copies + verification notes)
@@ -173,8 +173,20 @@ tracks, at the same checkpoint (CSVs: `results/vw_p5_tests/train_tracks/`):
 - SAC γ 0.999 at penalty 5 has not collapsed (unseen score .185 → .182 → .243 and .250 → .287 → .294 at
   0.4 / 0.8 / 1.2 M) but has not completed a lap yet; SAC defaults at penalty 40 had 18% laps by 1.2 M (s98).
 
+## Outcome (2026-10-08/10)
+
+- **Tuning round 3** (Desmond, pre-registered rule on `desmond/parallel-ppo`) chose SB3 defaults, penalty 40 and no
+  time cost for the final grid A (decision D16). The time cost was rejected because no SAC time-cost candidate passed the
+  reliability bar.
+- **Grid B** used the penalty-5 evidence from our vw d20 tests (P1 at penalty 5: best 0.540 / 0.521 vs 0.028 / 0.126 at
+  penalty 40, same code, tracks and seeds) plus the entropy bonus (D17).
+- **SAC γ 0.999 at penalty 5** (S1P5): no collapse, but no better than γ 0.99; the runs stopped at ~1.81M (Q11).
+- Final test results for both grids: `final-results.md`.
+
 ## See also
 
+- [final-results.md](final-results.md) — what the grids built from this round scored
+- [decisions.md](decisions.md) — D16 (grid A), D17 (grid B), D19 (no time cost)
 - [final-run-plan.md](final-run-plan.md) — SAC γ rule revised with this data
 - [open-questions.md](open-questions.md) — Q10, Q11 status
 - [grid-verification.md](grid-verification.md) — the eval noise floor that makes the 0.42 seed gap suspicious

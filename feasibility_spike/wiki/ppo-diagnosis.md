@@ -1,8 +1,9 @@
 ---
 title: Why PPO never completed a lap — the diagnosis trail
 type: synthesis
-updated: 2026-10-06
+updated: 2026-10-23
 sources:
+  - G4_full_bundle_2026-10-10 (final grids, high) — outcome section
   - results/ppo_diagnosis/runs_summary.csv, runs/*/progress.csv, runs/*/monitor_0.monitor.csv (high)
   - results/ppo_diagnosis/eval_sweep_1M, eval_ck800k, eval_ck2M, eval_g999_curve (high)
   - diagnostics/basin_check.py — output reproduced below (high, n=1 episode per policy)
@@ -244,7 +245,7 @@ of `G999_SAC`, which was running at the time of writing.
   (`eval_g999_curve/`). V4 at 2 M: 0/25, 31.6 m. A d1 policy is *expected* to
   transfer poorly; this is what the diversity grid measures.
 - **Real circuits:** 0/10 at every checkpoint (width, see `sim-to-real-width.md`).
-- **Tested only at diversity 1.** Whether the fix holds at 5/20/100 is untested.
+- **Tested only at diversity 1** at the time of writing. *Since answered:* the fix holds at 5/20/100 on synthetic tracks (grid B, see "Outcome in the final grid").
 
 ## Corrections made along the way
 
@@ -273,7 +274,19 @@ There is no lap reward to discount. What γ discounts is the *continuation value
 That is only true if the crash is ≥ ~4 s away. At a realistic 2 s, the penalty is
 worth ~4.9 steps of progress. The measured basin table is the defensible version.
 
+## Outcome in the final grid (2026-10-10)
+
+- **Grid A (PPO at SB3 defaults, penalty 40):** ≈0.1 fractional laps and 0% laps on every cell of both test sets
+  (training: 15 laps in 41,935 episodes). The diagnosis predicted this.
+- **Grid B (γ 0.999, n_steps 8192, ent_coef 0.01, penalty 5):** PPO learns at every diversity level. vw_test 0.239 /
+  0.403 / 0.570 / 0.560 (d1/5/20/100; up to 24% laps), above grid B SAC in every cell. On real circuits it is noisy
+  (0.213 / 0.304 / 0.265 / 0.330), and the d100 gain rests on one seed (`final-results.md`).
+- So the fix transfers beyond d1, but it is a fix for **learning**. It does not make PPO gain more from diversity than SAC (RQ3).
+
 ## Open
+
+> **Status 2026-10-23.** (1) d5/20/100: answered by grid B, see above (Q10). (2) γ 0.999 for SAC: answered, no (Q11).
+> (3) γ 0.999 with n_steps 2048: 0% laps at 1M (44.9 m; the heatmap cell). (4) The critic fix: untested (Q12).
 
 - Does γ 0.999 + n_steps 8192 work at diversity 5 / 20 / 100? (A single-seed d100 pilot takes ~1.3 h.)
 - Does γ 0.999 help or hurt SAC? (`G999_SAC`.)
@@ -285,6 +298,8 @@ worth ~4.9 steps of progress. The measured basin table is the defensible version
 - `grid-verification.md` — the seed-0 grid these PPO numbers sit beside
 - `reward.md` — how the discount interacts with the reward design
 - `final-run-plan.md` — the configuration proposed from this diagnosis
+- `final-results.md` — how the fixed PPO did in the final test
 - `results.md` — tables with source paths
 - `open-questions.md` — Q10–Q12
 - `incidents.md` — the measurement pitfalls found along the way
+- `final-presentation.md` — how this diagnosis was presented (final deck slide 7)

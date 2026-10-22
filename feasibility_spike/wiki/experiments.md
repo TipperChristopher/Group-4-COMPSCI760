@@ -1,7 +1,7 @@
 ---
 title: Experiments — PPO vs SAC, generalization, and the coverage finding
 type: concept
-updated: 2026-10-06
+updated: 2026-10-23
 sources:
   - team_repo/feasibility_spike/reward_experiment/results/*.json (high)
   - team_repo/feasibility_spike/reward_experiment/RESULTS.md, REWARD_ANALYSIS.md (mixed)
@@ -220,4 +220,5 @@ together with 2048-step rollouts (exploration collapse). Fixed at d1 by γ 0.999
 - `decisions.md` — budget, penalty, VecNormalize, best-checkpoint
 - `open-questions.md` — the grid, CIs, and the overfitting probe
 - `ppo-diagnosis.md`, `sim-to-real-width.md`, `grid-verification.md` — the October work that corrects parts of this page
+- `final-results.md` — the final test (2026-10-10)
 - `open-questions.md` — status of each open item

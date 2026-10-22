@@ -1,8 +1,8 @@
 ---
 title: Final comparison run — proposed configuration and environment
 type: decision
-updated: 2026-10-06
-status: PROPOSED — not yet agreed by the team; two inputs still pending (G999_SAC result, presentation date)
+updated: 2026-10-23
+status: EXECUTED — grid A (team decision, D16) and grid B (this page's PPO fix, D17) ran 2026-10-09/10; results in final-results.md. Originally PROPOSED 2026-10-06.
 sources:
   - train.py, sb3_wrapper.py, evaluate.py, tracks/manifest.json on team/crash-penalty-flag (high)
   - ppo-diagnosis.md, grid-verification.md, sim-to-real-width.md (synthesis)
@@ -10,6 +10,11 @@ sources:
 ---
 
 # Final comparison run — proposed configuration and environment
+
+> **Status 2026-10-23: EXECUTED.** This page began as a proposal (2026-10-06). The team ran grid A from its own
+> tuning-round-3 decision (defaults, penalty 40; D16) and grid B from this page's PPO fix with penalty 5 (D17), both
+> with the best-of-five selection rule (D18), and tested both once on 2026-10-10. Results: `final-results.md`.
+> The sections below are the record of the proposal and of how grid B was built.
 
 The research question has not changed: **does training diversity (1/5/20/100
 tracks) turn memorisation into transferable driving, and do PPO and SAC respond
@@ -121,7 +126,7 @@ across machines, but that does not matter when every run is its own seed.
 5. Commit this page as **agreed**, with any changes, before the first grid run starts.
 
 > **Status update 2026-10-09** (supersedes items 1–2 above; nothing ticked yet):
-> - **Item 2 replaced:** `G999_SAC` died at ~450 k. The clean test is running instead: Desmond's S1
+> - **Item 2 replaced:** `G999_SAC` died at ~450 k. The clean test is running instead *(since resolved: no collapse, 0% laps, runs stopped at ~1.81M; Q11)*: Desmond's S1
 >   with penalty 5 (`tune_S1P5_s99/s98`, vw d20) — decides whether SAC can share γ 0.999 at penalty 5.
 > - **Item 1 updated:** PPO config is now γ 0.999 + n_steps 8192 + **ent_coef 0.01** (stability A/B,
 >   `ppo-diagnosis.md`), validated only on the wide d1 track at penalty 5. The pilot must run on the
@@ -151,7 +156,7 @@ checker + pack script + teammate guide, `16440e6` reference fingerprint.
   rejects planted extra-flag / wrong-tag / missing-cell / duplicate-cell faults); smoke runs pay −5.0
   exactly on every crash (SAC 15, PPO 53); PPO resolves γ 0.999 / n_steps 8192 / ent_coef 0.01;
   determinism lines identical to grid A's reference; reference code_tree stable after committing it.
-- **Gate:** teammates run `final_grid_v2\check_setup.py --compare final_grid_v2eference_fingerprint.txt`
+- **Gate:** teammates run `final_grid_v2\check_setup.py --compare final_grid_v2\reference_fingerprint.txt`
   and wait for MATCH before launching. Environment lines spliced from grid A's reference.
 
 > **Team decision found 2026-10-09 (supersedes this PROPOSED page for the main grid):** Desmond's
@@ -177,9 +182,11 @@ checker + pack script + teammate guide, `16440e6` reference fingerprint.
 
 ## See also
 
+- `final-results.md` — **verified final test results (grids A + B, vw_test + real circuits, 2026-10-10)**
 - `ppo-diagnosis.md` — why γ 0.999 + n_steps 8192
 - `grid-verification.md` — the seed-0 grid this extends
-- `sim-to-real-width.md` — why real circuits will stay ~0% unless width is randomised
-- `decisions.md` — D6, D8, D12–D15
+- `sim-to-real-width.md` — why real circuits stayed ~0% until width was randomised (it then was; see its final section)
+- `decisions.md` — D6, D8, D12–D15, and D16–D18 for the grids as run
 - `open-questions.md` — Q1, Q3, Q10, Q11, Q14
 - `methodology.md` — the protocol this extends
+- `final-presentation.md` — how the grids' results were presented

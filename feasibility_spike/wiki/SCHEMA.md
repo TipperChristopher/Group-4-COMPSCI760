@@ -40,7 +40,10 @@ wiki/
 ├── tuning-vw-val.md    # teammate tuning round verified: time-cost reward, final-grid settings (2026-10)
 ├── grid-verification.md  # Desmond's seed-0 grid verified from raw files (synthesis, 2026-10)
 ├── sim-to-real-width.md  # width ablation: the real-circuit failure (concept, 2026-10)
-└── final-run-plan.md # PROPOSED final-grid config + env (decision, 2026-10)
+├── final-run-plan.md # final-grid config + env; EXECUTED as grids A + B (decision, 2026-10)
+├── final-results.md  # final test of both grids, verified (synthesis, 2026-10-10/23)
+├── final-presentation.md # deck versions, fixes, talk script, agreed wording (reference, 2026-10-11)
+└── report-handoff.md # START HERE for the report (synthesis, 2026-10-23)
 ```
 
 ## Frontmatter (mandatory on every page)
@@ -78,4 +81,5 @@ wiki/
 - Our work: `team_repo/feasibility_spike/reward_experiment/`.
 - Results: `.../reward_experiment/results/*.json`.
 - Venv python: `spike/venv/Scripts/python.exe`.
-- Decks: COMPSCI 760 root (outside git).
+- Decks, talk script, bundles: COMPSCI 760 root (outside git); final bundle extracted in `_verify/G4_full_bundle_2026-10-10/`.
+- Final grids: branches `final-grid` (grid A) and `final-grid-v2` (grid B, final test); worktree `team_repo_v2/`.

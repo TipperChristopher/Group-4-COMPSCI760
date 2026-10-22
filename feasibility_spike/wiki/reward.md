@@ -1,7 +1,7 @@
 ---
 title: Reward function — history, incentive flaw, and the V2 redesign
 type: concept
-updated: 2026-10-06
+updated: 2026-10-23
 sources:
   - team_repo/feasibility_spike/reward_experiment/REWARD_ANALYSIS.md (mixed)
   - team_repo/feasibility_spike/reward_experiment/results/reward_scan2.json (high)
@@ -113,7 +113,12 @@ Raising the penalty to 40 is a crude way of making crashing matter at γ 0.99. I
 worked briefly for PPO (36% laps at 868 k) and then collapsed to 0% by 2 M.
 Raising γ makes the existing penalty matter (×90): all three seeds lapped by 1 M; by 2 M two still lap well and one collapsed (`ppo-diagnosis.md`), so it is better but not fully stable.
 
-## The frozen-penalty decision (open)
+## The frozen-penalty decision (resolved 2026-10-09: both values were run)
+
+> **Resolution.** No single value was frozen: grid A used 40 and grid B used 5 (decisions D16, D17). The final test
+> showed the choice is algorithm-specific. For SAC, 5 instead of 40 roughly doubled its speed and cut real-circuit laps
+> from 0.68 to 0.20 on every seed; PPO at defaults with 40 never learned. The time cost was not adopted (D19,
+> `tuning-vw-val.md`). The paragraph below is the 2026-10-06 record.
 
 Our pilots used crash penalty ~40; the team's canonical V2 uses **5.0**
 (matches their baselines, slides, and verification CSVs). The PPO-p5 run
@@ -135,3 +140,5 @@ See `decisions.md` and `open-questions.md`.
 - `experiments.md` — the PPO variant curves in context
 - `methodology.md` — how the reward feeds the protocol
 - `ppo-diagnosis.md` — the discount-factor finding in full
+- `tuning-vw-val.md` — the time-cost reward and why it was rejected
+- `final-results.md` — the penalty-40-vs-5 effect in the final test

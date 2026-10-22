@@ -121,3 +121,66 @@ Source: pi session `01a10425-…` and run journal `2026-10-04-cs760-final-presen
   commit `6e5b60e`): configs, reward integrity (time cost 0.0100/step in S2/P2 only), scores (max delta 5e-5),
   spawn defect. New page `tuning-vw-val.md`; open-questions Q10/Q11 updated; final-run-plan SAC gamma rule
   revised (gamma 0.999 breaks SAC at d20; time cost doesn't beat baselines).
+
+## [2026-10-08 – 09] update | stability A/B, penalty-5 tests, grid B pre-registered (back-filled 2026-10-23)
+
+Committed on this branch at the time (`edbf8ec` 10-08 → `35b0f71` 10-09, 11 commits; plus the 10-06/07 commits
+`494c9eb`, `9e69990`, `b3595ec`, `dc67eb2` on the PPO fix and the tuning round) without log entries; recorded here.
+- Stability A/B (d1, 3 seeds): entropy 0.01 stops late collapse (worst seed 65% vs 17%); time cost 0.0015 worse (`ppo-diagnosis.md`).
+- vw d20 penalty 5: PPO best 0.52–0.67 vs 0.03–0.13 at penalty 40; entropy fixes collapse, not checkpoint volatility.
+  SAC γ 0.999 at penalty 5 (S1P5) does not collapse by 800k (`open-questions.md` Q11).
+- Width breakdown on vw_val: mid widths lappable, narrow < 0.9 m mostly not (`sim-to-real-width.md`).
+- Found the team's grid A decision on `origin/final-grid` (defaults, penalty 40) after proposing our own config; built
+  and pre-registered grid B on `final-grid-v2` (`985b4bb`, `a22bc32`, `16440e6`) (`final-run-plan.md`).
+
+## [2026-10-10] ingest | final bundle verified; final-results.md created
+
+Source: `G4_full_bundle_2026-10-10.zip`, journal Attempts 33–35.
+- Arm's-length recomputation: 0 mismatches (100 raw CSVs, 32 cells, 240 ladder values, 48 configs, 96 test-plan rows);
+  selection rule argmax 48/48; chronology and git commits checked.
+- New page `final-results.md`: both grids on vw_test + 23 real circuits, five defensible claims, honesty notes.
+- Follow-ups: RQ3 "PPO gains more" rests on seed 2 (inconclusive); the synthetic → real drop is lap length, not width;
+  training was not clearly still improving enough to claim longer training would beat the gap-follower.
+
+## [2026-10-11] update | deck review, v2 deck, final-deck check, talk-script review
+
+Source: journal Attempts 36–39; this session.
+- Insights (speed vs reliability, validation predicts test, memorisation, per-track oracle) and deck v2 recorded in
+  `final-results.md`.
+- Final deck checked; three fixes (replay buffer 8.7 GB, widths 1.02 / 1.07 m, RQ1 "under that reward"). Talk script:
+  12:47 vs a 12:00 stop, several overclaims; Aolin's part rewritten (2:09).
+- Correction recorded: the 1.11 / 1.06 m widths used a different measure (same method: 1.07 / 1.02 m).
+
+## [2026-10-23] ingest | sessions through 2026-10-23; report handoff; status refresh across the wiki
+
+Sources: session `01a11527-≈` (10-07 → 10-23) and the post-ingest part of `01a10425-≈` (10-06 → 10-08); journal
+Attempts 21–40; the final bundle; `_verify/s1p5/`. Full session list now in `raw-sources/index.md`.
+- **New pages:** `report-handoff.md` (start here for the report), `final-presentation.md` (deck lineage, fixes,
+  talk script, agreed wording, team rows, references).
+- **final-results.md:** frontmatter added; same-method width correction; width-vs-score and length-vs-score
+  correlations; crash statistics at d100 (both distance definitions); RQ1 seed-matched 20/24; 7/48 agents rise to real;
+  Holm families; 33/48 early checkpoints; default-PPO lap counts; curvature; runtimes; replay-buffer arithmetic;
+  gap-follower configuration; RQ3 reasoning (noise vs unfairness, laps vs percent); the PPO-tuning-bias defence.
+- **decisions.md:** D6, D13, D14 resolved/adopted/superseded (headings updated, originals kept); new D16 grid A,
+  D17 grid B, D18 selection rule, D19 no time cost, D20 width method, D21 claim discipline.
+- **open-questions.md:** new status table (Q1, Q3, Q9, Q10, Q13, Q14 done; Q11 answered no, with the S1P5 final state:
+  no collapse, 0.243 / 0.300 best through 1.6M, runs stopped ~1.81M); new Q15–Q20.
+- **Status refreshed:** overview, handoff (branches, worktrees, files outside git), final-run-plan (EXECUTED; fixed a
+  path where `\r` had become a line break), sim-to-real-width (update + final picture + correction), reward,
+  methodology (final protocol as run), ppo-diagnosis (outcome in the final grid), glossary (new terms), incidents
+  (five process pitfalls), results (pointers), tuning-vw-val (outcome), SCHEMA layout, index.
+- **Still open:** report brief and due date not recorded; delivery date and marks of the final presentation not recorded.
+
+## [2026-10-23] lint | 0 blockers; 4 warnings + 1 stale line fixed; 119/119 numbers verified
+
+- **Structural** (`_verify/wiki_ingest/audit.py`): markdown links and anchors resolve; `index.md` lists all 21 pages;
+  frontmatter complete (added to `final-results.md`); no orphans. Fixed: 4 one-way See-also links, 1 stale "is running"
+  line (annotated), the `` path in `final-run-plan.md`.
+- **Ground truth** (`_verify/wiki_ingest/check_numbers.py`): 119/119 numbers on the new and updated pages recomputed from
+  the raw bundle files, the pilot CSVs, the S1P5 CSVs, the diagnosis monitors and the run configs.
+- **Lifecycle words:** 10 hits, all in dated historical sections or annotated.
+- **Remaining WARNING (pre-existing):** 10 older pages cite `mixed` sources with inline tier tags but no
+  `## Source reliability` section; added to `report-handoff.md`, `final-results.md`, `final-presentation.md`.
+- **Encoding incident during this ingest:** one edit wrote 39 characters as byte fragments in `final-results.md`;
+  repaired with `_verify/wiki_ingest/fix_bytes.py`; a full scan of every page is clean.
+

@@ -1,8 +1,10 @@
 ---
 title: Handoff — file map, commands, and how to resume
 type: reference
-updated: 2026-10-06
+updated: 2026-10-23
 sources:
+  - git for-each-ref refs/remotes on team_repo after git fetch --all, 2026-10-23 (high)
+  - G4_full_bundle_2026-10-10.zip README (high)
   - git log of origin/team/crash-penalty-flag (high)
   - CONTEXT.md, results/ppo_diagnosis/README.md, diagnostics/README.md (high)
   - team_repo/feasibility_spike/reward_experiment/RESUME.txt (high)
@@ -13,7 +15,41 @@ sources:
 
 Everything a teammate (or a future session) needs to pick up the work.
 
-## Current state (2026-10-06) — read this first
+## Current state (2026-10-23) — read this first
+
+**Experiments are finished; the next deliverable is the report** (`report-handoff.md`). Nothing from this project
+is training on Aolin's PC (checked 2026-10-23: the only Python processes are VS Code linters for another project).
+
+**Branches on GitHub `TipperChristopher/Group-4-COMPSCI760`** (fetched 2026-10-23; nothing pushed after 2026-10-10):
+
+| branch | head | what it holds |
+|---|---|---|
+| `final-grid-v2` | `fdf6252` (10-10 19:00) | grid B (`985b4bb` pre-registration, `a22bc32`, `16440e6`), grid B selection frozen `dd87128`, final test + results for both grids |
+| `final-grid` | `7552398` (10-08) | grid A: `final_grid/DECISION.md` (defaults, penalty 40), job split, setup checker |
+| `team/crash-penalty-flag` | `35b0f71` + this ingest | `train.py` flags, diagnosis evidence, `diagnostics/`, **this wiki (canonical)** |
+| `desmond/parallel-ppo` | `058bb93` | tuning round 3 (pre-registered rule, par8 variants) |
+| `desmond/heldout-tracks` | `9d1d587` | tuning rounds 1–2, varied-width splits, real circuits |
+| `experiments/feasibility-spike` | `297f6c6` | September pilots; old copy of this wiki (stops 2026-10-04) |
+
+None is merged to `main` (`3616d54`, 2026-09-18).
+
+**Worktrees on Aolin's machine** (`COMPSCI 760/`): `team_repo/` (experiments/feasibility-spike),
+`team_repo_heldout/` (team/crash-penalty-flag, this wiki), `team_repo_v2/` (final-grid-v2 at `16440e6`, 2 commits
+behind origin), `team_repo_tuning/` (detached at `6e5b60e`, used for the S1P5 / P1P5 tests).
+
+**Files outside git (COMPSCI 760 root):**
+
+| file | what |
+|---|---|
+| `G4_full_bundle_2026-10-10.zip` | the final bundle (repo snapshot `fdf6252`, CSV/JSON/logs, no models); extracted + verified in `_verify/G4_full_bundle_2026-10-10/` |
+| `Group4_PPO_fix_and_final_config_2026-10-09.zip` | our teammate handoff on the PPO fix (README, EXPLAINER, figures, data, scripts) |
+| `tuning_vw_val_results.zip`, `Group4_DiversityGrid_seed0.zip` | the teammate tuning round and Desmond's seed-0 grid (both verified) |
+| `Group 4 Final Results*.pptx`, `Group 4 Final Talk Script.pdf` | decks and talk script (`final-presentation.md`) |
+| `Aolin - talk script and QA (final).md` | Aolin's final talk part and 39 Q&A answers |
+
+`G4_selected_models.zip` (the 48 selected checkpoints) is a separate team zip and is **not** on this machine.
+
+## State on 2026-10-06 (historical)
 
 **Branches** (each descends from the one before; none merged to `main`):
 
@@ -44,7 +80,8 @@ evaluation CSV; see its README for which runs were killed vs completed), `result
 Scripts: `diagnostics/` (absolute paths, so edit `ROOT` at the top). Scratch copies on Aolin's machine:
 `COMPSCI 760/_verify/` (not in git; holds the 343 MB grid bundle and the seed-0 map backup).
 
-**Runs still going on Aolin's PC at 20:30 on 2026-10-06:** `G999_SAC`, `G999_s1`, `G999_s2`,
+**Runs going on Aolin's PC at 20:30 on 2026-10-06** (since resolved: `G999_s1`, `G999_s2`, `G999_ns2048` completed;
+`G999_SAC` and `R1_repeat10_alone` died ~22:05 that night): `G999_SAC`, `G999_s1`, `G999_s2`,
 `G999_ns2048`, `R1_repeat10_alone` (refuted and can be stopped). When they finish, archive them with
 `diagnostics/archive_to_repo.py`.
 

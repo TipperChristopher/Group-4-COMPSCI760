@@ -1,7 +1,7 @@
 ---
 title: Glossary — domain terms
 type: reference
-updated: 2026-10-06
+updated: 2026-10-23
 sources:
   - project usage (mixed)
 ---
@@ -90,6 +90,24 @@ sources:
   nothing changed. About half the between-cell differences in the seed-0 grid.
 - **Distinct spawns** — `cl_grid_static` maps eval seeds onto a few start poses: 5 seeds →
   3 distinct, 30 seeds → ~9.
+
+### Terms added 2026-10-23 (final grids and analysis)
+
+- **Grid A / grid B** — the two pre-registered final grids. A: SB3 defaults, crash penalty 40 (branch `final-grid`).
+  B: penalty 5; PPO γ 0.999, n_steps 8192, ent_coef 0.01; SAC defaults (branch `final-grid-v2`). Same cells and seeds.
+- **vw_train / vw_val / vw_test** — the varied-width splits (half-width 0.60–1.50 m): 100 training tracks (nested pools),
+  10 validation tracks (every tuning and checkpoint decision), 20 unseen test tracks.
+- **`laps` vs `completed_lap`** — in the test CSVs, `laps` is fractional progress (a finished lap reads ≈0.999) and
+  `completed_lap` is the lap flag. "Fractional laps" means the mean of `laps`; "lap %" means the share of `completed_lap`.
+- **Selection ladder** — a run's vw_val scores at 400k / 800k / 1.2M / 1.6M / final; the selection rule picks its maximum.
+  **Near-tie:** best minus second-best < 0.02 laps.
+- **Seed-matched comparison** — comparing two algorithms at the same seed and diversity level (e.g. "PPO ahead in 20/24").
+- **Track-level Wilcoxon signed-rank** — a paired test over tracks of two agents' per-track scores. It treats tracks as the
+  sample, so it describes the specific trained agents, not the algorithm (pseudo-replication if read that way).
+- **Holm correction** — a step-down multiple-testing correction; the corrected p depends on which tests form the family.
+- **Spearman ρ** — rank correlation; used for "validation ranks agents like the test does" and width-vs-score.
+- **Per-track oracle** — the better of two policies on each track, chosen in hindsight (an upper bound for a hybrid).
+- **Sim-to-real drop** — the change in fractional laps from vw_test to real circuits for the same agent.
 
 ## See also
 

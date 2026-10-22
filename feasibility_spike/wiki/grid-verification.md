@@ -1,7 +1,7 @@
 ---
 title: Verification of Desmond's seed-0 diversity grid
 type: synthesis
-updated: 2026-10-06
+updated: 2026-10-23
 sources:
   - Group4_DiversityGrid_seed0.zip (343 MB; extracted to COMPSCI 760/_verify/, not in git) (high)
   - results/grid_s0/*.csv, results/track_geometry/ on this branch (high)
@@ -115,4 +115,5 @@ SAC 2 M = **5.4 h**. On Aolin's machine under 4–8 concurrent runs, PPO took
 - `sim-to-real-width.md` — why every cell is 0% on real circuits
 - `methodology.md` — spawn and checkpoint-selection consequences
 - `final-run-plan.md` — what the next grid should change
+- `final-results.md` — the 3-seed final grids that superseded this seed-0 grid
 - `incidents.md` — the track-identity pitfall

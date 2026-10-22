@@ -1,8 +1,9 @@
 ---
 title: Project overview — Group-4 F1TENTH zero-shot generalization
 type: concept
-updated: 2026-10-06
+updated: 2026-10-23
 sources:
+  - final-results.md, final-presentation.md, report-handoff.md (synthesis, 2026-10-10/23)
   - team_repo/README.md (high)
   - ppo-diagnosis.md, grid-verification.md, sim-to-real-width.md (synthesis, 2026-10)
   - team_repo/plan.md, PLAN_presentation2.md (mixed)
@@ -57,7 +58,25 @@ algorithms and all diversity levels. See `methodology.md`.
   flags (crash penalty, γ, PPO hyperparameters, action repeat) that all default to
   the existing behaviour; see `decisions.md` D3.
 
-## Where the project is now (2026-10-06)
+## Where the project is now (2026-10-23)
+
+Experiments finished; the final report is next (start at `report-handoff.md`).
+
+- **Two pre-registered grids ran** (48 runs, 3 seeds per cell, 2M steps): grid A = SB3 defaults with crash penalty 40
+  (the team's tuning decision, D16); grid B = penalty 5 plus the PPO fix ({G} 0.999, n_steps 8192, ent_coef 0.01; D17).
+  Both were tested once on 20 unseen synthetic tracks and 23 real circuits (2026-10-10) and verified from the raw files
+  (`final-results.md`).
+- **RQ2:** more tracks help every learning agent on synthetic tracks, on every seed; grid A SAC on real circuits goes
+  0.112 {A} 0.678 fractional laps (d1 {A} d100).
+- **RQ3 (headline):** the hypothesis that SAC benefits more is not supported; once both algorithms learn, there is no
+  consistent difference (3 seeds; one seed flips it).
+- **RQ1:** no general winner; PPO needs targeted fixes and then leads under grid B's reward. The crash penalty is
+  algorithm-specific (40 suits SAC, 5 suits PPO).
+- **Sim-to-real:** the gap-follower is more reliable on real circuits (72% vs 47% of laps); real circuits are not
+  narrower than the synthetic test tracks but are 2.4{X} longer.
+- **Presented** after 2026-10-11 (`final-presentation.md`).
+
+## Where the project was on 2026-10-06 (historical)
 
 Final-presentation stage. Since Presentation 2:
 
@@ -128,4 +147,5 @@ slide-by-slide content in `handoff.md`.
 - `decisions.md` — why we made the choices we did
 - `open-questions.md` — what is still open
 - `ppo-diagnosis.md`, `grid-verification.md`, `sim-to-real-width.md` — October findings
+- `final-results.md`, `report-handoff.md` — final results and the report starting point
 - `final-run-plan.md` — the proposed final run

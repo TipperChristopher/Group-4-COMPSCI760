@@ -1,7 +1,7 @@
 ---
 title: Results — numbers with sources
 type: reference
-updated: 2026-10-06
+updated: 2026-10-23
 sources:
   - team_repo/feasibility_spike/reward_experiment/results/*.json (high; September-2026 pilots, seed-0 local maps)
   - results/ppo_diagnosis/** on team/crash-penalty-flag (high; 2026-10)
@@ -199,6 +199,18 @@ The September-2026 pilot tables on this page were measured on **seed-0** local
 statements about those maps, but they are not comparable track-for-track with the
 October numbers (`incidents.md`).
 
+## Final test and late-October numbers (pointers, 2026-10-23)
+
+These live on their own pages so that each number appears in one place:
+
+| numbers | page | raw source |
+|---|---|---|
+| final test, both grids, vw_test + real; crash stats; width-vs-score; RQ3 per seed | `final-results.md` | `G4_full_bundle_2026-10-10/4_final_test/results_final_test/` |
+| tuning rounds on vw_val (time cost, γ 0.999 for SAC, PPO P0–P3) | `tuning-vw-val.md` | `results/tuning_vw_val_verified/` |
+| PPO stability A/B (entropy vs time cost) and the vw d20 penalty-5 tests | `ppo-diagnosis.md` | `results/ppo_diagnosis/eval_ab_own_track/`, `results/vw_p5_tests/` |
+| SAC γ 0.999 at penalty 5 (S1P5) final status | `open-questions.md` Q11 | `_verify/s1p5/results/` (not in git) |
+| pilot width fix (fixed vs varied width) | `sim-to-real-width.md` | `G4_full_bundle_2026-10-10/0_pilot/` |
+
 ## Files not central to the current story
 
 `completion_*`, `learning_curve_cp40_ent*`, `..._bonus100_*`, `..._shape0.2_*`,
@@ -212,3 +224,4 @@ kept for provenance. `_backup_prelog/` holds pre-logging copies.
 - `methodology.md` — the protocol that produced them
 - `handoff.md` — how to regenerate / extend
 - `ppo-diagnosis.md`, `grid-verification.md`, `sim-to-real-width.md` — interpretation of the October tables
+- `final-results.md` — the final test tables
