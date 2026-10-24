@@ -157,3 +157,47 @@ Push to GitHub:
 
 PowerShell
 git push -u origin main
+
+## Reproducing the final report (COMPSCI 760, Group 4)
+
+The report's code footnote cites grid A at branch `final-grid` (commit `7552398`), and grid B plus the final test at branch `final-grid-v2` (commit `fdf6252`). `main` contains both.
+
+### What is where
+| Report item | Location |
+|---|---|
+| Track splits, varied widths (Sec. III-B, Table I) | `tracks/manifest.json`, `tracks/make_vw_tracks.py` (sections 2b–2e above) |
+| Tuning rule and results (Sec. III-C) | `tuning3_DECISION_RULE.md`, `results/tuning/` |
+| Grid A decision and job files | `final_grid/DECISION.md`; `final_grid/final_jobs_desmond.txt`, `final_grid/final_jobs_grant.txt`, `final_grid/final_jobs_chris.txt` |
+| Grid B pre-registration and job files | `final_grid_v2/DECISION_v2.md`; `final_grid_v2/jobs_v2_chris.txt`, `final_grid_v2/jobs_v2_grant.txt`, `final_grid_v2/jobs_v2_desmond_ppo.txt` |
+| Training logs for all 48 runs (Fig. 4) | `results/run_logs/grid_{A,B}/<run>/` |
+| Validation scores and checkpoint selection | grid A: `results/final_grid_{desmond,grant,chris}/`, `results/final_test/selection.csv`; grid B: `results/final_test_v2/`, with the raw vw_val CSVs in `results/final_grid_v2_grant/`, `results/final_grid_v2_ppo_chris/` and `results/tuning/v2_SAC_*` (Desmond's 6 grid B SAC runs, saved to `results/tuning/` because the queue used the default results folder). The two `summary_*_jobs_v2_chris.csv` files in `results/tuning/` are grid B queue summaries, not tuning results. |
+| Final test, per episode (Tables III–V) | `results/final_test/test_raw_*.csv`, `test_summary.csv`, `test_plan.csv`, `start_poses.csv` |
+| Statistics (Tables III–V, Wilcoxon, Holm, Spearman) | `python analysis/report/report_stats.py` |
+| Checkpoint selection check (recomputes all 48 choices from the vw_val CSVs) | `python analysis/report/check_selection.py` |
+| Training curves (Fig. 4) | `python analysis/report/training_curves.py` |
+| Slide animations | `tools/animate/make_slide_gifs.py`, `results/animations/` |
+
+### Re-running the experiment
+1. Install pinned dependencies (Windows, Python 3.12.10 64-bit, PowerShell 7). Clone with `git clone -c core.autocrlf=false --recurse-submodules https://github.com/TipperChristopher/Group-4-COMPSCI760.git`, then in the repo folder:
+   ```
+   py -3.12 -m venv .venv
+   .venv\Scripts\python.exe -m pip install pip==26.2.1
+   .venv\Scripts\python.exe -m pip install --no-deps -r final_grid/requirements-lock.txt
+   git submodule update --init
+   .venv\Scripts\python.exe -m pip install --no-deps -e ./f1tenth_gym
+   ```
+   `git submodule update --init` checks out `f1tenth_gym` at the pinned upstream commit `5a301bd` (branch `v1.0.0`). `--no-deps` is required: see the header of `final_grid/requirements-lock.txt`.
+2. Build and verify tracks. Each command checks every file against `tracks/manifest.json` and refuses to install anything that differs:
+   ```
+   python tracks/make_vw_tracks.py
+   python tracks/install_real_tracks.py
+   python tracks/verify_real_tracks.py
+   ```
+3. Train one run. Each run is 2M steps on one environment; all 48 job lines are in the job files above. Grid A SAC example (`final_grid/final_jobs_desmond.txt`): `final_SAC_d100_s0 | --algo SAC --diversity 100 --seed 0 --track-prefix vw_synthetic_track_`, which runs as `python train.py --algo SAC --diversity 100 --seed 0 --track-prefix vw_synthetic_track_ --run-tag final_SAC_d100_s0`. Grid B PPO example (`final_grid_v2/jobs_v2_desmond_ppo.txt`): `v2_PPO_d100_s0 | --algo PPO --diversity 100 --seed 0 --track-prefix vw_synthetic_track_ --crash-penalty 5 --gamma 0.999 --n-steps 8192 --ent-coef 0.01` (adds `--crash-penalty 5 --gamma 0.999 --n-steps 8192 --ent-coef 0.01`).
+4. Validate checkpoints on vw_val (5 episodes per track) and select the best of 400k / 800k / 1.2M / 1.6M / final by mean fractional laps; ties go to higher lap %, then the earlier checkpoint. The queue trains a job file's runs and evaluates every checkpoint on vw_val, for example `.\launch_queue.ps1 -Jobs final_grid\final_jobs_desmond.txt -ResultsDir results\final_grid_desmond -MaxThreads 16 -Checkpoints 200000,400000,600000,800000,1000000,1200000,1400000,1600000,1800000`. The rule (`final_grid_v2/DECISION_v2.md`, "Checkpoint selection") was applied to those CSVs and frozen in `results/final_test/selection.csv` (grid A) and `results/final_test_v2/selection.csv` (grid B; `candidate_sources.csv` lists where each candidate was scored).
+5. Final test, run once: 10 episodes per track on `vw_test` and `real`, deterministic policy. Every job's exact command is in `results/final_test/test_plan.csv`, for example `python evaluate.py --algo SAC --diversity 1 --seed 0 --run-tag final_SAC_d1_s0 --track-set vw_test --episodes 10 --max-steps 15000 --reset-type cl_grid_static --target-laps 1 --eval-seed 0 --no-plot --out results/final_test/test_raw_final_SAC_d1_s0_vw_test.csv --checkpoint 800000`.
+
+Notes:
+- Evaluations reproduce exactly on the same machine but can differ slightly across CPUs.
+- The final test ran on one machine.
+- Trained model checkpoints are not in git because of their size. They are available from the authors on request.

@@ -1,0 +1,5 @@
+algo,setting,role,seeds,runs_scored,mean_best_laps,seed_gap,best_checkpoints,declines_late,crawling_runs,crash_penalty,time_cost,verdict
+SAC,SAC_d1,candidate,2,1,0.2112,,1000k,True,0,40.0,0.0,
+SAC,SAC_d5,candidate,2,1,0.5405,,final,False,0,40.0,0.0,
+SAC,SAC_d20,candidate,2,1,0.6138,,600k,False,0,40.0,0.0,WINNER
+SAC,SAC_d100,candidate,2,1,0.6062,,1200k,False,0,40.0,0.0,near-tie

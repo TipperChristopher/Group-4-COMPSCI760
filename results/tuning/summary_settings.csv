@@ -1,0 +1,6 @@
+algo,setting,role,seeds,runs_scored,mean_best_laps,seed_gap,best_checkpoints,declines_late,crawling_runs,crash_penalty,time_cost,verdict
+SAC,S4,candidate,"99,98,97,96",4,0.4866,0.2205,"1200k,final,final,final",False,2,40.0,0.01,WINNER
+SAC,S0,baseline,"97,96",2,0.5922,0.1591,"800k,final",True,0,40.0,0.0,
+PPO,P0,baseline,"97,96",2,0.1057,0.0114,"400k,1200k",True,0,40.0,0.0,
+PPO,P2,candidate,"97,96",2,0.2732,0.0274,"1200k,800k",True,0,40.0,0.01,WINNER
+PPO,P4,candidate,"99,98",2,0.0905,0.0355,"final,400k",True,0,40.0,0.01,

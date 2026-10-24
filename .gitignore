@@ -49,3 +49,6 @@ Thumbs.db
 .idea/
 .claude/
 *.swp
+
+# Figures written by analysis/report/*.py (regenerated, not committed).
+analysis/report/output/

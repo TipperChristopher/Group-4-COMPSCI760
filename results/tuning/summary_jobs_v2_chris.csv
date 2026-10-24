@@ -1,0 +1,7 @@
+tag,setting,algo,seed,status,train_exit,crash_penalty,time_cost,train_speed_last200_mps,crawling,1200k_laps,1200k_lap_pct,1200k_mean_m,1600k_laps,1600k_lap_pct,1600k_mean_m,400k_laps,400k_lap_pct,400k_mean_m,800k_laps,800k_lap_pct,800k_mean_m,final_laps,final_lap_pct,final_mean_m,best_checkpoint,best_laps,best_lap_pct,best_lap_time_s,checkpoints_evaluated,declines_late
+v2_SAC_d1_s2,SAC_d1,SAC,2,evaluated,0,5.0,0.0,9.55,False,0.1069,0.0,18.3,0.0838,0.0,14.5,0.0837,0.0,13.9,0.1049,0.0,18.2,0.1221,0.0,20.6,final,0.1221,0.0,,5,False
+v2_SAC_d5_s2,SAC_d5,SAC,2,evaluated,0,5.0,0.0,8.51,False,0.2181,0.0,37.1,0.1664,0.0,28.7,0.1457,0.0,24.9,0.1378,0.0,23.8,0.105,0.0,17.9,1200k,0.2181,0.0,,5,True
+v2_SAC_d20_s2,SAC_d20,SAC,2,evaluated,0,5.0,0.0,9.7,False,0.2344,0.0,40.5,0.2534,0.0,43.1,0.2049,0.0,35.0,0.2521,0.0,43.1,0.2515,0.0,42.9,1600k,0.2534,0.0,,5,False
+v2_SAC_d100_s2,SAC_d100,SAC,2,evaluated,0,5.0,0.0,9.22,False,0.4037,0.0,69.4,0.3266,4.0,55.7,0.3498,2.0,60.6,0.3469,0.0,60.0,0.2564,0.0,44.0,1200k,0.4037,0.0,,5,True
+v2_SAC_d20_s1,SAC_d20,SAC,1,evaluated,0,5.0,0.0,9.59,False,0.3313,4.0,56.2,0.3636,8.0,62.8,0.2197,0.0,37.6,0.2672,0.0,46.0,0.3829,8.0,66.0,final,0.3829,8.0,16.73,5,False
+v2_SAC_d100_s1,SAC_d100,SAC,1,evaluated,0,5.0,0.0,9.59,False,0.3572,8.0,62.6,0.2665,0.0,46.3,0.282,0.0,48.9,0.3035,0.0,52.5,0.4463,12.0,75.7,final,0.4463,12.0,16.34,5,False

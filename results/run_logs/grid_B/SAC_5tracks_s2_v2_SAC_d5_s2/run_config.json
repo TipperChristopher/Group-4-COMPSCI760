@@ -1,0 +1,107 @@
+{
+  "status": "completed",
+  "started_at": "2026-10-10T11:26:59+1300",
+  "pid": 3672,
+  "host": "WoDeDianNao",
+  "git_commit": "16440e663e44a75e69252924d20c0c714dc5fddb",
+  "git_branch": "final-grid-v2",
+  "git_dirty_files": [],
+  "reward_code_file": "sb3_wrapper.py",
+  "reward_code_sha256": "9b73ea777f09d17306f0d1d5486edb024ad9c028629d927a38cdbb3c338a8a34",
+  "reward_constants": {
+    "PROGRESS_WEIGHT": 1.0,
+    "TIME_COST": 0.0,
+    "CRASH_PENALTY": 5.0,
+    "STEERING_LIMIT": 0.4189,
+    "SPEED_MIN": 0.0,
+    "SPEED_MAX": 20.0
+  },
+  "args": {
+    "algo": "SAC",
+    "diversity": 5,
+    "seed": 2,
+    "track_seed": 0,
+    "n_envs": 1,
+    "total_timesteps": 2000000,
+    "track_cache_size": 8,
+    "max_episode_steps": 3000,
+    "torch_threads": 2,
+    "overwrite": false,
+    "run_tag": "v2_SAC_d5_s2",
+    "track_prefix": "vw_synthetic_track_",
+    "checkpoint_freq": 100000,
+    "gamma": null,
+    "learning_rate": null,
+    "batch_size": null,
+    "ent_coef": null,
+    "gae_lambda": null,
+    "n_steps": null,
+    "n_epochs": null,
+    "target_kl": null,
+    "log_std_init": null,
+    "buffer_size": null,
+    "crash_penalty": 5.0,
+    "time_cost": null
+  },
+  "hyperparameter_overrides": {},
+  "reward_overrides": {
+    "CRASH_PENALTY": 5.0
+  },
+  "effective_reward_constants": {
+    "PROGRESS_WEIGHT": 1.0,
+    "TIME_COST": 0.0,
+    "CRASH_PENALTY": 5.0
+  },
+  "reward_constants_in_file": {
+    "CRASH_PENALTY": 40.0,
+    "TIME_COST": 0.0
+  },
+  "run_tag": "v2_SAC_d5_s2",
+  "track_prefix": "vw_synthetic_track_",
+  "track_pool": [
+    "vw_synthetic_track_0",
+    "vw_synthetic_track_1",
+    "vw_synthetic_track_2",
+    "vw_synthetic_track_3",
+    "vw_synthetic_track_4"
+  ],
+  "manifest_sha256": "09dd9a8103d82279b5342e6c054e03b1d2e8e6822664a9da8b6f65bb181459a8",
+  "pool_verified_against_manifest": true,
+  "track_split": "vw_train",
+  "device": "cpu",
+  "torch_threads": 2,
+  "env_threads": {
+    "OMP_NUM_THREADS": "2",
+    "MKL_NUM_THREADS": "2",
+    "OPENBLAS_NUM_THREADS": "2"
+  },
+  "versions": {
+    "python": "3.12.10",
+    "torch": "2.14.0+cpu",
+    "stable_baselines3": "2.9.0"
+  },
+  "outputs": {
+    "checkpoints_every": 100000,
+    "monitor_csv": "monitor_*.monitor.csv",
+    "progress_csv": "progress.csv",
+    "final_model": "final_model.zip"
+  },
+  "hyperparameters": {
+    "gamma": 0.99,
+    "learning_rate": 0.0003,
+    "batch_size": 256,
+    "buffer_size": 1000000,
+    "ent_coef": "auto",
+    "target_entropy": -2.0,
+    "tau": 0.005,
+    "learning_starts": 100,
+    "train_freq": "1 step",
+    "gradient_steps": 1,
+    "target_update_interval": 1,
+    "net_arch": "[256, 256]"
+  },
+  "finished_at": "2026-10-10T17:07:32+1300",
+  "wall_seconds": 20429.9,
+  "num_timesteps": 2000000,
+  "steps_per_second": 97.9
+}
